@@ -24,7 +24,7 @@ public class Studente extends Persona{
                     String nome,
                     String cognome,
                     String email,
-                    String dataNascita,
+                    LocalDate dataNascita,
                     String dataIngressoUniversita,
                     String matricola,
                     CorsoDiLaurea corsoDiLaurea,

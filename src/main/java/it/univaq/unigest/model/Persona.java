@@ -1,5 +1,9 @@
 package it.univaq.unigest.model;
 
+import it.univaq.unigest.util.LocalDateUtil;
+
+import java.time.LocalDate;
+
 public abstract class Persona {
 
     // Attributi di instanza
@@ -20,13 +24,13 @@ public abstract class Persona {
                       String nome,
                       String cognome,
                       String email,
-                      String dataNascita,
+                      LocalDate dataNascita,
                       String dataIngressoUniversita){
         this.cf = cf;
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
-        this.dataNascita = dataNascita;
+        this.dataNascita = LocalDateUtil.toString(dataNascita);
         this.dataIngressoUniversita = dataIngressoUniversita;
     }
 

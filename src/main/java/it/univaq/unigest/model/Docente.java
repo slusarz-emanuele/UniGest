@@ -10,7 +10,7 @@ public class Docente extends Persona{
     private String dipartimento;
     private String qualifica;
 
-    public Docente(Strin cf,
+    public Docente(String cf,
     String nome,
     String cognome,
     LocalDate dataNascita,

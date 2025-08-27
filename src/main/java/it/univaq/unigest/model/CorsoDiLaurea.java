@@ -1,6 +1,6 @@
 package it.univaq.unigest.model;
 
-public class CorsodiLaurea{
+public class CorsoDiLaurea{
     private String id;
     private String nome;
     private int cfuTotali;
@@ -8,17 +8,17 @@ public class CorsodiLaurea{
     private String coordinatoreId;
 
     public CorsoDiLaurea(String id,
-    String nome,
-    String cognome,
-    int cfuTotali,
-    String dipartimento,
-    String coordinatoreId){
+                        String nome,
+                        int cfuTotali,
+                        String dipartimento,
+                        String coordinatoreId){
         this.id=id;
         this.nome=nome;
         this.cfuTotali=cfuTotali;
         this.dipartimento=dipartimento;
         this.coordinatoreId=coordinatoreId;
     }
+
     public String getId(){
         return this.id;
     }

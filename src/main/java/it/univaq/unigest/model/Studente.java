@@ -3,7 +3,7 @@ package it.univaq.unigest.model;
 import java.time.LocalDate;
 import java.util.List;
 
-public class Strudente extends Persona{
+public class Studente extends Persona{
 
      private String matricola;
      private String corsoDiLaurea;

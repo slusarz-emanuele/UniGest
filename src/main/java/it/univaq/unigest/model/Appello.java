@@ -15,7 +15,7 @@ public class Appello{
     public Appello(int id,
     String ridInsegnamento,
     LocalDate data,
-    LocalDate ora,
+    LocalTime ora,
     String ridAula,
     String ridDocente,
     String ridVerbale){

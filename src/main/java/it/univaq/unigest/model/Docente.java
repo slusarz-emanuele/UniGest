@@ -4,47 +4,54 @@ import java.time.LocalDate;
 
 public class Docente extends Persona{
 
+   //attributi del docente
     private String codiceDocente;
     private boolean isRuolo;
     private LocalDate dataIngressoUniversitaDocente;
     private String dipartimento;
     private String qualifica;
 
-    public Docente(String cf,
-    String nome,
-    String cognome,
-    LocalDate dataNascita,
-    String dataIngressoUniversita,
-    String codiceDocente,
-    boolean isRuolo,
-    LocalDate dataIngressoUniversitaDocente,
-    String dipartimento,
-    String qualifica){
-        super(cf,nome,cognome,dataNascita,DataIngressoUniversita);
-        this.codiceDocente=codiceDocente;
-        this.isRuolo=isRuolo;
-        this.dataIngressoUniversitaDocente=dataIngressoUniversitaDocente;
-        this.dipartimento=dipartimento;
-        this.qualifica=qualifica;
-    }
+    //costruttore 
+    public Docente( String cf,
+                    String nome,
+                    String cognome,
+                    LocalDate dataNascita,
+                    String dataIngressoUniversita,
+                    String codiceDocente,
+                    boolean isRuolo,
+                    LocalDate dataIngressoUniversitaDocente,
+                    String dipartimento,
+                    String qualifica){
+                                        super(cf,nome,cognome,dataNascita,DataIngressoUniversita);
+                                        this.codiceDocente = codiceDocente;
+                                        this.isRuolo = isRuolo;
+                                        this.dataIngressoUniversitaDocente = dataIngressoUniversitaDocente;
+                                        this.dipartimento = dipartimento;
+                                        this.qualifica = qualifica;
+                                    }
 
+    //metodi getter
     public String getCodiceDocente(){
         return this.codiceDocente;
     }
+    
     public boolean isRuolo(){
         return this.isRuolo;
-    }
+    } 
+    
     public LocalDate getDataIngressoUniversitaDocente(){
         return this.dataIngressoUniversitaDocente;
     }
+    
     public String getDipartimento(){
         return this.dipartimento;
     }
+    
      public String getQualifica() {
         return this.qualifica;
     }
-
     
+    //metodi setter
     public void setCodiceDocente(String codiceDocente) {
         this.codiceDocente = codiceDocente;
     }
@@ -53,7 +60,9 @@ public class Docente extends Persona{
         this.isRuolo = ruolo;
     }
 
-    public void setDataIngressoUniversitaDocente(LocalDate dataIngressoUniversitaDocente) {this.dataIngressoUniversitaDocente = dataIngressoUniversitaDocente;}
+    public void setDataIngressoUniversitaDocente(LocalDate dataIngressoUniversitaDocente){
+        this.dataIngressoUniversitaDocente = dataIngressoUniversitaDocente;
+    }
 
     public void setDipartimento(String dipartimento) {
         this.dipartimento = dipartimento;
@@ -62,9 +71,13 @@ public class Docente extends Persona{
     public void setQualifica(String qualifica) {
         this.qualifica = qualifica;
     }
+
+    //genera l'email automaticamente
     protected String generaEmail(){
         return this.getNome().toLowerCase()+"."+this.getCognome().toLowerCase()+ "@univaq.it";
     }
+
+    // @override tostring
     public String toString() {
         return super.toString() +
                 "CodiceDocente: " + codiceDocente + ", " +

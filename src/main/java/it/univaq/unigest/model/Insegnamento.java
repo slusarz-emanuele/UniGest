@@ -3,7 +3,7 @@ package it.univaq.unigest.model;
 import java.util.List;
 
 public class Insegnamento{
-
+    //attributi
     private String id;
     private String nome;
     private Integer cfu;
@@ -11,22 +11,25 @@ public class Insegnamento{
     private List<String> docenti;
     private Integer anno;
     private Integer semestre;
-
+    
+    // metodo costruttore
     public Insegnamento(String id,
-    String nome,
-    Integer cfu,
-    String CorsodiLaureaId,
-    List<String> docenti,
-    Integer anno,
-    Integer semestre){
-        this.id=id;
-        this.nome=nome;
-        this.cfu=cfu;
-        this.CorsodiLaureaId=CorsodiLaureaId;
-        this.docenti=docenti;
-        this.anno=anno;
-        this.semestre=semestre;
+                        String nome,
+                        Integer cfu,
+                        String CorsodiLaureaId,
+                        List<String> docenti,
+                        Integer anno,
+                        Integer semestre){
+        this.id = id;
+        this.nome = nome;
+        this.cfu = cfu;
+        this.CorsodiLaureaId = CorsodiLaureaId;
+        this.docenti = docenti;
+        this.anno = anno;
+        this.semestre = semestre;
     }
+
+    //metodi getter
     public String getId() { return id; }
 
     public String getNome() { return nome; }
@@ -41,7 +44,7 @@ public class Insegnamento{
 
     public Integer getSemestre() { return semestre; }
 
-    
+    //metodi setter
     public void setId(String id) { this.id = id; }
 
     public void setNome(String nome) { this.nome = nome; }
@@ -56,9 +59,10 @@ public class Insegnamento{
 
     public void setSemestre(Integer semestre) { this.semestre = semestre; }
 
+    //metodo che stampa i docenti
     public void stampaDocenti(){
-        System.out.println("Docenti assegnati all'insegnamento \""+this.nome+"\":");
-        if(docenti==null || docenti.isEmpty()){
+        System.out.println("Docenti assegnati all'insegnamento \""+ this.nome +"\":");
+        if(docenti == null || docenti.isEmpty()){
             System.out.println("Nessun docente assegnato");
              }else{ 
                 for (String docenteId : docenti) {
@@ -66,18 +70,26 @@ public class Insegnamento{
             }
              }
     }
+
+    //metodo che aggiunge un docente
     public void aggiungiDocente(String docenteId){
         if(!this.docenti.contains(docenteId)){
             this.docenti.add(docenteId);
 
         }
     }
+
+    //metodo che rimuove un docente
     public void rimuoviDocente(String docenteId){
         this.docenti.remove(docenteId);
     }
+
+    //metodo che carica un docente
     public void caricaDocentiDinamicamente(){
-        if(this.getId()==null) return ;
+        if(this.getId() == null) return ;
     }
+
+    //metodo toString
         public String toString() {
         return "ID: " + id +
                 ", Nome: " + nome +

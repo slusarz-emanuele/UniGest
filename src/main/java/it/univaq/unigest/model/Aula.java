@@ -42,4 +42,8 @@ public class Aula{
                 "capienza: " + this.capienza + " " +
                 "edificio: " + this.edificio;
     }
+
+    public String getEdificioNome() {
+        return ""; // TODO: da implementare!
+    }
 }

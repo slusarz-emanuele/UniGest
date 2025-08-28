@@ -1,26 +1,30 @@
 package it.univaq.unigest.model;
 
 public class Esame{
-    private String id;
-    private String iscrizione;
+   //attributi
+    private String id;                //id
+    private String iscrizione;        // fk per identificare lo studente e l'appello
     private Double voto;
     private boolean lode;
     private boolean rifiutato;
     private boolean verbalizzato;
 
+    //costruttore
     public Esame(String id,
-    String iscrizione,
-    Double voto,
-    boolean lode,
-    boolean rifiutato,
-    boolean verbalizzato,){
-        this.id=id;
-        this.iscrizione=iscrizione;
-        this.voto=voto;
-        this.lode=lode;
-        this.rifiutato=rifiutato;
-        this.verbalizzato=verbalizzato;
+                 String iscrizione,
+                 Double voto,
+                 boolean lode,
+                 boolean rifiutato,
+                 boolean verbalizzato,){
+        this.id = id;
+        this.iscrizione = iscrizione;
+        this.voto = voto;
+        this.lode = lode;
+        this.rifiutato = rifiutato;
+        this.verbalizzato = verbalizzato;
     }
+
+    //metodi getter
       public String getId(){
         return this.id;
     }
@@ -47,6 +51,8 @@ public class Esame{
     public Integer getCfu(){
         return 1;
     }
+
+    //metodi setter
      public void setId(String id){
         this.id = id;
     }
@@ -71,7 +77,7 @@ public class Esame{
         this.verbalizzato = verbalizzato;
     }
 
-   
+   //metodo toString
     public String toString(){
         return "id: " + this.id + " " +
                 "iscrizioneId: " + this.iscrizioneId + " " +

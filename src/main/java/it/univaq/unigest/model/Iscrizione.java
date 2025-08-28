@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public class Iscrizione{
 
+    //attributi
     private Integer id;
     private String  ridStudenteCf;
     private Integer ridAppello;
@@ -11,19 +12,22 @@ public class Iscrizione{
     private boolean ritirato;
 
     public Iscrizione(Integer id,
-    String ridStudenteCf,
-    Integer ridAppello,
-    LocalDate dataIscrizione,
-    boolean ritirato
-    ){
-        this.id=id;
-        this.ridStudenteCf=ridStudenteCf;
-        this.ridAppello=ridAppello;
-        this.dataIscrizione=dataIscrizione;
-        this.ritirato=ritirato;
+                     String ridStudenteCf,
+                     Integer ridAppello,
+                     LocalDate dataIscrizione,
+                     boolean ritirato){
+        this.id = id;
+        this.ridStudenteCf = ridStudenteCf;
+        this.ridAppello = ridAppello;
+        this.dataIscrizione = dataIscrizione;
+        this.ritirato = ritirato;
 
     } 
-      public Integer getId() {return this.id;}
+
+    //metodi getter
+      public Integer getId(){
+          return this.id;
+      }
 
     public String getRidStudenteCf(){
         return this.ridStudenteCf;
@@ -33,13 +37,15 @@ public class Iscrizione{
         return this.ridAppello;
     }
 
-    public LocalDate getDataIscrizione(){return this.dataIscrizione;}
+    public LocalDate getDataIscrizione(){
+        return this.dataIscrizione;
+    }
 
     public boolean getRitirato(){
         return this.ritirato;
     }
 
-   
+   //metodi setter
     public void setId(Integer id){
         this.id = id;
     }
@@ -59,12 +65,16 @@ public class Iscrizione{
     public void setRitirato(boolean ritirato){
         this.ritirato = ritirato;
     }
+
+    //metodo che stampa le generalità 
     public String getGeneralita(){
          return "Studente: " + this.ridStudenteCf + " " +
                 "Appello: " + this.ridAppello + " " +
                 "Data Iscizione: " + this.dataIscrizione + " " +
                 "Ritirato: " + this.ritirato;
     }
+
+    //metodo toString
      public String toString (){
         return "id: " + this.id + " " +
                 "ridStudenteCf: " + this.ridStudenteCf + " " +

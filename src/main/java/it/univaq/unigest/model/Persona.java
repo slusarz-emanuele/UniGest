@@ -1,5 +1,7 @@
 package it.univaq.unigest.model;
 
+import it.univaq.unigest.util.LocalDateUtil;
+
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -11,11 +13,7 @@ public abstract class Persona{
     private String dataNascita;
     private String dataIngressoUniversita;
 
-    protected Persona(private String cf,
-    private String nome,
-    private String cognome,
-    private LocalDate dataNascita,
-    private String dataIngressoUniversita){
+    protected Persona( String cf, String nome, String cognome, LocalDate dataNascita, String dataIngressoUniversita){
                    this.cf=cf;
                    this.nome=nome;
                    this.cognome=cognome;
@@ -29,6 +27,9 @@ public abstract class Persona{
      public String getNome(){
         return this.nome;
      }
+     public String getCognome(){
+        return this.cognome;
+     }
      public String getEmail(){
         return this.email;
      }
@@ -40,6 +41,7 @@ public abstract class Persona{
      }
      public String getEta(){
         //da fare
+         return "";
      }
 
     public void setCf(String cf){

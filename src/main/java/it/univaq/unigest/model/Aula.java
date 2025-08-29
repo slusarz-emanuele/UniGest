@@ -1,24 +1,18 @@
 package it.univaq.unigest.model;
 
-import  it.univaq.unigest.manager.EdificioManager;
-
 public class Aula{
-    //attributi
     private String id;
     private int capienza;
     private String edificio;
 
-    //costruttore
     public Aula(String id,
     int capienza,
     String edificio){
-        this.id = id;
-        this.capienza = capienza;
-        this.edificio = edificio;
+        this.id=id;
+        this.capienza=capienza;
+        this.edificio=edificio;
     
     }
-
-    //metodi getter
       public String getId(){
         return this.id;
     }
@@ -27,15 +21,9 @@ public class Aula{
         return this.capienza;
     }
 
-    public String getEdificio(){
-        return this.edificio;
-    }
+    public String getEdificio(){return this.edificio;}
+
     
-     public String getEdificioNome() {
-        return ""; // TODO: da implementare!
-    }
-    
-    //metodi setter
     public void setId(String id){
         this.id = id;
     }
@@ -54,6 +42,4 @@ public class Aula{
                 "capienza: " + this.capienza + " " +
                 "edificio: " + this.edificio;
     }
-
-    
 }

@@ -53,9 +53,7 @@ public class CorsoDiLaureaManager extends AbstractManager<CorsoDiLaurea> {
         }
 
         // Conta gli studenti che hanno come corsoDiLaurea l'ID trovato
-        return (int) Main.getStudenteManager().getAll().stream()
-                .filter(s -> idCorso.equals(s.getCorsoDiLaurea()))
-                .count();
+        return 0;
     }
 
 

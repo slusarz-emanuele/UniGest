@@ -36,10 +36,14 @@ public class Aula{
         this.edificio = edificio;
     }
 
-   
+
     public String toString(){
         return "id: " + this.id + " " +
                 "capienza: " + this.capienza + " " +
                 "edificio: " + this.edificio;
+    }
+
+    public String getEdificioNome() {
+        return "";
     }
 }

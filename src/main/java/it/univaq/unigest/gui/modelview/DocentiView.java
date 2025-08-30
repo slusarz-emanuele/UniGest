@@ -3,6 +3,8 @@ package it.univaq.unigest.gui.modelview;
 import it.univaq.unigest.gui.Main;
 import it.univaq.unigest.gui.modelview.pannelli.docenti.DocentiPannello1;
 import it.univaq.unigest.gui.modelview.pannelli.docenti.DocentiPannello2;
+import it.univaq.unigest.gui.util.CrudView;
+import javafx.scene.layout.VBox;
 
 public class DocentiView extends AbstractModelView implements CrudView {
 

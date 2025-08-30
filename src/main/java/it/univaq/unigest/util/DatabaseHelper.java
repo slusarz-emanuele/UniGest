@@ -1,5 +1,7 @@
 package it.univaq.unigest.util;
 
+import it.univaq.unigest.gui.Main;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -101,6 +103,40 @@ public class DatabaseHelper {
                     "Il file " + file.getName() + " non è stato creato a causa di un'eccezione: " + e.getMessage());
             System.exit(1);
         }
+    }
+
+    public static void caricaDatiInMemoria() {
+        Main.getStudenteManager().caricaDaFile();
+        Main.getStudenteManager().caricaIndiceCorrente();
+
+        Main.getDocenteManager().caricaDaFile();
+        Main.getDocenteManager().caricaIndiceCorrente();
+
+        Main.getAppelloManager().caricaDaFile();
+        Main.getAppelloManager().caricaIndiceCorrente();
+
+        Main.getAulaManager().caricaDaFile();
+        Main.getAulaManager().caricaIndiceCorrente();
+
+        Main.getCorsoDiLaureaManager().caricaDaFile();
+        Main.getCorsoDiLaureaManager().caricaIndiceCorrente();
+
+        Main.getEsameManager().caricaDaFile();
+        Main.getEsameManager().caricaIndiceCorrente();
+
+        Main.getInsegnamentoManager().caricaDaFile();
+        Main.getInsegnamentoManager().caricaIndiceCorrente();
+
+        Main.getIscrizioneManager().caricaDaFile();
+        Main.getIscrizioneManager().caricaIndiceCorrente();
+
+        Main.getVerbaleManager().caricaDaFile();
+        Main.getVerbaleManager().caricaIndiceCorrente();
+
+        Main.getEdificioManager().caricaDaFile();
+        Main.getEdificioManager().caricaIndiceCorrente();
+
+        LogHelper.saveLog(LogType.INFO, "I dati sono stati caricati in memoria dai file.");
     }
 
 }

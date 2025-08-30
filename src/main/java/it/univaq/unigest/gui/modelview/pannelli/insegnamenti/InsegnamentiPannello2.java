@@ -10,4 +10,17 @@ public class InsegnamentiPannello2 {
          * TODO: completare implementazione del metodo con tabella e gesione delle funzionalità
          */
     }
+
+    public static void apriDialogAggiungi(){
+
+    }
+
+    public static void modificaSelezionato(){
+
+    }
+
+    public static void eliminaSelezionato(){
+
+    }
+
 }

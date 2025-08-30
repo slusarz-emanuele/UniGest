@@ -41,22 +41,22 @@ public class StudentiModelView extends AbstractModelView implements CrudView {
      * @return un {@link VBox} con le statistiche degli studenti.
     */
     protected VBox creaStatisticheContenuto(){
-        StudentiPannello1.getView();
+        return StudentiPannello1.getView();
     }
 
     @Override
     public void onAdd(){
-        StudentiPannello2.apriDialogAggiungiStudente();
+        StudentiPannello2.apriDialogAggiungi();
     }
 
     @Override
     public void onEdit(){
-        StudentiPannello2.modificaStudenteSelezionato();
+        StudentiPannello2.modificaSelezionato();
     }
 
     @Override
     public void onDelete(){
-        StudentiPannello2.eliminaStudenteSelezionato();
+        StudentiPannello2.eliminaSelezionato();
     }
 
     @Override

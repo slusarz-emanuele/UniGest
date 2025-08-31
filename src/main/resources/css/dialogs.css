@@ -1,0 +1,45 @@
+/* Stile comune per tutte le finestre di dialogo */
+.dialog-pane {
+    -fx-background-color: #fefefe;
+    -fx-padding: 20px;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+/* Titolo*/
+.dialog-pane > .header-panel > .label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+/* Messaggio */
+.dialog-pane > .content.label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555;
+}
+
+/* Pulsanti */
+.dialog-pane .button-bar .button {
+    -fx-background-color: #2a73ff;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-padding: 6px 14px;
+}
+.dialog-pane .button-bar .button:hover {
+    -fx-background-color: #1f5fd1;
+}
+
+/* ALERT SPECIFICI */
+
+/* Alert di errore */
+.alert.error.dialog-pane {
+    -fx-border-color: #ff4d4d;
+    -fx-border-width: 0 0 0 5;
+}
+
+/* Alert informativo */
+.alert.information.dialog-pane {
+    -fx-border-color: #2a73ff;
+    -fx-border-width: 0 0 0 5;
+}

@@ -2,9 +2,8 @@ package it.univaq.unigest.gui;
 
 import it.univaq.unigest.gui.modelview.StartView;
 import it.univaq.unigest.manager.*;
-import it.univaq.unigest.util.DatabaseHelper;
-import it.univaq.unigest.util.LogHelper;
-import it.univaq.unigest.util.LogType;
+import it.univaq.unigest.util.*;
+import it.univaq.unigest.util.loader.ImpostazioniLoader;
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.geometry.Pos;
@@ -65,6 +64,16 @@ public class Main extends Application {
      */
     private static EdificioManager edificioManager = new EdificioManager();
 
+    /**
+     * Rappresenta le impostazioni correnti dell'applicazione.
+     * Contiene parametri configurabili e preferenze salvate.
+     */
+    //private static Impostazioni impostazioni = new Impostazioni();
+    private static Impostazioni impostazioni;
+
+    //private static ParametrizzazioneHelper parametrizzazioneHelper = new ParametrizzazioneHelper();
+    private static ParametrizzazioneHelper parametrizzazioneHelper;
+
     private static Stage stagePrimario;
 
     public static void main(String[] args) {
@@ -78,6 +87,9 @@ public class Main extends Application {
         DatabaseHelper.verFileLog();
         DatabaseHelper.verDirData();
         DatabaseHelper.verFilesData();
+
+        impostazioni = ImpostazioniLoader.caricaImpostazioniDaFile();
+        parametrizzazioneHelper = new ParametrizzazioneHelper();
 
         LogHelper.saveLog(LogType.INFO, "[Main.init] L'applicazione è stata avviata");
     }
@@ -100,6 +112,8 @@ public class Main extends Application {
         Task<Void> loadingTask = new Task<>() {
             @Override
             protected Void call(){
+                impostazioni = ImpostazioniLoader.caricaImpostazioniDaFile();
+                parametrizzazioneHelper = new ParametrizzazioneHelper();
                 DatabaseHelper.caricaDatiInMemoria();
 
                 return null;
@@ -162,5 +176,9 @@ public class Main extends Application {
 
     public static EdificioManager getEdificioManager() {
         return edificioManager;
+    }
+
+    public static Impostazioni getImpostazioni() {
+        return impostazioni;
     }
 }

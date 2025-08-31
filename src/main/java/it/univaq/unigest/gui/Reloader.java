@@ -38,7 +38,7 @@ public class Reloader {
      *  Ricarica interamente i componenti d'interfaccia grafica del pannello AppelliPannello2
      */
     public static void ricaricaInterfacciaGraficaAppelliPannello2(){
-        //TODO
+        AppelliPannello2.getBuilder().refresh(Main.getAppelloManager().getAll());
         LogHelper.saveLog(LogType.DEBUG, "it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaAppelliPannello2() invocato");
     }
 
@@ -46,7 +46,7 @@ public class Reloader {
      *  Ricarica interamente i componenti d'interfaccia grafica del pannello AulePannello2
      */
     public static void ricaricaInterfacciaGraficaAulePannello2(){
-        //TODO
+        //AulePannello2.getBuilder().refresh(Main.getAulaManager().getAll()); TODO: benedetta lo finice a collegare
         LogHelper.saveLog(LogType.DEBUG, "it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaAulePannello2() invocato");
     }
 
@@ -54,7 +54,7 @@ public class Reloader {
      *  Ricarica interamente i componenti d'interfaccia grafica del pannello CorsiDiLaureaPannello2
      */
     public static void ricaricaInterfacciaGraficaCorsiDiLaureaPannello2(){
-        //TODO
+        CorsiDiLaureaPannello2.getBuilder().refresh(Main.getCorsoDiLaureaManager().getAll());
         LogHelper.saveLog(LogType.DEBUG, "it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaCorsiDiLaureaPannello2() invocato");
     }
 
@@ -62,7 +62,7 @@ public class Reloader {
      *  Ricarica interamente i componenti d'interfaccia grafica del pannello DocentiPannello2
      */
     public static void ricaricaInterfacciaGraficaDocentiPannello2(){
-        //TODO
+        DocentiPannello2.getBuilder().refresh(Main.getDocenteManager().getAll());
         LogHelper.saveLog(LogType.DEBUG, "it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaDocentiPannello2() invocato");
     }
 
@@ -70,7 +70,7 @@ public class Reloader {
      *  Ricarica interamente i componenti d'interfaccia grafica del pannello EdificiPannello2
      */
     public static void ricaricaInterfacciaGraficaEdificiPannello2(){
-        //TODO
+        //EdificiPannello2.getBuilder().refresh(Main.getEdificioManager().getAll()); TODO: benedetta lo finice a collegare
         LogHelper.saveLog(LogType.DEBUG, "it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaEdificiPannello2() invocato");
     }
 
@@ -78,7 +78,7 @@ public class Reloader {
      *  Ricarica interamente i componenti d'interfaccia grafica del pannello EsamiPannello2
      */
     public static void ricaricaInterfacciaGraficaEsamiPannello2(){
-        //TODO
+        //EsamiPannello2.getBuilder().refresh(Main.getEsameManager().getAll()); TODO: benedetta lo finice a collegare
         LogHelper.saveLog(LogType.DEBUG, "it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaEsamiPannello2() invocato");
     }
 
@@ -86,7 +86,7 @@ public class Reloader {
      *  Ricarica interamente i componenti d'interfaccia grafica del pannello InsegnamentiPannello2
      */
     public static void ricaricaInterfacciaGraficaInsegnamentiPannello2(){
-        //TODO
+        //InsegnamentiPannello2.getBuilder().refresh(Main.getInsegnamentoManager().getAll()); TODO: benedetta lo finice a collegare
         LogHelper.saveLog(LogType.DEBUG, "it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaInsegnamentiPannello2() invocato");
     }
 
@@ -94,7 +94,7 @@ public class Reloader {
      *  Ricarica interamente i componenti d'interfaccia grafica del pannello IscrizioniPannello2
      */
     public static void ricaricaInterfacciaGraficaIscrizioniPannello2(){
-        //TODO
+        //IscrizioniPannello2.getBuilder().refresh(Main.getIscrizioneManager().getAll()); TODO: benedetta lo finice a collegare
         LogHelper.saveLog(LogType.DEBUG, "it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaIscrizioniPannello2() invocato");
     }
 
@@ -102,7 +102,7 @@ public class Reloader {
      *  Ricarica interamente i componenti d'interfaccia grafica del pannello StudentiPannello2
      */
     public static void ricaricaInterfacciaGraficaStudentiPannello2(){
-        //TODO
+        StudentiPannello2.getBuilder().refresh(Main.getStudenteManager().getAll());
         LogHelper.saveLog(LogType.DEBUG, "it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaStudentiPannello2() invocato");
     }
 
@@ -110,7 +110,7 @@ public class Reloader {
      *  Ricarica interamente i componenti d'interfaccia grafica del pannello VerbaliPannelli2
      */
     public static void ricaricaInterfacciaGraficaVerbaliPannelli2(){
-        //TODO
+        //VerbaliPannello2.getBuilder().refresh(Main.getVerbaleManager().getAll()); TODO: benedetta lo finice a collegare
         LogHelper.saveLog(LogType.DEBUG, "it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaVerbaliPannelli2() invocato");
     }
 

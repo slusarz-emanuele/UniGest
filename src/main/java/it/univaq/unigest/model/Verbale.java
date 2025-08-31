@@ -1,33 +1,41 @@
 package it.univaq.unigest.model;
 
+import it.univaq.unigest.manager.AppelloManager;
+import it.univaq.unigest.manager.EsameManager;
+import it.univaq.unigest.manager.IscrizioneManager;
+
+
 import java.time.LocalDate;
 import java.util.List;
 
-public class Verbale{
+public class Verbale {
+
     private Integer id;
-    private String appelloId;
+    private String appelloId; // FK
     private LocalDate dataChiusura;
     private boolean chiuso;
     private boolean firmato;
     private String note;
     private List<Esame> esami;
 
-public Verbale(Integer id,
-String appelloId,
-LocalDate dataChiusura,
-boolean chiuso,
-boolean firmato,
-String note,
-List<Esame> esami){
-    this.id=id;
-    this.appelloId=appelloId;
-    this.dataChiusura=dataChiusura;
-    this.chiuso=chiuso;
-    this.firmato=firmato;
-    this.note=note;
-    this.esami=esami;
-}
-public Integer getId() { return id; }
+    public Verbale(Integer id,
+    String appelloId,
+    LocalDate dataChiusura,
+    boolean chiuso,
+    boolean firmato,
+    String note,
+    List<Esame> esami){
+        this.id=id;
+        this.appelloId=appelloId;
+        this.dataChiusura=dataChiusura;
+        this.chiuso=chiuso;
+        this.firmato=firmato;
+        this.note=note;
+        this.esami=esami;
+    }
+
+    // Getters
+    public Integer getId() { return id; }
 
     public String getAppelloId() { return appelloId; }
 
@@ -41,7 +49,7 @@ public Integer getId() { return id; }
 
     public List<Esame> getEsami() { return esami; }
 
-
+    // Setters
     public void setId(Integer id) { this.id = id; }
 
     public void setAppelloId(String appelloId) { this.appelloId = appelloId; }
@@ -55,7 +63,28 @@ public Integer getId() { return id; }
     public void setNote(String note) { this.note = note; }
 
     public void setEsami(List<Esame> esami) { this.esami = esami; }
+
+    // Metodo per caricare tutti gli esami dinamicamente
+        public void caricaEsamiDinamicamente(IscrizioneManager iscrizioneManager,
+                                            EsameManager esameManager){
+            if (this.getId() == null) return;
+
+            // 1. Dagli appelli troviamo le iscrizioni
+            List<Integer> iscrizioniIds = iscrizioneManager.getAll().stream()
+                    .filter(i -> i.getRidAppello() == Integer.parseInt(this.getAppelloId()))
+                    .map(Iscrizione::getId)
+                    .toList();
+
+            // 2. Dalle iscrizioni troviamo gli esami
+            List<Esame> esamiTrovvati = esameManager.getAll().stream()
+                    .filter(e -> iscrizioniIds.contains(Integer.valueOf(e.getIscrizioneId())))
+                    .toList();
+
+            // 3. Salviamo tutto
+            this.setEsami(esamiTrovvati);
+        }
     
+    @Override
      public String toString() {
         return "id: " + id +
                 ", appelloId: " + appelloId +

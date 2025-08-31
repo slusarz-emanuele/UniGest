@@ -1,0 +1,53 @@
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: #f9f9f9;
+}
+
+/* Titoli e label */
+.label {
+    -fx-text-fill: #444;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+/* Pulsanti */
+.button {
+    -fx-background-color: #2196f3;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16;
+}
+
+.button:hover {
+    -fx-background-color: #1976d2;
+}
+
+.button:pressed {
+    -fx-background-color: #1565c0;
+}
+
+/* TableView */
+.table-view {
+    -fx-border-color: #ccc;
+    -fx-background-color: white;
+    -fx-table-cell-border-color: transparent;
+}
+
+.table-column {
+    -fx-alignment: CENTER-LEFT;
+}
+
+/* TextField */
+.text-field {
+    -fx-background-color: #fff;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 4;
+    -fx-padding: 6 8;
+}
+
+/* Bordo layout generale */
+.border-pane {
+    -fx-padding: 20;
+}

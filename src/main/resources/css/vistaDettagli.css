@@ -1,0 +1,67 @@
+.vista-con-dettagli-root {
+    -fx-background-color: #f4f6f8;
+}
+
+.vista-topbar {
+    -fx-padding: 10;
+    -fx-background-color: #2c3e50;
+}
+
+.vista-titolo {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.vista-filtro {
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-padding: 5;
+}
+
+.vista-contenitore {
+    -fx-spacing: 10;
+}
+
+.vista-sinistra {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1;
+}
+
+.vista-destra {
+    -fx-background-color: #fdfdfd;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1;
+}
+
+.vista-dettagli-titolo {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.vista-dettagli-label {
+    -fx-font-size: 14px;
+}
+
+.vista-dettagli-link {
+    -fx-text-fill: #3498db;
+}
+
+.vista-tabella {
+    -fx-background-color: white;
+}
+
+.vista-pulsanti-crud {
+    -fx-padding: 5;
+}
+
+.vista-bottone-crud {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+}
+
+.vista-bottone-crud:hover {
+    -fx-background-color: #2980b9;
+}

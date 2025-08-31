@@ -1,0 +1,21 @@
+/* Titolo */
+.label-titolo {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+/* Descrizione */
+.label-descrizione {
+    -fx-wrap-text: true;
+}
+
+/* Dettagli */
+.label-dettagli {
+    -fx-text-fill: #555;
+    -fx-wrap-text: true;
+}
+
+/* ComboBox */
+.combo-integrita {
+    -fx-pref-width: 250;
+}

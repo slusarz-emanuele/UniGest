@@ -33,6 +33,4 @@ public class ParametrizzazioneHelper {
         return this.bundle;
     }
 
-    //public static final ResourceBundle bundle = ResourceBundle.getBundle("internationalization/strings", locale);
-
 }

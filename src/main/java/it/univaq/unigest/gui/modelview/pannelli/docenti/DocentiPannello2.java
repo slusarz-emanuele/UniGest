@@ -3,7 +3,7 @@ package it.univaq.unigest.gui.modelview.pannelli.docenti;
 import javafx.scene.layout.VBox;
 
 public class DocentiPannello2 {
-    
+
     public static VBox getView(){
         return null;
         /**

@@ -3,6 +3,7 @@ package it.univaq.unigest.gui;
 import it.univaq.unigest.gui.modelview.StartView;
 import it.univaq.unigest.manager.*;
 import it.univaq.unigest.util.*;
+import it.univaq.unigest.util.backup.BackupManager;
 import it.univaq.unigest.util.loader.ImpostazioniLoader;
 import javafx.application.Application;
 import javafx.concurrent.Task;
@@ -71,6 +72,12 @@ public class Main extends Application {
     //private static Impostazioni impostazioni = new Impostazioni();
     private static Impostazioni impostazioni;
 
+    /**
+     * Gestore del sistema di backup, responsabile delle operazioni di
+     * salvataggio e ripristino dei dati.
+     */
+    private static BackupManager backupManager = new BackupManager();
+
     //private static ParametrizzazioneHelper parametrizzazioneHelper = new ParametrizzazioneHelper();
     private static ParametrizzazioneHelper parametrizzazioneHelper;
 
@@ -134,6 +141,39 @@ public class Main extends Application {
         new Thread(loadingTask).start();
     }
 
+    public static void restartApp() {
+        try {
+            stagePrimario.close();
+
+            // Reset dei manager
+            impostazioni = ImpostazioniLoader.caricaImpostazioniDaFile();
+            parametrizzazioneHelper = new ParametrizzazioneHelper();
+            studenteManager = new StudenteManager();
+            docenteManager = new DocenteManager();
+            appelloManager = new AppelloManager();
+            aulaManager = new AulaManager();
+            corsoDiLaureaManager = new CorsoDiLaureaManager();
+            esameManager = new EsameManager();
+            insegnamentoManager = new InsegnamentoManager();
+            iscrizioneManager = new IscrizioneManager();
+            verbaleManager = new VerbaleManager();
+            edificioManager = new EdificioManager();
+            backupManager = new BackupManager();
+
+            // Ricarica i dati dai file
+            DatabaseHelper.caricaDatiInMemoria();
+
+            // Ricarica la GUI
+            Reloader.ricaricaInterfacciaGrafica();
+            StartView dashboard = new StartView();
+            dashboard.start(stagePrimario);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogHelper.saveLog(LogType.ERROR, "[Main.restartApp] Errore durante il riavvio dell'applicazione: " + e.getMessage());
+        }
+    }
+
     public static Stage getPrimaryStage() {
         return stagePrimario;
     }
@@ -184,5 +224,13 @@ public class Main extends Application {
 
     public static ParametrizzazioneHelper getParametrizzazioneHelper() {
         return parametrizzazioneHelper;
+    }
+
+    public static BackupManager getBackupManager() {
+        return backupManager;
+    }
+
+    public static Stage getStagePrimario() {
+        return stagePrimario;
     }
 }

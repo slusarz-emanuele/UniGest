@@ -181,4 +181,8 @@ public class Main extends Application {
     public static Impostazioni getImpostazioni() {
         return impostazioni;
     }
+
+    public static ParametrizzazioneHelper getParametrizzazioneHelper() {
+        return parametrizzazioneHelper;
+    }
 }

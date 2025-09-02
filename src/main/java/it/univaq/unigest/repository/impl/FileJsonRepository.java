@@ -95,7 +95,6 @@ public class FileJsonRepository<T extends Identificabile<String>> implements Rep
             gson.toJson(list, writer);
             LogHelper.saveLog(LogType.DEBUG, "Write operation on " + path + " successfully");
         }catch (IOException e){
-            // Qui l'errore è grave
             LogHelper.saveLog(LogType.ERROR, "Write operation on " + path + " was not successful");
         }
     }

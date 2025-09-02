@@ -1,7 +1,6 @@
 package it.univaq.unigest.gui.modelview;
 
 import it.univaq.unigest.gui.modelview.pannelli.docenti.DocentiPannello2;
-import it.univaq.unigest.gui.util.CrudView;
 import it.univaq.unigest.service.DocenteService;
 import javafx.scene.layout.VBox;
 

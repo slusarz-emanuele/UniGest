@@ -2,6 +2,7 @@ package it.univaq.unigest.gui.modelview;
 
 import it.univaq.unigest.gui.Main;
 import it.univaq.unigest.gui.Reloader;
+import it.univaq.unigest.gui.util.CrudPanel;
 import it.univaq.unigest.gui.util.CrudView;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
@@ -14,7 +15,10 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.awt.event.ActionEvent;
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 // >>> se il tuo DocentiView ora accetta un DocenteService nel costruttore:
 import it.univaq.unigest.service.DocenteService;
@@ -24,8 +28,11 @@ public class StartView {
     private boolean menuVisibile = true;
     private Button bottoneAttivo = null;
     private AbstractModelView vistaCorrente;
+    private Stage stagePrimario;
 
     public void start(Stage stagePrimario) {
+
+        this.stagePrimario = stagePrimario;
 
         BorderPane root = new BorderPane();
 
@@ -112,26 +119,20 @@ public class StartView {
         studentiBtn.setOnAction(e -> {
             handleButtonClick(studentiBtn);
             StudentiModelView v = new StudentiModelView();
-            stagePrimario.setTitle(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.titolo.principale")
+            this.stagePrimario.setTitle(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.titolo.principale")
                     + Main.getParametrizzazioneHelper().getBundle().getString("button.studenti"));
             vistaCorrente = v;
             root.setCenter(v.getView());
         });
 
-        docentiBtn.setOnAction(e -> {
-            handleButtonClick(docentiBtn);
-            var ds = Main.getDocenteService();
-            // DocentiView deve esporre il pannello oppure ritornarlo
-            DocentiView docentiView = new DocentiView(ds);
-            // registra il pannello in Reloader
-            Reloader.registerDocentiPannello(docentiView.getPannello()); // vedi nota sotto
-            stagePrimario.setTitle(
-                    Main.getParametrizzazioneHelper().getBundle().getString("etichetta.titolo.principale")
-                            + Main.getParametrizzazioneHelper().getBundle().getString("button.docenti")
-            );
-            vistaCorrente = docentiView;
-            root.setCenter(docentiView.getView());
-        });
+        bindNav(
+                docentiBtn,
+                () -> new DocentiView(Main.getDocenteService()),
+                "button.docenti",
+                Reloader::registerDocentiPannello,
+                root
+        );
+
 
 
         // gli altri pulsanti restano invariati (useranno i Manager finché non li migri)
@@ -150,9 +151,41 @@ public class StartView {
         });
 
         scena.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/startview.css")).toExternalForm());
-        stagePrimario.setScene(scena);
-        stagePrimario.setTitle("UniGest — Dashboard");
-        stagePrimario.show();
+        this.stagePrimario.setScene(scena);
+        this.stagePrimario.setTitle("UniGest — Dashboard");
+        this.stagePrimario.show();
+    }
+
+    private <P extends CrudPanel, V extends AbstractModelView<P>> void bindNav(
+            Button btn,
+            Supplier<V> viewFactory,
+            String titoloKey,
+            Consumer<P> registrar,
+            BorderPane root
+    ) {
+        btn.setOnAction(e -> {
+            handleButtonClick(btn);
+
+            V view = viewFactory.get();
+            if (registrar != null) registrar.accept(view.getPannello());
+
+            var bundle = Main.getParametrizzazioneHelper().getBundle();
+            String title = bundle.getString("etichetta.titolo.principale") + bundle.getString(titoloKey);
+            this.stagePrimario.setTitle(title);
+
+            vistaCorrente = view;
+            root.setCenter(view.getView());
+        });
+    }
+
+    // overload comodo quando non devi registrare nulla sul Reloader
+    private <P extends CrudPanel, V extends AbstractModelView<P>> void bindNav(
+            Button btn,
+            Supplier<V> viewFactory,
+            String titoloKey,
+            BorderPane root
+    ) {
+        bindNav(btn, viewFactory, titoloKey, null, root);
     }
 
     private Separator creaSeparatoreMenu() {

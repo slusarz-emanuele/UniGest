@@ -1,8 +1,10 @@
 package it.univaq.unigest.model;
 
+import it.univaq.unigest.common.Identificabile;
+
 import java.time.LocalDate;
 
-public class Docente extends Persona{
+public class Docente extends Persona implements Identificabile<String> {
 
     private String codiceDocente;
     private boolean isRuolo;
@@ -73,4 +75,7 @@ public class Docente extends Persona{
                 "Dipartimento: " + dipartimento + ", " +
                 "Qualifica: " + qualifica;
     }
+
+    @Override public String getId() { return getCodiceDocente(); }
+    @Override public void setId(String id) { setCodiceDocente(id); }
 }

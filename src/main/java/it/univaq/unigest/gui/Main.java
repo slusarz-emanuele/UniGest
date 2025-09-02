@@ -13,83 +13,35 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+// >>> nuovi import per i servizi docenti
+import it.univaq.unigest.service.DocenteService;
+import it.univaq.unigest.service.impl.DocenteServiceImpl;
+import it.univaq.unigest.repository.impl.DocenteRepository;
+
 public class Main extends Application {
 
-    /**
-     * Gestore degli studenti, responsabile delle operazioni CRUD sugli oggetti {@link it.univaq.unigest.model.Studente}.
-     */
+    // --- Manager storici (li lasciamo così per gli altri modelli, li migrerai dopo)
     private static StudenteManager studenteManager = new StudenteManager();
-
-    /**
-     * Gestore dei docenti, responsabile delle operazioni CRUD sugli oggetti {@link it.univaq.unigest.model.Docente}.
-     */
-    private static DocenteManager docenteManager = new DocenteManager();
-
-    /**
-     * Gestore degli Appelli, responsabile delle operazioni CRUD sugli oggetti {@link it.univaq.unigest.model.Appello}.
-     */
+    private static DocenteManager docenteManager = new DocenteManager(); // <- rimane per compatibilità momentanea
     private static AppelloManager appelloManager = new AppelloManager();
-
-    /**
-     * Gestore delle Aule, responsabile delle operazioni CRUD sugli oggetti {@link it.univaq.unigest.model.Aula}.
-     */
     private static AulaManager aulaManager = new AulaManager();
-
-    /**
-     * Gestore dei Corsi di Laurea, responsabile delle operazioni CRUD sugli oggetti {@link it.univaq.unigest.model.CorsoDiLaurea}.
-     */
     private static CorsoDiLaureaManager corsoDiLaureaManager = new CorsoDiLaureaManager();
-
-    /**
-     * Gestore degli Esami, responsabile delle operazioni CRUD sugli oggetti {@link it.univaq.unigest.model.Esame}.
-     */
     private static EsameManager esameManager = new EsameManager();
-
-    /**
-     * Gestore degli Insegnamenti, responsabile delle operazioni CRUD sugli oggetti {@link it.univaq.unigest.model.Insegnamento}.
-     */
     private static InsegnamentoManager insegnamentoManager = new InsegnamentoManager();
-
-    /**
-     * Gestore delle Iscrizioni, responsabile delle operazioni CRUD sugli oggetti {@link it.univaq.unigest.model.Iscrizione}.
-     */
     private static IscrizioneManager iscrizioneManager = new IscrizioneManager();
-
-    /**
-     * Gestore dei Verbali, responsabile delle operazioni CRUD sugli oggetti {@link it.univaq.unigest.model.Verbale}.
-     */
     private static VerbaleManager verbaleManager = new VerbaleManager();
-
-    /**
-     * Gestore degli Edifici, responsabile delle operazioni CRUD sugli oggetti {@link it.univaq.unigest.model.Edificio}.
-     */
     private static EdificioManager edificioManager = new EdificioManager();
 
-    /**
-     * Rappresenta le impostazioni correnti dell'applicazione.
-     * Contiene parametri configurabili e preferenze salvate.
-     */
-    //private static Impostazioni impostazioni = new Impostazioni();
+    // --- Nuovo: service per Docente (usato da tutta la GUI al posto del Manager)
+    private static DocenteService docenteService;
+
     private static Impostazioni impostazioni;
-
-    /**
-     * Gestore del sistema di backup, responsabile delle operazioni di
-     * salvataggio e ripristino dei dati.
-     */
     private static BackupManager backupManager = new BackupManager();
-
-    //private static ParametrizzazioneHelper parametrizzazioneHelper = new ParametrizzazioneHelper();
     private static ParametrizzazioneHelper parametrizzazioneHelper;
-
     private static Stage stagePrimario;
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+    public static void main(String[] args) { launch(args); }
 
-    /**
-     * Verifica la corretta presenza delle cartelle e file per la gestione della persistenza.
-     */
     public void init() {
         DatabaseHelper.verFileLog();
         DatabaseHelper.verDirData();
@@ -98,6 +50,9 @@ public class Main extends Application {
         impostazioni = ImpostazioniLoader.caricaImpostazioniDaFile();
         parametrizzazioneHelper = new ParametrizzazioneHelper();
 
+        // Inizializzo subito il service dei docenti (repo -> service)
+        docenteService = new DocenteServiceImpl(new DocenteRepository());
+
         LogHelper.saveLog(LogType.INFO, "[Main.init] L'applicazione è stata avviata");
     }
 
@@ -105,7 +60,7 @@ public class Main extends Application {
     public void start(Stage stagePrimarioP) {
         stagePrimario = stagePrimarioP;
 
-        // Finestra di caricamento dell'applicazione
+        // Splash
         ProgressIndicator indicator = new ProgressIndicator();
         VBox splashLayout = new VBox(20, indicator);
         splashLayout.setAlignment(Pos.CENTER);
@@ -115,29 +70,26 @@ public class Main extends Application {
         splashStage.setTitle("Unigest");
         splashStage.show();
 
-        // Task di caricamento dati (i manager)
         Task<Void> loadingTask = new Task<>() {
             @Override
-            protected Void call(){
+            protected Void call() {
                 impostazioni = ImpostazioniLoader.caricaImpostazioniDaFile();
                 parametrizzazioneHelper = new ParametrizzazioneHelper();
                 DatabaseHelper.caricaDatiInMemoria();
-
+                // service docenti già pronto in init(); se vuoi ricaricare il repo, ricrea il service qui
+                // docenteService = new DocenteServiceImpl(new DocenteRepository());
                 return null;
             }
         };
 
-        // Azione dopo il caricamento dei dati
         loadingTask.setOnSucceeded(event -> {
             splashStage.close();
-            StartView dashboard = new StartView();
+            StartView dashboard = new StartView(); // StartView userà Main.getDocenteService()
             dashboard.start(stagePrimario);
-
             LogHelper.saveLog(LogType.DEBUG, "[Main.start] Caricamento dei dati completato.");
         });
 
         LogHelper.saveLog(LogType.INFO, "[Main.start] L'applicazione ha avviato l'interfaccia grafica e i manager.");
-
         new Thread(loadingTask).start();
     }
 
@@ -145,9 +97,10 @@ public class Main extends Application {
         try {
             stagePrimario.close();
 
-            // Reset dei manager
             impostazioni = ImpostazioniLoader.caricaImpostazioniDaFile();
             parametrizzazioneHelper = new ParametrizzazioneHelper();
+
+            // Manager storici (ancora attivi per gli altri modelli)
             studenteManager = new StudenteManager();
             docenteManager = new DocenteManager();
             appelloManager = new AppelloManager();
@@ -160,77 +113,39 @@ public class Main extends Application {
             edificioManager = new EdificioManager();
             backupManager = new BackupManager();
 
-            // Ricarica i dati dai file
+            // Reinstanzia anche il service docenti
+            docenteService = new DocenteServiceImpl(new DocenteRepository());
+
             DatabaseHelper.caricaDatiInMemoria();
 
-            // Ricarica la GUI
             Reloader.ricaricaInterfacciaGrafica();
             StartView dashboard = new StartView();
             dashboard.start(stagePrimario);
 
         } catch (Exception e) {
             e.printStackTrace();
-            LogHelper.saveLog(LogType.ERROR, "[Main.restartApp] Errore durante il riavvio dell'applicazione: " + e.getMessage());
+            LogHelper.saveLog(LogType.ERROR, "[Main.restartApp] Errore durante il riavvio: " + e.getMessage());
         }
     }
 
-    public static Stage getPrimaryStage() {
-        return stagePrimario;
-    }
+    // --- Getter classici (rimangono per retrocompatibilità con le viste non migrate)
+    public static Stage getPrimaryStage() { return stagePrimario; }
+    public static StudenteManager getStudenteManager() { return studenteManager; }
+    public static DocenteManager getDocenteManager() { return docenteManager; } // da eliminare quando migri tutto
+    public static AppelloManager getAppelloManager() { return appelloManager; }
+    public static AulaManager getAulaManager() { return aulaManager; }
+    public static CorsoDiLaureaManager getCorsoDiLaureaManager() { return corsoDiLaureaManager; }
+    public static EsameManager getEsameManager() { return esameManager; }
+    public static InsegnamentoManager getInsegnamentoManager() { return insegnamentoManager; }
+    public static IscrizioneManager getIscrizioneManager() { return iscrizioneManager; }
+    public static VerbaleManager getVerbaleManager() { return verbaleManager; }
+    public static EdificioManager getEdificioManager() { return edificioManager; }
+    public static Impostazioni getImpostazioni() { return impostazioni; }
+    public static ParametrizzazioneHelper getParametrizzazioneHelper() { return parametrizzazioneHelper; }
+    public static BackupManager getBackupManager() { return backupManager; }
 
-    public static StudenteManager getStudenteManager() {
-        return studenteManager;
-    }
+    // --- Nuovo getter usato dalla GUI per Docenti
+    public static DocenteService getDocenteService() { return docenteService; }
 
-    public static DocenteManager getDocenteManager() {
-        return docenteManager;
-    }
-
-    public static AppelloManager getAppelloManager() {
-        return appelloManager;
-    }
-
-    public static AulaManager getAulaManager() {
-        return aulaManager;
-    }
-
-    public static CorsoDiLaureaManager getCorsoDiLaureaManager() {
-        return corsoDiLaureaManager;
-    }
-
-    public static EsameManager getEsameManager() {
-        return esameManager;
-    }
-
-    public static InsegnamentoManager getInsegnamentoManager() {
-        return insegnamentoManager;
-    }
-
-    public static IscrizioneManager getIscrizioneManager() {
-        return iscrizioneManager;
-    }
-
-    public static VerbaleManager getVerbaleManager() {
-        return verbaleManager;
-    }
-
-    public static EdificioManager getEdificioManager() {
-        return edificioManager;
-    }
-
-    public static Impostazioni getImpostazioni() {
-        return impostazioni;
-    }
-
-    public static ParametrizzazioneHelper getParametrizzazioneHelper() {
-        return parametrizzazioneHelper;
-    }
-
-    public static BackupManager getBackupManager() {
-        return backupManager;
-    }
-
-    public static Stage getStagePrimario() {
-        return stagePrimario;
-    }
+    public static Stage getStagePrimario() { return stagePrimario; }
 }

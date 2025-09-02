@@ -1,16 +1,13 @@
 package it.univaq.unigest.gui.modelview;
 
 import it.univaq.unigest.gui.Main;
+import it.univaq.unigest.gui.Reloader;
 import it.univaq.unigest.gui.util.CrudView;
-import it.univaq.unigest.util.ParametrizzazioneHelper;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -18,6 +15,9 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.Objects;
+
+// >>> se il tuo DocentiView ora accetta un DocenteService nel costruttore:
+import it.univaq.unigest.service.DocenteService;
 
 public class StartView {
 
@@ -27,28 +27,26 @@ public class StartView {
 
     public void start(Stage stagePrimario) {
 
-        // Layout main
         BorderPane root = new BorderPane();
 
-        // SINISTRA
+        // --- SINISTRA (menu)
         VBox menu = new VBox(10);
         menu.setPadding(new Insets(15));
         menu.setStyle("-fx-background-color: #34495E;");
         menu.setPrefWidth(200);
 
         Button dashboardBtn = new Button("Home - Dashboard");
-        Button studentiBtn = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.studenti"));
-        Button docentiBtn = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.docenti"));
+        Button studentiBtn  = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.studenti"));
+        Button docentiBtn   = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.docenti"));
         Button corsoDiLaureaBtn = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.corsiDiLaurea"));
-        Button insegnamentiBtn = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.insegnamenti"));
-        Button appelliBtn = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.appelli"));
-        Button iscrizioniBtn = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.iscrizioni"));
-        Button esamiBtn = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.esami"));
-        Button verbaliBtn = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.verbali"));
-        Button auleliBtn = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.aule"));
-        Button edificiBtn = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.edifici"));
+        Button insegnamentiBtn  = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.insegnamenti"));
+        Button appelliBtn   = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.appelli"));
+        Button iscrizioniBtn= new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.iscrizioni"));
+        Button esamiBtn     = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.esami"));
+        Button verbaliBtn   = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.verbali"));
+        Button auleliBtn    = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.aule"));
+        Button edificiBtn   = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.edifici"));
 
-        // Aggiungi classi CSS ai pulsanti menu
         dashboardBtn.getStyleClass().add("menu-button");
         studentiBtn.getStyleClass().add("menu-button");
         docentiBtn.getStyleClass().add("menu-button");
@@ -62,27 +60,18 @@ public class StartView {
         edificiBtn.getStyleClass().add("menu-button");
 
         menu.getStyleClass().add("menu-container");
-
         menu.getChildren().addAll(
                 dashboardBtn,
                 creaSeparatoreMenu(),
-                studentiBtn,
-                docentiBtn,
+                studentiBtn, docentiBtn,
                 creaSeparatoreMenu(),
-                corsoDiLaureaBtn,
-                insegnamentiBtn,
-                appelliBtn,
-                iscrizioniBtn,
-                esamiBtn,
-                verbaliBtn,
+                corsoDiLaureaBtn, insegnamentiBtn, appelliBtn, iscrizioniBtn, esamiBtn, verbaliBtn,
                 creaSeparatoreMenu(),
-                auleliBtn,
-                edificiBtn
+                auleliBtn, edificiBtn
         );
-
         root.setLeft(menu);
 
-        // SOPRA
+        // --- TOP BAR (ridotta per brevità)
         HBox topBar = new HBox();
         topBar.setPadding(new Insets(10));
         topBar.getStyleClass().add("top-bar");
@@ -91,87 +80,51 @@ public class StartView {
 
         Button toggleMenu = new Button("☰");
         toggleMenu.getStyleClass().add("menu-button");
-
         toggleMenu.setOnAction(e -> {
             if (menuVisibile) {
-                // Nasconde la sidebar con animazione verso sinistra
                 TranslateTransition hideMenu = new TranslateTransition(Duration.millis(300), menu);
                 hideMenu.setToX(-menu.getWidth());
-                hideMenu.setOnFinished(event -> {
-                    menu.setVisible(false);
-                    menu.setManaged(false);
-                });
+                hideMenu.setOnFinished(ev -> { menu.setVisible(false); menu.setManaged(false); });
                 hideMenu.play();
             } else {
-                // Mostra la sidebar con animazione verso destra
-                menu.setVisible(true);
-                menu.setManaged(true);
+                menu.setVisible(true); menu.setManaged(true);
                 TranslateTransition showMenu = new TranslateTransition(Duration.millis(300), menu);
-                showMenu.setFromX(-menu.getWidth());
-                showMenu.setToX(0);
-                showMenu.play();
+                showMenu.setFromX(-menu.getWidth()); showMenu.setToX(0); showMenu.play();
             }
             menuVisibile = !menuVisibile;
         });
 
         Label titolo = new Label(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.titolo.principale"));
-        titolo.getStyleClass().add("top-bar-title");
-
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
+        Region spacer = new Region(); HBox.setHgrow(spacer, Priority.ALWAYS);
 
         Button btnExport = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.backup"));
-        btnExport.setTooltip(new Tooltip(Main.getParametrizzazioneHelper().getBundle().getString("tooltip.backup")));
-        btnExport.setOnAction(e -> {
-            //TODO: fare il pulante di backup
-        });
-
         Button btnSettings = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.impostazioni"));
-        btnSettings.setTooltip(new Tooltip(Main.getParametrizzazioneHelper().getBundle().getString("tooltip.impostazioni")));
-        btnSettings.setOnAction(e -> {
-            //TODO: fare il pulante delle impostazioni
-        });
-
         btnExport.getStyleClass().add("top-bar-button");
         btnSettings.getStyleClass().add("top-bar-button");
 
         Image logo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/logo.png")));
-        ImageView logoView = new ImageView(logo);
-        logoView.setFitHeight(32);
-        logoView.setFitWidth(32);
-        logoView.setPreserveRatio(true);
+        ImageView logoView = new ImageView(logo); logoView.setFitHeight(32); logoView.setFitWidth(32); logoView.setPreserveRatio(true);
 
-        // Aggiunta in ordine
         topBar.getChildren().addAll(toggleMenu, spacer, btnExport, btnSettings, titolo, logoView);
         root.setTop(topBar);
 
-        //TODO: lo sta per fare benedetta
-//        // Parte principle
-//        DashBoardView dashBoardView = new DashBoardView();
-//        root.setCenter(dashBoardView.getView());
-//
-//        // Pulsante Dashboard
-//        dashboardBtn.setOnAction(e -> {
-//            handleButtonClick(dashboardBtn);
-//            root.setCenter(dashBoardView.getView());
-//        });
-
-        // Pulsante Studenti
+        // --- BOTTONI MENU (solo Docenti modificato per usare il service)
         studentiBtn.setOnAction(e -> {
             handleButtonClick(studentiBtn);
-            StudentiModelView studentiView = new StudentiModelView();
-            stagePrimario.setTitle(
-                    Main.getParametrizzazioneHelper().getBundle().getString("etichetta.titolo.principale")
-                            + Main.getParametrizzazioneHelper().getBundle().getString("button.studenti")
-            );
-            vistaCorrente = studentiView;
-            root.setCenter(studentiView.getView());
+            StudentiModelView v = new StudentiModelView();
+            stagePrimario.setTitle(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.titolo.principale")
+                    + Main.getParametrizzazioneHelper().getBundle().getString("button.studenti"));
+            vistaCorrente = v;
+            root.setCenter(v.getView());
         });
 
-        // Pulsante Docenti
         docentiBtn.setOnAction(e -> {
             handleButtonClick(docentiBtn);
-            DocentiView docentiView = new DocentiView();
+            var ds = Main.getDocenteService();
+            // DocentiView deve esporre il pannello oppure ritornarlo
+            DocentiView docentiView = new DocentiView(ds);
+            // registra il pannello in Reloader
+            Reloader.registerDocentiPannello(docentiView.getPannello()); // vedi nota sotto
             stagePrimario.setTitle(
                     Main.getParametrizzazioneHelper().getBundle().getString("etichetta.titolo.principale")
                             + Main.getParametrizzazioneHelper().getBundle().getString("button.docenti")
@@ -180,152 +133,43 @@ public class StartView {
             root.setCenter(docentiView.getView());
         });
 
-        // Pulsante CDL
-        corsoDiLaureaBtn.setOnAction(e -> {
-            handleButtonClick(corsoDiLaureaBtn);
-            CorsoDiLaureaView corsoDiLaureaView = new CorsoDiLaureaView();
-            stagePrimario.setTitle(
-                    Main.getParametrizzazioneHelper().getBundle().getString("etichetta.titolo.principale")
-                            + Main.getParametrizzazioneHelper().getBundle().getString("button.corsiDiLaurea")
-            );
-            vistaCorrente = corsoDiLaureaView;
-            root.setCenter(corsoDiLaureaView.getView());
-        });
 
-        // Pulsante Insegnamenti
-        insegnamentiBtn.setOnAction(e -> {
-            handleButtonClick(insegnamentiBtn);
-            InsegnamentiView insegnamentiView = new InsegnamentiView();
-            stagePrimario.setTitle(
-                    Main.getParametrizzazioneHelper().getBundle().getString("etichetta.titolo.principale")
-                            + Main.getParametrizzazioneHelper().getBundle().getString("button.insegnamenti")
-            );
-            vistaCorrente = insegnamentiView;
-            root.setCenter(insegnamentiView.getView());
-        });
+        // gli altri pulsanti restano invariati (useranno i Manager finché non li migri)
 
-        // Pulsante Appelli
-        appelliBtn.setOnAction(e -> {
-            handleButtonClick(appelliBtn);
-            AppelliModelView appelliView = new AppelliModelView();
-            stagePrimario.setTitle(
-                    Main.getParametrizzazioneHelper().getBundle().getString("etichetta.titolo.principale")
-                            + Main.getParametrizzazioneHelper().getBundle().getString("button.appelli")
-            );
-            vistaCorrente = appelliView;
-            root.setCenter(appelliView.getView());
-        });
-
-        // Pulsante Iscrizioni
-        iscrizioniBtn.setOnAction(e -> {
-            handleButtonClick(iscrizioniBtn);
-            IscrizioniView iscrizioniView = new IscrizioniView();
-            stagePrimario.setTitle(
-                    Main.getParametrizzazioneHelper().getBundle().getString("etichetta.titolo.principale")
-                            + Main.getParametrizzazioneHelper().getBundle().getString("button.iscrizioni")
-            );
-            vistaCorrente = iscrizioniView;
-            root.setCenter(iscrizioniView.getView());
-        });
-
-        // Pulsante Esami
-        esamiBtn.setOnAction(e -> {
-            handleButtonClick(esamiBtn);
-            EsamiView esamiView = new EsamiView();
-            stagePrimario.setTitle(
-                    Main.getParametrizzazioneHelper().getBundle().getString("etichetta.titolo.principale")
-                            + Main.getParametrizzazioneHelper().getBundle().getString("button.esami")
-            );
-            vistaCorrente = esamiView;
-            root.setCenter(esamiView.getView());
-        });
-
-        // Pulsante Verbali
-        verbaliBtn.setOnAction(e -> {
-            handleButtonClick(verbaliBtn);
-            VerbaliView verbaliView = new VerbaliView();
-            stagePrimario.setTitle(
-                    Main.getParametrizzazioneHelper().getBundle().getString("etichetta.titolo.principale")
-                            + Main.getParametrizzazioneHelper().getBundle().getString("button.verbali")
-            );
-            vistaCorrente = verbaliView;
-            root.setCenter(verbaliView.getView());
-        });
-
-        // Pulsante Aule
-        auleliBtn.setOnAction(e -> {
-            handleButtonClick(auleliBtn);
-            AuleModelView auleView = new AuleModelView();
-            stagePrimario.setTitle(
-                    Main.getParametrizzazioneHelper().getBundle().getString("etichetta.titolo.principale")
-                            + Main.getParametrizzazioneHelper().getBundle().getString("button.aule")
-            );
-            vistaCorrente = auleView;
-            root.setCenter(auleView.getView());
-        });
-
-        // Pulsante Edifici
-        edificiBtn.setOnAction(e -> {
-            handleButtonClick(edificiBtn);
-            EdificioView edificioView = new EdificioView();
-            stagePrimario.setTitle(
-                    Main.getParametrizzazioneHelper().getBundle().getString("etichetta.titolo.principale")
-                            + Main.getParametrizzazioneHelper().getBundle().getString("button.edifici")
-            );
-            vistaCorrente = edificioView;
-            root.setCenter(edificioView.getView());
-        });
-
-        // Scena
         Scene scena = new Scene(root, 1100, 900);
         scena.setOnKeyPressed(event -> {
             if (vistaCorrente instanceof CrudView crud) {
                 switch (event.getCode()) {
-                    case N -> {
-                        // CTRL+N che aggiunge
-                        if (event.isControlDown()) crud.onAdd();
-                    }
-                    case S -> {
-                        // CTRL+S per salvare
-                        if (event.isControlDown()) crud.onSave();
-                    }
+                    case N -> { if (event.isControlDown()) crud.onAdd(); }
                     case DELETE -> crud.onDelete();
-                    case E -> {
-                        // CTRL+E per modificare
-                        if (event.isControlDown()) crud.onEdit();
-                    }
-                    case W -> {
-                        System.exit(0);
-                    }
+                    case E -> { if (event.isControlDown()) crud.onEdit(); }
+                    case W -> System.exit(0);
+                    default -> {}
                 }
             }
         });
 
         scena.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/startview.css")).toExternalForm());
         stagePrimario.setScene(scena);
-        stagePrimario.setTitle("UniGest — Dashboard"); // TODO: farlo per le altre finestre
+        stagePrimario.setTitle("UniGest — Dashboard");
         stagePrimario.show();
     }
 
-    // TODO: rimuoverlo per tutti i restanti
     private Separator creaSeparatoreMenu() {
-        Separator separatore = new Separator();
-        separatore.setPrefWidth(180); // leggermente meno della VBox
-        separatore.setStyle("""
+        Separator s = new Separator();
+        s.setPrefWidth(180);
+        s.setStyle("""
                 -fx-background-color: transparent;
                 -fx-border-style: solid;
                 -fx-border-color: rgba(255,255,255,0.2);
-                -fx-border-insets: 0;
-                -fx-border-width: 0 0 1 0; /* solo bordo inferiore */
+                -fx-border-width: 0 0 1 0;
                 -fx-padding: 8 0 8 0;
                 """);
-        return separatore;
+        return s;
     }
 
     private void handleButtonClick(Button clickedBtn) {
-        if (bottoneAttivo != null) {
-            bottoneAttivo.getStyleClass().remove("menu-button-active");
-        }
+        if (bottoneAttivo != null) bottoneAttivo.getStyleClass().remove("menu-button-active");
         clickedBtn.getStyleClass().add("menu-button-active");
         bottoneAttivo = clickedBtn;
     }

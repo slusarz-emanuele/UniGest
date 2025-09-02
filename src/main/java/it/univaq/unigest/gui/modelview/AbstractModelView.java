@@ -1,12 +1,16 @@
 package it.univaq.unigest.gui.modelview;
 
+import it.univaq.unigest.gui.util.CrudPanel;
+import it.univaq.unigest.gui.util.CrudView;
 import javafx.geometry.Insets;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-public abstract class AbstractModelView {
+public abstract class AbstractModelView<T extends CrudPanel> implements CrudView {
+
+    protected T panel;
 
     protected VBox getView(){
         VBox root = new VBox(10);
@@ -41,6 +45,14 @@ public abstract class AbstractModelView {
         return root;
     }
 
+    public T getPannello (){
+        return this.panel;
+    }
+
+    @Override public void onAdd()    { panel.apriDialogAggiungiPubblico(); }
+    @Override public void onEdit()   { panel.modificaSelezionato(); }
+    @Override public void onDelete() { panel.eliminaSelezionato(); }
+    @Override public void onSave() {} //TODO: Da levare
     protected abstract VBox creaGestioneContenuto();
 
     protected abstract VBox creaStatisticheContenuto();

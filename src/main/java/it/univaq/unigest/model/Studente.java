@@ -32,7 +32,7 @@ public class Studente extends Persona{
         this.corsoDiLaurea = corsoDiLaurea;
         this.dataImmatricolazione = dataImmatricolazione;
         this.esami = esami;
-        this.cfu = this.calcolaCFU();
+        this.cfu = this.calcolaCfu();
         this.mediaPonderata = calcolaMediaPonderata();
         this.mediaAritmetica = calcolaMediaAritmetica();
    }

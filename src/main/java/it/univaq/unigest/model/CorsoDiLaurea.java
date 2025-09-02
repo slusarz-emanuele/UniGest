@@ -1,6 +1,8 @@
 package it.univaq.unigest.model;
 
-public class CorsoDiLaurea{
+import it.univaq.unigest.common.Identificabile;
+
+public class CorsoDiLaurea implements Identificabile<String> {
     private String id;
     private String nome;
     private int cfuTotali;

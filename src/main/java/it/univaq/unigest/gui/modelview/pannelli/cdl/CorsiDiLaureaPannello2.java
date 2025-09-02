@@ -7,24 +7,21 @@ import it.univaq.unigest.gui.util.CrudPanel;
 import it.univaq.unigest.gui.util.DialogsParser;
 import it.univaq.unigest.model.CorsoDiLaurea;
 import it.univaq.unigest.service.CorsoDiLaureaService;
+import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.scene.control.Control;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaAppelliPannello2;
-import static it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaCorsiDiLaureaPannello2;
-
 public class CorsiDiLaureaPannello2 implements CrudPanel {
 
     // ===== Etichette centralizzate =====
-    private static final String L_ID = "ID";
-    private static final String L_NOME = "Nome";
-    private static final String L_CFU_TOTALI = "CFU totali";
-    private static final String L_DIPARTIMENTO = "Dipartimento";
+    private static final String L_ID              = "ID";
+    private static final String L_NOME            = "Nome";
+    private static final String L_CFU_TOTALI      = "CFU totali";
+    private static final String L_DIPARTIMENTO    = "Dipartimento";
     private static final String L_COORDINATORE_ID = "Coordinatore ID";
 
     private final CorsoDiLaureaService corsoDiLaureaService;
@@ -42,7 +39,7 @@ public class CorsiDiLaureaPannello2 implements CrudPanel {
         return builder.build(
                 "Gestione Corsi di laurea",
                 colonne(),
-                new LinkedHashMap<>(), // niente dettagli
+                dettagli(), // <— popolata, non più vuota
                 this::apriDialogAggiungi,
                 this::mostraDialogModificaCorsoDiLaurea,
                 this::elimina
@@ -55,14 +52,20 @@ public class CorsiDiLaureaPannello2 implements CrudPanel {
     @Override
     public void modificaSelezionato() {
         var sel = builder.getTabella().getSelectionModel().getSelectedItem();
-        if (sel == null) { Dialogs.showError("Nessuna selezione","Seleziona un corso di laurea"); return; }
+        if (sel == null) {
+            Dialogs.showError("Nessuna selezione","Seleziona un corso di laurea");
+            return;
+        }
         mostraDialogModificaCorsoDiLaurea(sel);
     }
 
     @Override
     public void eliminaSelezionato() {
         var sel = builder.getTabella().getSelectionModel().getSelectedItem();
-        if (sel == null) { Dialogs.showError("Nessuna selezione","Seleziona un corso di laurea"); return; }
+        if (sel == null) {
+            Dialogs.showError("Nessuna selezione","Seleziona un corso di laurea");
+            return;
+        }
         elimina(sel);
     }
 
@@ -73,22 +76,30 @@ public class CorsiDiLaureaPannello2 implements CrudPanel {
 
     public VistaConDettagliBuilder<CorsoDiLaurea> getBuilder() { return builder; }
 
-    // ===== Colonne / Dettagli (no duplicazioni) =====
+    // ===== Colonne / Dettagli =====
+
     private LinkedHashMap<String, Function<CorsoDiLaurea, String>> colonne() {
         LinkedHashMap<String, Function<CorsoDiLaurea, String>> columns = new LinkedHashMap<>();
         columns.put(L_ID, CorsoDiLaurea::getId);
         columns.put(L_NOME, CorsoDiLaurea::getNome);
-        columns.put(L_CFU_TOTALI, CorsoDiLaurea::getCfuTotali);
+        columns.put(L_CFU_TOTALI, c -> Integer.toString(c.getCfuTotali()));
         columns.put(L_DIPARTIMENTO, CorsoDiLaurea::getDipartimento);
         columns.put(L_COORDINATORE_ID, CorsoDiLaurea::getCoordinatoreId);
         return columns;
     }
 
+    private LinkedHashMap<String, Function<CorsoDiLaurea, String>> dettagli() {
+        // per ora mostriamo gli stessi campi delle colonne
+        return new LinkedHashMap<>(colonne());
+    }
+
+    // ===== Dialoghi CRUD =====
+
     private void apriDialogAggiungi() {
         mostraDialogoCrud(
                 "Nuovo corso di laurea",
                 "Inserisci i dati del corso di laurea",
-                null,                              // create
+                null, // create
                 cdlCreato -> corsoDiLaureaService.create(cdlCreato),
                 "Successo",
                 "Corso di laurea aggiunto correttamente!"
@@ -99,7 +110,7 @@ public class CorsiDiLaureaPannello2 implements CrudPanel {
         mostraDialogoCrud(
                 "Modifica corso di laurea",
                 "Modifica i dati del corso di laurea",
-                corsoDiLaurea,                           // edit
+                corsoDiLaurea, // edit
                 cdlAgg -> corsoDiLaureaService.update(cdlAgg),
                 "Successo",
                 "Corso di laurea modificato con successo!"
@@ -131,10 +142,9 @@ public class CorsiDiLaureaPannello2 implements CrudPanel {
      * Aggiunge i campi al DialogBuilder. Se 'iniziale' è non nullo, pre-popola i controlli.
      */
     private void configuraCampi(DialogBuilder<CorsoDiLaurea> dialog, CorsoDiLaurea iniziale) {
-        // TextFields
-        dialog.aggiungiCampo(L_ID, new TextField(iniziale != null ? iniziale.getId() : ""));
-        dialog.aggiungiCampo(L_NOME, new TextField(iniziale != null ? iniziale.getNome() : ""));
-        dialog.aggiungiCampo(L_CFU_TOTALI, new TextField(iniziale != null ? String.valueOf(iniziale.getCfuTotali()) : ""));
+        dialog.aggiungiCampo(L_ID,           new TextField(iniziale != null ? iniziale.getId()           : ""));
+        dialog.aggiungiCampo(L_NOME,         new TextField(iniziale != null ? iniziale.getNome()         : ""));
+        dialog.aggiungiCampo(L_CFU_TOTALI,   new TextField(iniziale != null ? String.valueOf(iniziale.getCfuTotali()) : ""));
         dialog.aggiungiCampo(L_DIPARTIMENTO, new TextField(iniziale != null ? iniziale.getDipartimento() : ""));
         dialog.aggiungiCampo(L_COORDINATORE_ID, new TextField(iniziale != null ? iniziale.getCoordinatoreId() : ""));
     }
@@ -144,19 +154,16 @@ public class CorsiDiLaureaPannello2 implements CrudPanel {
      * Se 'target' è null → create, altrimenti update sullo stesso oggetto.
      */
     private CorsoDiLaurea estraiCorsoDiLaureaDaCampi(Map<String, Control> campi, CorsoDiLaurea target) {
-        // Letture/validazioni centralizzate
-        String id = DialogsParser.validaCampo(campi, L_ID);
-        String nome = DialogsParser.validaCampo(campi, L_NOME);
-        String cfuText = DialogsParser.validaCampo(campi, L_CFU_TOTALI);
-        int cfuTotali = Integer.parseInt(cfuText);
-        String dipartimento = DialogsParser.validaCampo(campi, L_DIPARTIMENTO);
-        String coordinatoreId = DialogsParser.validaCampo(campi, L_COORDINATORE_ID);
+        String id            = DialogsParser.validaCampo(campi, L_ID);
+        String nome          = DialogsParser.validaCampo(campi, L_NOME);
+        String cfuText       = DialogsParser.validaCampo(campi, L_CFU_TOTALI);
+        int cfuTotali        = Integer.parseInt(cfuText);
+        String dipartimento  = DialogsParser.validaCampo(campi, L_DIPARTIMENTO);
+        String coordinatoreId= DialogsParser.validaCampo(campi, L_COORDINATORE_ID);
 
         if (target == null) {
-            // CREATE
             return new CorsoDiLaurea(id, nome, cfuTotali, dipartimento, coordinatoreId);
         } else {
-            // UPDATE (rispetta i tuoi setter già esistenti)
             target.setId(id);
             target.setNome(nome);
             target.setCfuTotali(cfuTotali);
@@ -166,7 +173,7 @@ public class CorsiDiLaureaPannello2 implements CrudPanel {
         }
     }
 
-     private void elimina(CorsoDiLaurea cdl) {
+    private void elimina(CorsoDiLaurea cdl) {
         try {
             corsoDiLaureaService.deleteById(cdl.getId());
             refresh();
@@ -174,5 +181,4 @@ public class CorsiDiLaureaPannello2 implements CrudPanel {
             Dialogs.showError("Errore", e.getMessage());
         }
     }
-  
 }

@@ -12,7 +12,7 @@ public interface CorsoDiLaureaService extends CrudService<CorsoDiLaurea, String>
     default String labelById(String id) {
         return Optional.ofNullable(id)
                 .flatMap(this::findById)
-                .map(CorsoDiLaurea::getNome) // o come lo chiami tu
+                .map(CorsoDiLaurea::getNome)
                 .orElse("");
     }
 

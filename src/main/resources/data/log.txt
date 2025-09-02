@@ -1108,3 +1108,121 @@
 [2025-09-02 21:15:49] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/edifici_meta.json, impostato indiceCorrente = 1
 [2025-09-02 21:15:49] [INFO] [it.univaq.unigest.util.DatabaseHelper.caricaDatiInMemoria] I dati sono stati caricati in memoria dai file.
 [2025-09-02 21:15:49] [DEBUG] [it.univaq.unigest.gui.Main.lambda$start$0] [Main.start] Caricamento dei dati completato.
+[2025-09-02 21:42:22] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFileLog] Il file log.txt è esistente
+[2025-09-02 21:42:22] [INFO] [it.univaq.unigest.util.DatabaseHelper.verDirData] Cartella già esistente
+[2025-09-02 21:42:22] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file studenti.json è esistente
+[2025-09-02 21:42:22] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file professori.json è esistente
+[2025-09-02 21:42:22] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file appelli.json è esistente
+[2025-09-02 21:42:22] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file aule.json è esistente
+[2025-09-02 21:42:22] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file corsiDiLaurea.json è esistente
+[2025-09-02 21:42:22] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file esami.json è esistente
+[2025-09-02 21:42:22] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file insegnamenti.json è esistente
+[2025-09-02 21:42:22] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file iscrizioni.json è esistente
+[2025-09-02 21:42:22] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file verbale.json è esistente
+[2025-09-02 21:42:22] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file impostazioni.json è esistente
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Meta file was not foud for src/main/resources/data/professori_meta.json, current index set to 1, this may cause some inconsistency
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/professori.json successfully
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Meta file was not foud for src/main/resources/data/studenti_meta.json, current index set to 1, this may cause some inconsistency
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/studenti.json successfully
+[2025-09-02 21:42:22] [INFO] [it.univaq.unigest.gui.Main.init] [Main.init] L'applicazione è stata avviata
+[2025-09-02 21:42:22] [INFO] [it.univaq.unigest.gui.Main.start] [Main.start] L'applicazione ha avviato l'interfaccia grafica e i manager.
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/studenti.json riuscito
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/studenti_meta.json, impostato indiceCorrente = 1
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/appelli.json riuscito
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/appelli_meta.json, impostato indiceCorrente = 1
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/aule.json riuscito
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/aule_meta.json, impostato indiceCorrente = 1
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/corsiDiLaurea.json riuscito
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] Indice corrente caricato da src/main/resources/data/corsiDiLaurea_meta.json: 3
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/esami.json riuscito
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/esami_meta.json, impostato indiceCorrente = 1
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/insegnamenti.json riuscito
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/insegnamenti_meta.json, impostato indiceCorrente = 1
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/iscrizioni.json riuscito
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/iscrizioni_meta.json, impostato indiceCorrente = 1
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/verbale.json riuscito
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/verbale_meta.json, impostato indiceCorrente = 1
+[2025-09-02 21:42:22] [ERROR] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Errore caricamento da src/main/resources/data/edifici.json: src/main/resources/data/edifici.json (No such file or directory)
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/edifici_meta.json, impostato indiceCorrente = 1
+[2025-09-02 21:42:22] [INFO] [it.univaq.unigest.util.DatabaseHelper.caricaDatiInMemoria] I dati sono stati caricati in memoria dai file.
+[2025-09-02 21:42:22] [DEBUG] [it.univaq.unigest.gui.Main.lambda$start$0] [Main.start] Caricamento dei dati completato.
+[2025-09-02 22:00:17] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFileLog] Il file log.txt è esistente
+[2025-09-02 22:00:17] [INFO] [it.univaq.unigest.util.DatabaseHelper.verDirData] Cartella già esistente
+[2025-09-02 22:00:17] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file studenti.json è esistente
+[2025-09-02 22:00:17] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file professori.json è esistente
+[2025-09-02 22:00:17] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file appelli.json è esistente
+[2025-09-02 22:00:17] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file aule.json è esistente
+[2025-09-02 22:00:17] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file corsiDiLaurea.json è esistente
+[2025-09-02 22:00:17] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file esami.json è esistente
+[2025-09-02 22:00:17] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file insegnamenti.json è esistente
+[2025-09-02 22:00:17] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file iscrizioni.json è esistente
+[2025-09-02 22:00:17] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file verbale.json è esistente
+[2025-09-02 22:00:17] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file impostazioni.json è esistente
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Meta file was not foud for src/main/resources/data/professori_meta.json, current index set to 1, this may cause some inconsistency
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/professori.json successfully
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Meta file was not foud for src/main/resources/data/studenti_meta.json, current index set to 1, this may cause some inconsistency
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/studenti.json successfully
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/corsiDiLaurea_meta.json: 3
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/corsiDiLaurea.json successfully
+[2025-09-02 22:00:17] [INFO] [it.univaq.unigest.gui.Main.init] [Main.init] L'applicazione è stata avviata
+[2025-09-02 22:00:17] [INFO] [it.univaq.unigest.gui.Main.start] [Main.start] L'applicazione ha avviato l'interfaccia grafica e i manager.
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/studenti.json riuscito
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/studenti_meta.json, impostato indiceCorrente = 1
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/appelli.json riuscito
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/appelli_meta.json, impostato indiceCorrente = 1
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/aule.json riuscito
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/aule_meta.json, impostato indiceCorrente = 1
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/corsiDiLaurea.json riuscito
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] Indice corrente caricato da src/main/resources/data/corsiDiLaurea_meta.json: 3
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/esami.json riuscito
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/esami_meta.json, impostato indiceCorrente = 1
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/insegnamenti.json riuscito
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/insegnamenti_meta.json, impostato indiceCorrente = 1
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/iscrizioni.json riuscito
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/iscrizioni_meta.json, impostato indiceCorrente = 1
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/verbale.json riuscito
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/verbale_meta.json, impostato indiceCorrente = 1
+[2025-09-02 22:00:17] [ERROR] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Errore caricamento da src/main/resources/data/edifici.json: src/main/resources/data/edifici.json (No such file or directory)
+[2025-09-02 22:00:17] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/edifici_meta.json, impostato indiceCorrente = 1
+[2025-09-02 22:00:17] [INFO] [it.univaq.unigest.util.DatabaseHelper.caricaDatiInMemoria] I dati sono stati caricati in memoria dai file.
+[2025-09-02 22:00:18] [DEBUG] [it.univaq.unigest.gui.Main.lambda$start$0] [Main.start] Caricamento dei dati completato.
+[2025-09-02 22:05:32] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFileLog] Il file log.txt è esistente
+[2025-09-02 22:05:32] [INFO] [it.univaq.unigest.util.DatabaseHelper.verDirData] Cartella già esistente
+[2025-09-02 22:05:32] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file studenti.json è esistente
+[2025-09-02 22:05:32] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file professori.json è esistente
+[2025-09-02 22:05:32] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file appelli.json è esistente
+[2025-09-02 22:05:32] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file aule.json è esistente
+[2025-09-02 22:05:32] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file corsiDiLaurea.json è esistente
+[2025-09-02 22:05:32] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file esami.json è esistente
+[2025-09-02 22:05:32] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file insegnamenti.json è esistente
+[2025-09-02 22:05:32] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file iscrizioni.json è esistente
+[2025-09-02 22:05:32] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file verbale.json è esistente
+[2025-09-02 22:05:32] [INFO] [it.univaq.unigest.util.DatabaseHelper.verFilesData] Il file impostazioni.json è esistente
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Meta file was not foud for src/main/resources/data/professori_meta.json, current index set to 1, this may cause some inconsistency
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/professori.json successfully
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Meta file was not foud for src/main/resources/data/studenti_meta.json, current index set to 1, this may cause some inconsistency
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/studenti.json successfully
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/corsiDiLaurea_meta.json: 3
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/corsiDiLaurea.json successfully
+[2025-09-02 22:05:32] [INFO] [it.univaq.unigest.gui.Main.init] [Main.init] L'applicazione è stata avviata
+[2025-09-02 22:05:32] [INFO] [it.univaq.unigest.gui.Main.start] [Main.start] L'applicazione ha avviato l'interfaccia grafica e i manager.
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/studenti.json riuscito
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/studenti_meta.json, impostato indiceCorrente = 1
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/appelli.json riuscito
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/appelli_meta.json, impostato indiceCorrente = 1
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/aule.json riuscito
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/aule_meta.json, impostato indiceCorrente = 1
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/corsiDiLaurea.json riuscito
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] Indice corrente caricato da src/main/resources/data/corsiDiLaurea_meta.json: 3
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/esami.json riuscito
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/esami_meta.json, impostato indiceCorrente = 1
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/insegnamenti.json riuscito
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/insegnamenti_meta.json, impostato indiceCorrente = 1
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/iscrizioni.json riuscito
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/iscrizioni_meta.json, impostato indiceCorrente = 1
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Caricamento da src/main/resources/data/verbale.json riuscito
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/verbale_meta.json, impostato indiceCorrente = 1
+[2025-09-02 22:05:32] [ERROR] [it.univaq.unigest.manager.AbstractManager.caricaDaFile] Errore caricamento da src/main/resources/data/edifici.json: src/main/resources/data/edifici.json (No such file or directory)
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.manager.AbstractManager.caricaIndiceCorrente] File meta non trovato per src/main/resources/data/edifici_meta.json, impostato indiceCorrente = 1
+[2025-09-02 22:05:32] [INFO] [it.univaq.unigest.util.DatabaseHelper.caricaDatiInMemoria] I dati sono stati caricati in memoria dai file.
+[2025-09-02 22:05:32] [DEBUG] [it.univaq.unigest.gui.Main.lambda$start$0] [Main.start] Caricamento dei dati completato.

@@ -25,6 +25,7 @@ public class Reloader {
 
     private static DocentiPannello2 docentiPanel;
     private static StudentiPannello2 studentiPanel;
+    private static CorsiDiLaureaPannello2 corsiDiLaureaPanel;
 
     public static void registerDocentiPannello(DocentiPannello2 p) {
         docentiPanel = p;
@@ -32,6 +33,10 @@ public class Reloader {
 
     public static void registerStudentiPannello(StudentiPannello2 p) {
         studentiPanel = p;
+    }
+
+    public static void registerCorsiDiLaureaPannello(CorsiDiLaureaPannello2 p) {
+        corsiDiLaureaPanel = p;
     }
 
     public static void ricaricaInterfacciaGraficaDocentiPannello2(){
@@ -48,7 +53,12 @@ public class Reloader {
         LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaDocentiPannello2()");
     }
 
-
+    public static void ricaricaInterfacciaGraficaCorsiDiLaureaPannello2(){
+        if (studentiPanel != null) {
+            studentiPanel.refresh();
+        }
+        LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaDocentiPannello2()");
+    }
 
     public static void ricaricaInterfacciaGraficaAppelliPannello2(){
         AppelliPannello2.getBuilder().refresh(Main.getAppelloManager().getAll());
@@ -58,11 +68,6 @@ public class Reloader {
     public static void ricaricaInterfacciaGraficaAulePannello2(){
         //AulePannello2.getBuilder().refresh(Main.getAulaManager().getAll());
         LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaAulePannello2()");
-    }
-
-    public static void ricaricaInterfacciaGraficaCorsiDiLaureaPannello2(){
-        CorsiDiLaureaPannello2.getBuilder().refresh(Main.getCorsoDiLaureaManager().getAll());
-        LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaCorsiDiLaureaPannello2()");
     }
 
     public static void ricaricaInterfacciaGraficaEdificiPannello2(){

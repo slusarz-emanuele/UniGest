@@ -111,7 +111,6 @@ public class StartView {
         topBar.getChildren().addAll(toggleMenu, spacer, btnExport, btnSettings, titolo, logoView);
         root.setTop(topBar);
 
-        // ---- Bind navigazione (titoli hardcoded)
         bindNav(
                 docentiBtn,
                 () -> new DocentiView(Main.getDocenteService()),
@@ -133,6 +132,14 @@ public class StartView {
                 ),
                 "Studenti",
                 Reloader::registerStudentiPannello, // se lo usi; altrimenti passa null o usa l'overload senza registrar
+                root
+        );
+
+        bindNav(
+                corsoDiLaureaBtn,
+                () -> new CorsoDiLaureaView(Main.getCorsoDiLaureaService()),
+                "Corsi Di Laurea",
+                Reloader::registerCorsiDiLaureaPannello,
                 root
         );
 

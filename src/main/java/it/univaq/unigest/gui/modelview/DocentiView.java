@@ -15,7 +15,7 @@ public class DocentiView extends AbstractModelView<DocentiPannello2> {
 
     @Override
     protected VBox creaStatisticheContenuto() {
-        //convertiter allo stesso modo; qui metti una VBox vuota per ora
+        // VBox vuota per ora
         return new VBox();
     }
 

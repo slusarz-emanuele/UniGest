@@ -2,8 +2,11 @@ package it.univaq.unigest.gui;
 
 import it.univaq.unigest.gui.modelview.StartView;
 import it.univaq.unigest.manager.*;
+import it.univaq.unigest.repository.impl.CorsoDiLaureaRepository;
 import it.univaq.unigest.repository.impl.StudenteRepository;
+import it.univaq.unigest.service.CorsoDiLaureaService;
 import it.univaq.unigest.service.StudenteService;
+import it.univaq.unigest.service.impl.CorsoDiLaureaServiceImpl;
 import it.univaq.unigest.service.impl.StudenteServiceImpl;
 import it.univaq.unigest.util.*;
 import it.univaq.unigest.util.backup.BackupManager;
@@ -38,6 +41,7 @@ public class Main extends Application {
     // --- Nuovo: service per Docente (usato da tutta la GUI al posto del Manager)
     private static DocenteService docenteService;
     private static StudenteService studenteService;
+    private static CorsoDiLaureaService corsoDiLaureaService;
 
     private static Impostazioni impostazioni;
     private static BackupManager backupManager = new BackupManager();
@@ -57,6 +61,7 @@ public class Main extends Application {
         // Inizializzo subito il service dei docenti (repo -> service)
         docenteService = new DocenteServiceImpl(new DocenteRepository());
         studenteService = new StudenteServiceImpl(new StudenteRepository());
+        corsoDiLaureaService = new CorsoDiLaureaServiceImpl(new CorsoDiLaureaRepository());
 
         LogHelper.saveLog(LogType.INFO, "[Main.init] L'applicazione è stata avviata");
     }
@@ -121,6 +126,7 @@ public class Main extends Application {
             // Reinstanzia anche il service docenti
             docenteService = new DocenteServiceImpl(new DocenteRepository());
             studenteService = new StudenteServiceImpl(new StudenteRepository());
+            corsoDiLaureaService = new CorsoDiLaureaServiceImpl(new CorsoDiLaureaRepository());
 
             DatabaseHelper.caricaDatiInMemoria();
 
@@ -153,6 +159,7 @@ public class Main extends Application {
     // --- Nuovo getter usato dalla GUI per Docenti
     public static DocenteService getDocenteService() { return docenteService; }
     public static StudenteService getStudenteService() { return studenteService; }
+    public static CorsoDiLaureaService getCorsoDiLaureaService() { return corsoDiLaureaService; }
 
     public static Stage getStagePrimario() { return stagePrimario; }
 }

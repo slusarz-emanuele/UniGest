@@ -4,7 +4,7 @@ import it.univaq.unigest.model.Insegnamento;
 
 import java.util.List;
 
-public class InsegnamentoService extends CrudService<Insegnamento, String> {
+public interface InsegnamentoService extends CrudService<Insegnamento, String> {
 
     List<Insegnamento> filtra (Insegnamento filtro);
     

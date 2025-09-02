@@ -4,7 +4,7 @@ import it.univaq.unigest.model.Edificio;
 
 import java.util.List;
 
-public class EdificioService extends CrudService<Edificio, String> {
+public interface EdificioService extends CrudService<Edificio, String> {
 
     List<Edificio> filtra (Edificio filtro);
     

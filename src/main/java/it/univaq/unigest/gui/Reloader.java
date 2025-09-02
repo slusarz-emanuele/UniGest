@@ -1,15 +1,9 @@
 package it.univaq.unigest.gui;
 
 import it.univaq.unigest.gui.modelview.pannelli.appelli.AppelliPannello2;
-import it.univaq.unigest.gui.modelview.pannelli.aule.AulePannello2;
 import it.univaq.unigest.gui.modelview.pannelli.cdl.CorsiDiLaureaPannello2;
 import it.univaq.unigest.gui.modelview.pannelli.docenti.DocentiPannello2;
-import it.univaq.unigest.gui.modelview.pannelli.edifici.EdificiPannello2;
-import it.univaq.unigest.gui.modelview.pannelli.esami.EsamiPannello2;
-import it.univaq.unigest.gui.modelview.pannelli.insegnamenti.InsegnamentiPannello2;
-import it.univaq.unigest.gui.modelview.pannelli.iscrizioni.IscrizioniPannello2;
 import it.univaq.unigest.gui.modelview.pannelli.studenti.StudentiPannello2;
-import it.univaq.unigest.gui.modelview.pannelli.verbali.VerbaliPannello2;
 import it.univaq.unigest.util.LogHelper;
 import it.univaq.unigest.util.LogType;
 
@@ -29,20 +23,32 @@ public class Reloader {
         LogHelper.saveLog(LogType.DEBUG, "it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGrafica() invocato");
     }
 
-    // in Reloader.java (campi in alto)
     private static DocentiPannello2 docentiPanel;
+    private static StudentiPannello2 studentiPanel;
 
-    // chiamata da StartView quando crei la vista
     public static void registerDocentiPannello(DocentiPannello2 p) {
         docentiPanel = p;
     }
 
+    public static void registerStudentiPannello(StudentiPannello2 p) {
+        studentiPanel = p;
+    }
+
     public static void ricaricaInterfacciaGraficaDocentiPannello2(){
         if (docentiPanel != null) {
-            docentiPanel.refresh();  // usa il service interno e aggiorna la tabella
+            docentiPanel.refresh();
         }
         LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaDocentiPannello2()");
     }
+
+    public static void ricaricaInterfacciaGraficaStudentiPannello2(){
+        if (studentiPanel != null) {
+            studentiPanel.refresh();
+        }
+        LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaDocentiPannello2()");
+    }
+
+
 
     public static void ricaricaInterfacciaGraficaAppelliPannello2(){
         AppelliPannello2.getBuilder().refresh(Main.getAppelloManager().getAll());
@@ -77,11 +83,6 @@ public class Reloader {
     public static void ricaricaInterfacciaGraficaIscrizioniPannello2(){
         //IscrizioniPannello2.getBuilder().refresh(Main.getIscrizioneManager().getAll());
         LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaIscrizioniPannello2()");
-    }
-
-    public static void ricaricaInterfacciaGraficaStudentiPannello2(){
-        StudentiPannello2.getBuilder().refresh(Main.getStudenteManager().getAll());
-        LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaStudentiPannello2()");
     }
 
     public static void ricaricaInterfacciaGraficaVerbaliPannelli2(){

@@ -38,7 +38,11 @@ public class Studente extends Persona implements Identificabile<String> {
         this.mediaAritmetica = calcolaMediaAritmetica();
    }
 
-   // Metodi getter
+    public Studente() {
+        super();
+    }
+
+    // Metodi getter
      public String getMatricola(){
         return this.matricola;
      }
@@ -164,6 +168,16 @@ public class Studente extends Persona implements Identificabile<String> {
 
         // 3. Salva nella proprietà locale
         this.setEsami(esamiTrovati);
+    }
+
+    @Override
+    public String getId() {
+        return getMatricola();
+    }
+
+    @Override
+    public void setId(String id) {
+        setMatricola(id);
     }
      
 }

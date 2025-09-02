@@ -28,6 +28,10 @@ public abstract class Persona{
                    this.dataIngressoUniversita = dataIngressoUniversita;
      }
 
+     protected Persona(){
+
+     }
+
      //metodi getter
      public String getCf(){
         return this.cf;

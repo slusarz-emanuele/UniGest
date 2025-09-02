@@ -19,7 +19,6 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-
 public class StartView {
 
     private boolean menuVisibile = true;
@@ -39,17 +38,17 @@ public class StartView {
         menu.setStyle("-fx-background-color: #34495E;");
         menu.setPrefWidth(200);
 
-        Button dashboardBtn = new Button("Home - Dashboard");
-        Button studentiBtn  = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.studenti"));
-        Button docentiBtn   = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.docenti"));
-        Button corsoDiLaureaBtn = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.corsiDiLaurea"));
-        Button insegnamentiBtn  = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.insegnamenti"));
-        Button appelliBtn   = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.appelli"));
-        Button iscrizioniBtn= new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.iscrizioni"));
-        Button esamiBtn     = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.esami"));
-        Button verbaliBtn   = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.verbali"));
-        Button auleliBtn    = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.aule"));
-        Button edificiBtn   = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.edifici"));
+        Button dashboardBtn     = new Button("Home - Dashboard");
+        Button studentiBtn      = new Button("Studenti");
+        Button docentiBtn       = new Button("Docenti");
+        Button corsoDiLaureaBtn = new Button("Corsi di Laurea");
+        Button insegnamentiBtn  = new Button("Insegnamenti");
+        Button appelliBtn       = new Button("Appelli");
+        Button iscrizioniBtn    = new Button("Iscrizioni");
+        Button esamiBtn         = new Button("Esami");
+        Button verbaliBtn       = new Button("Verbali");
+        Button auleliBtn        = new Button("Aule");
+        Button edificiBtn       = new Button("Edifici");
 
         dashboardBtn.getStyleClass().add("menu-button");
         studentiBtn.getStyleClass().add("menu-button");
@@ -75,7 +74,7 @@ public class StartView {
         );
         root.setLeft(menu);
 
-        // --- TOP BAR (ridotta per brevità)
+        // --- TOP BAR
         HBox topBar = new HBox();
         topBar.setPadding(new Insets(10));
         topBar.getStyleClass().add("top-bar");
@@ -98,11 +97,11 @@ public class StartView {
             menuVisibile = !menuVisibile;
         });
 
-        Label titolo = new Label(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.titolo.principale"));
+        Label titolo = new Label("UniGest");
         Region spacer = new Region(); HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Button btnExport = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.backup"));
-        Button btnSettings = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.impostazioni"));
+        Button btnExport   = new Button("Backup");
+        Button btnSettings = new Button("Impostazioni");
         btnExport.getStyleClass().add("top-bar-button");
         btnSettings.getStyleClass().add("top-bar-button");
 
@@ -112,28 +111,36 @@ public class StartView {
         topBar.getChildren().addAll(toggleMenu, spacer, btnExport, btnSettings, titolo, logoView);
         root.setTop(topBar);
 
-        // --- BOTTONI MENU (solo Docenti modificato per usare il service)
-        studentiBtn.setOnAction(e -> {
-            handleButtonClick(studentiBtn);
-            StudentiModelView v = new StudentiModelView();
-            this.stagePrimario.setTitle(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.titolo.principale")
-                    + Main.getParametrizzazioneHelper().getBundle().getString("button.studenti"));
-            vistaCorrente = v;
-            root.setCenter(v.getView());
-        });
-
+        // ---- Bind navigazione (titoli hardcoded)
         bindNav(
                 docentiBtn,
                 () -> new DocentiView(Main.getDocenteService()),
-                "button.docenti",
+                "Docenti",
                 Reloader::registerDocentiPannello,
                 root
         );
 
+        bindNav(
+                studentiBtn,
+                () -> new StudentiModelView(
+                        Main.getStudenteService(),
+                        () -> Main.getCorsoDiLaureaManager().getAll(),             // Supplier<List<CorsoDiLaurea>>
+                        id -> {                                                    // Function<String,String> (nome by id)
+                            //var c = Main.getCorsoDiLaureaManager().getById(id);
+                            //return c != null ? c.getNome() : "";
+                            return null;
+                        }
+                ),
+                "Studenti",
+                Reloader::registerStudentiPannello, // se lo usi; altrimenti passa null o usa l'overload senza registrar
+                root
+        );
 
 
-        // gli altri pulsanti restano invariati (useranno i Manager finché non li migri)
+        // TODO: quando migrerai gli altri, aggiungi i bindNav analoghi.
+        // Per ora puoi lasciare i pulsanti senza azione o con la vecchia logica.
 
+        // --- Scena
         Scene scena = new Scene(root, 1100, 900);
         scena.setOnKeyPressed(event -> {
             if (vistaCorrente instanceof CrudView crud) {
@@ -156,7 +163,7 @@ public class StartView {
     private <P extends CrudPanel, V extends AbstractModelView<P>> void bindNav(
             Button btn,
             Supplier<V> viewFactory,
-            String titoloKey,
+            String titolo,                  // <-- ora stringa diretta
             Consumer<P> registrar,
             BorderPane root
     ) {
@@ -166,23 +173,21 @@ public class StartView {
             V view = viewFactory.get();
             if (registrar != null) registrar.accept(view.getPannello());
 
-            var bundle = Main.getParametrizzazioneHelper().getBundle();
-            String title = bundle.getString("etichetta.titolo.principale") + bundle.getString(titoloKey);
-            this.stagePrimario.setTitle(title);
+            this.stagePrimario.setTitle("UniGest — " + titolo);
 
             vistaCorrente = view;
             root.setCenter(view.getView());
         });
     }
 
-    // overload comodo quando non devi registrare nulla sul Reloader
+    // overload comodo se non devi registrare nulla
     private <P extends CrudPanel, V extends AbstractModelView<P>> void bindNav(
             Button btn,
             Supplier<V> viewFactory,
-            String titoloKey,
+            String titolo,
             BorderPane root
     ) {
-        bindNav(btn, viewFactory, titoloKey, null, root);
+        bindNav(btn, viewFactory, titolo, null, root);
     }
 
     private Separator creaSeparatoreMenu() {

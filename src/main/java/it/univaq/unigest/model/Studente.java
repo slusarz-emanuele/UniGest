@@ -1,12 +1,13 @@
 package it.univaq.unigest.model;
 
+import it.univaq.unigest.common.Identificabile;
 import it.univaq.unigest.manager.EsameManager;
 import it.univaq.unigest.manager.IscrizioneManager;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public class Studente extends Persona{
+public class Studente extends Persona implements Identificabile<String> {
 
    // Attributi di istanza
      private String matricola;

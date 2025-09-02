@@ -109,8 +109,8 @@ public class DatabaseHelper {
         Main.getStudenteManager().caricaDaFile();
         Main.getStudenteManager().caricaIndiceCorrente();
 
-        Main.getDocenteManager().caricaDaFile();
-        Main.getDocenteManager().caricaIndiceCorrente();
+        //Main.getDocenteManager().caricaDaFile();
+        //Main.getDocenteManager().caricaIndiceCorrente();
 
         Main.getAppelloManager().caricaDaFile();
         Main.getAppelloManager().caricaIndiceCorrente();

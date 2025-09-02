@@ -15,13 +15,10 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.awt.event.ActionEvent;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-// >>> se il tuo DocentiView ora accetta un DocenteService nel costruttore:
-import it.univaq.unigest.service.DocenteService;
 
 public class StartView {
 

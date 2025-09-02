@@ -5,10 +5,11 @@ import it.univaq.unigest.gui.modelview.pannelli.esami.EsamiPannello1;
 import it.univaq.unigest.gui.modelview.pannelli.esami.EsamiPannello2;
 
 import it.univaq.unigest.gui.util.CrudView;
+import it.univaq.unigest.model.Esame;
 import javafx.scene.layout.VBox;
 
 
-public class EsamiView extends AbstractModelView implements CrudView {
+public class EsamiView extends AbstractModelView<Esame> {
 
     /**
      * Costruisce e restituisce il contenuto per la tab "Gestione".

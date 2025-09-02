@@ -6,6 +6,7 @@ import it.univaq.unigest.gui.componenti.DialogBuilder;
 import it.univaq.unigest.gui.componenti.TabelleHelper;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
 import it.univaq.unigest.gui.modelview.pannelli.exceptions.CampoRichiestoVuoto;
+import it.univaq.unigest.gui.util.CrudPanel;
 import it.univaq.unigest.gui.util.DialogsParser;
 import it.univaq.unigest.model.Appello;
 import it.univaq.unigest.model.CorsoDiLaurea;
@@ -41,7 +42,7 @@ import static it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaInsegname
  * {@link DialogBuilder} per la gestione delle finestre di input.
  * </p>
  */
-public class InsegnamentiPannello2 {
+public class InsegnamentiPannello2 implements CrudPanel {
 
     /**
      * Lista degli insegnamenti attualmente disponibili.

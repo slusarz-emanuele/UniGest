@@ -1,6 +1,8 @@
 package it.univaq.unigest.model;
 
-public class Aula{
+import it.univaq.unigest.common.Identificabile;
+
+public class Aula implements Identificabile<String> {
     private String id;
     private int capienza;
     private String edificio;

@@ -1,8 +1,10 @@
 package it.univaq.unigest.model;
 
+import it.univaq.unigest.common.Identificabile;
+
 import java.util.List;
 
-public class Insegnamento{
+public class Insegnamento implements Identificabile<String> {
 
     private String id;
     private String nome;

@@ -1,9 +1,11 @@
 package it.univaq.unigest.model;
 
+import it.univaq.unigest.common.Identificabile;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class Appello{
+public class Appello implements Identificabile<String> {
     private int id;
     private String ridInsegnamento;
     private LocalDate data;

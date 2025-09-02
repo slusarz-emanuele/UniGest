@@ -1,8 +1,10 @@
 package it.univaq.unigest.model;
 
+import it.univaq.unigest.common.Identificabile;
+
 import java.time.LocalDate;
 
-public class Iscrizione{
+public class Iscrizione implements Identificabile<String> {
 
     private Integer id;
     private String  ridStudenteCf;

@@ -1,6 +1,8 @@
 package it.univaq.unigest.model;
 
-public class Edificio{
+import it.univaq.unigest.common.Identificabile;
+
+public class Edificio implements Identificabile<String> {
 
     private String id;
     private String nome;

@@ -6,6 +6,7 @@ import it.univaq.unigest.gui.componenti.DialogBuilder;
 import it.univaq.unigest.gui.componenti.TabelleHelper;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
 import it.univaq.unigest.gui.modelview.pannelli.exceptions.CampoRichiestoVuoto;
+import it.univaq.unigest.gui.util.CrudPanel;
 import it.univaq.unigest.model.Appello;
 import it.univaq.unigest.model.Esame;
 import it.univaq.unigest.model.Iscrizione;
@@ -43,7 +44,7 @@ import static it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaIscrizion
  * {@link DialogBuilder} per la gestione delle finestre di input.
  * </p>
  */
-public class IscrizioniPannello2 {
+public class IscrizioniPannello2 implements CrudPanel {
 
     /**
      * Lista delle iscrizioni attualmente disponibili.

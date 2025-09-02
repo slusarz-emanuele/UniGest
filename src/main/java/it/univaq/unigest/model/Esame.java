@@ -1,6 +1,8 @@
 package it.univaq.unigest.model;
 
-public class Esame{
+import it.univaq.unigest.common.Identificabile;
+
+public class Esame implements Identificabile<String> {
     private String id;
     private String iscrizioneId;
     private Double voto;

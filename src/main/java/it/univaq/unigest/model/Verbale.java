@@ -1,5 +1,6 @@
 package it.univaq.unigest.model;
 
+import it.univaq.unigest.common.Identificabile;
 import it.univaq.unigest.manager.AppelloManager;
 import it.univaq.unigest.manager.EsameManager;
 import it.univaq.unigest.manager.IscrizioneManager;
@@ -8,7 +9,7 @@ import it.univaq.unigest.manager.IscrizioneManager;
 import java.time.LocalDate;
 import java.util.List;
 
-public class Verbale {
+public class Verbale implements Identificabile<String> {
 
     private Integer id;
     private String appelloId; // FK

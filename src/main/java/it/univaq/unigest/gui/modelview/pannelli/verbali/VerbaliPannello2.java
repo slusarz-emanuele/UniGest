@@ -6,6 +6,7 @@ import it.univaq.unigest.gui.componenti.DialogBuilder;
 import it.univaq.unigest.gui.componenti.TabelleHelper;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
 import it.univaq.unigest.gui.modelview.pannelli.exceptions.CampoRichiestoVuoto;
+import it.univaq.unigest.gui.util.CrudPanel;
 import it.univaq.unigest.manager.exceptions.VerbaleConAppelloPresente;
 import it.univaq.unigest.model.Appello;
 import it.univaq.unigest.model.Verbale;
@@ -39,7 +40,7 @@ import static it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaVerbaliPa
  * {@link DialogBuilder} per la gestione delle finestre di input.
  * </p>
  */
-public class VerbaliPannello2 {
+public class VerbaliPannello2 implements CrudPanel {
 
     /**
      * Lista dei verbali attualmente disponibili.

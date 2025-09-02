@@ -8,7 +8,7 @@ import it.univaq.unigest.gui.modelview.pannelli.studenti.StudentiPannello2;
 import it.univaq.unigest.gui.util.CrudView;
 import javafx.scene.layout.VBox;
 
-public class AppelliModelView extends AbstractModelView implements CrudView {
+public class AppelliModelView extends AbstractModelView<AppelliPannello2> {
 
     /**
      * Costruisce e restituisce il contenuto per la tab "Gestione".

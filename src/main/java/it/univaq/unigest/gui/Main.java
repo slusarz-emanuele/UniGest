@@ -2,12 +2,9 @@ package it.univaq.unigest.gui;
 
 import it.univaq.unigest.gui.modelview.StartView;
 import it.univaq.unigest.manager.*;
-import it.univaq.unigest.repository.impl.CorsoDiLaureaRepository;
-import it.univaq.unigest.repository.impl.StudenteRepository;
-import it.univaq.unigest.service.CorsoDiLaureaService;
-import it.univaq.unigest.service.StudenteService;
-import it.univaq.unigest.service.impl.CorsoDiLaureaServiceImpl;
-import it.univaq.unigest.service.impl.StudenteServiceImpl;
+import it.univaq.unigest.repository.impl.*;
+import it.univaq.unigest.service.*;
+import it.univaq.unigest.service.impl.*;
 import it.univaq.unigest.util.*;
 import it.univaq.unigest.util.backup.BackupManager;
 import it.univaq.unigest.util.loader.ImpostazioniLoader;
@@ -20,13 +17,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 // >>> nuovi import per i servizi docenti
-import it.univaq.unigest.service.DocenteService;
-import it.univaq.unigest.service.impl.DocenteServiceImpl;
-import it.univaq.unigest.repository.impl.DocenteRepository;
+
 
 public class Main extends Application {
 
-    // --- Manager storici (li lasciamo così per gli altri modelli, li migrerai dopo)
     private static StudenteManager studenteManager = new StudenteManager();
     private static DocenteManager docenteManager = new DocenteManager(); // <- rimane per compatibilità momentanea
     private static AppelloManager appelloManager = new AppelloManager();
@@ -38,10 +32,17 @@ public class Main extends Application {
     private static VerbaleManager verbaleManager = new VerbaleManager();
     private static EdificioManager edificioManager = new EdificioManager();
 
-    // --- Nuovo: service per Docente (usato da tutta la GUI al posto del Manager)
-    private static DocenteService docenteService;
-    private static StudenteService studenteService;
+    // Quelli nuovi da sostituire
+    private static AppelloService appelloService;
+    private static AulaService aulaService;
     private static CorsoDiLaureaService corsoDiLaureaService;
+    private static DocenteService docenteService;
+    private static EdificioService edificioService;
+    private static EsameService esameService;
+    private static InsegnamentoService insegnamentoService;
+    private static IscrizioneService iscrizioneService;
+    private static StudenteService studenteService;
+    private static VerbaleService verbaleService;
 
     private static Impostazioni impostazioni;
     private static BackupManager backupManager = new BackupManager();
@@ -59,9 +60,16 @@ public class Main extends Application {
         parametrizzazioneHelper = new ParametrizzazioneHelper();
 
         // Inizializzo subito il service dei docenti (repo -> service)
-        docenteService = new DocenteServiceImpl(new DocenteRepository());
-        studenteService = new StudenteServiceImpl(new StudenteRepository());
+        appelloService = new AppelloServiceImpl(new AppelloRepository());
+        aulaService = new AulaServiceImpl(new AulaRepository());
         corsoDiLaureaService = new CorsoDiLaureaServiceImpl(new CorsoDiLaureaRepository());
+        docenteService = new DocenteServiceImpl(new DocenteRepository());
+        edificioService = new EdificioServiceImpl(new EdificioRepository());
+        esameService = new EsameServiceImpl(new EsameRepository());
+        insegnamentoService = new InsegnamentoServiceImpl(new InsegnamentoRepository());
+        iscrizioneService = new IscrizioneServiceImpl(new IscrizioneRepository());
+        studenteService = new StudenteServiceImpl(new StudenteRepository());
+        verbaleService = new VerbaleServiceImpl(new VerbaleRepository());
 
         LogHelper.saveLog(LogType.INFO, "[Main.init] L'applicazione è stata avviata");
     }
@@ -124,9 +132,16 @@ public class Main extends Application {
             backupManager = new BackupManager();
 
             // Reinstanzia anche il service docenti
-            docenteService = new DocenteServiceImpl(new DocenteRepository());
-            studenteService = new StudenteServiceImpl(new StudenteRepository());
+            appelloService = new AppelloServiceImpl(new AppelloRepository());
+            aulaService = new AulaServiceImpl(new AulaRepository());
             corsoDiLaureaService = new CorsoDiLaureaServiceImpl(new CorsoDiLaureaRepository());
+            docenteService = new DocenteServiceImpl(new DocenteRepository());
+            edificioService = new EdificioServiceImpl(new EdificioRepository());
+            esameService = new EsameServiceImpl(new EsameRepository());
+            insegnamentoService = new InsegnamentoServiceImpl(new InsegnamentoRepository());
+            iscrizioneService = new IscrizioneServiceImpl(new IscrizioneRepository());
+            studenteService = new StudenteServiceImpl(new StudenteRepository());
+            verbaleService = new VerbaleServiceImpl(new VerbaleRepository());
 
             DatabaseHelper.caricaDatiInMemoria();
 
@@ -160,6 +175,34 @@ public class Main extends Application {
     public static DocenteService getDocenteService() { return docenteService; }
     public static StudenteService getStudenteService() { return studenteService; }
     public static CorsoDiLaureaService getCorsoDiLaureaService() { return corsoDiLaureaService; }
+
+    public static AppelloService getAppelloService() {
+        return appelloService;
+    }
+
+    public static AulaService getAulaService() {
+        return aulaService;
+    }
+
+    public static EdificioService getEdificioService() {
+        return edificioService;
+    }
+
+    public static EsameService getEsameService() {
+        return esameService;
+    }
+
+    public static InsegnamentoService getInsegnamentoService() {
+        return insegnamentoService;
+    }
+
+    public static IscrizioneService getIscrizioneService() {
+        return iscrizioneService;
+    }
+
+    public static VerbaleService getVerbaleService() {
+        return verbaleService;
+    }
 
     public static Stage getStagePrimario() { return stagePrimario; }
 }

@@ -14,7 +14,7 @@ public class Dialogs {
         if(alertType == AlertType.INFORMATION){
             alert.setHeaderText(null);
         }else{
-            alert.setHeaderText(Main.getParametrizzazioneHelper().getBundle().getString("alert.header.error"));
+            alert.setHeaderText("Errore");
         }
         alert.setContentText(messaggio);
         alert.showAndWait();

@@ -52,7 +52,6 @@ public abstract class AbstractModelView<T extends CrudPanel> implements CrudView
     @Override public void onAdd()    { panel.apriDialogAggiungiPubblico(); }
     @Override public void onEdit()   { panel.modificaSelezionato(); }
     @Override public void onDelete() { panel.eliminaSelezionato(); }
-    @Override public void onSave() {} //TODO: Da levare
     protected abstract VBox creaGestioneContenuto();
 
     protected abstract VBox creaStatisticheContenuto();

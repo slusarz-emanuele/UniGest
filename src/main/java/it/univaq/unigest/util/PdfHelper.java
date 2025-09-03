@@ -8,17 +8,12 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Objects;
 
 public class PdfHelper {
 
     public static <T> void esportaTabellaInPdf(TableView<T> table, String titolo, String nomeFile) {
-        FileChooser fileChooser = new FileChooser(); // Mi permette di aprire i files (usa le apis del sistema operativo adoperato)
-        
-        
-        
-        
-        
+        FileChooser fileChooser = new FileChooser();
+
         fileChooser.setTitle("Salva report PDF");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF files (*.pdf)", "*.pdf")); // solo pdf
         fileChooser.setInitialFileName(nomeFile + ".pdf");

@@ -17,10 +17,8 @@ import javafx.scene.control.Control;
 
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class DocentiPannello2 implements CrudPanel {
 

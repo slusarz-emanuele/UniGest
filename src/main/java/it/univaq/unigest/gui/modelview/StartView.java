@@ -125,7 +125,7 @@ public class StartView {
                 studentiBtn,
                 () -> new StudentiModelView(
                         Main.getStudenteService(),
-                        () -> Main.getCorsoDiLaureaManager().getAll(),             // Supplier<List<CorsoDiLaurea>>
+                        () -> Main.getCorsoDiLaureaService().findAll(),             // Supplier<List<CorsoDiLaurea>>
                         id -> {                                                    // Function<String,String> (nome by id)
                             //var c = Main.getCorsoDiLaureaManager().getById(id);
                             //return c != null ? c.getNome() : "";

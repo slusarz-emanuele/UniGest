@@ -1,7 +1,5 @@
 package it.univaq.unigest.gui.componenti;
 
-import it.univaq.unigest.gui.Main;
-import it.univaq.unigest.util.ParametrizzazioneHelper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -60,7 +58,7 @@ public class VistaConDettagliBuilder<T> {
         labelTitolo.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
 
         TextField filtroField = new TextField();
-        filtroField.setPromptText(Main.getParametrizzazioneHelper().getBundle().getString("field.filtra"));
+        filtroField.setPromptText("Filtra");
         filtroField.setPrefWidth(200);
 
         topBar.getChildren().addAll(labelTitolo, filtroField);
@@ -87,10 +85,10 @@ public class VistaConDettagliBuilder<T> {
         // Pulsanti CRUD
         HBox pulsanti = new HBox(10);
         pulsanti.setAlignment(Pos.CENTER_LEFT);
-        Button btnAggiungi = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.aggiungi"));
-        Button btnModifica = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.modifica"));
-        Button btnElimina = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.elimina"));
-        Button btnDeseleziona = new Button(Main.getParametrizzazioneHelper().getBundle().getString("button.deseleziona"));
+        Button btnAggiungi = new Button("Aggiungi");
+        Button btnModifica = new Button("Modifica");
+        Button btnElimina = new Button("Elimina");
+        Button btnDeseleziona = new Button("Deseleziona");
 
         btnAggiungi.setOnAction(e -> onAggiungi.run());
         btnModifica.setOnAction(e -> {
@@ -114,7 +112,7 @@ public class VistaConDettagliBuilder<T> {
         destra.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-background-color: #F9F9F9;");
         HBox.setHgrow(destra, Priority.ALWAYS);
         VBox.setVgrow(destra, Priority.ALWAYS);
-        Label lblDettagli = new Label(Main.getParametrizzazioneHelper().getBundle().getString("label.dettagli"));
+        Label lblDettagli = new Label("Dettagli");
         lblDettagli.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
         destra.getChildren().add(lblDettagli);
 

@@ -1,14 +1,8 @@
 package it.univaq.unigest.gui.modelview;
 
-import it.univaq.unigest.gui.Main;
-import it.univaq.unigest.gui.modelview.pannelli.cdl.CorsiDiLaureaPannello2;
-import it.univaq.unigest.gui.modelview.pannelli.iscrizioni.IscrizioniPannello1;
 import it.univaq.unigest.gui.modelview.pannelli.iscrizioni.IscrizioniPannello2;
-
-import it.univaq.unigest.gui.util.CrudView;
 import it.univaq.unigest.model.Appello;
 import it.univaq.unigest.model.Studente;
-import it.univaq.unigest.service.CorsoDiLaureaService;
 import it.univaq.unigest.service.IscrizioneService;
 import javafx.scene.layout.VBox;
 

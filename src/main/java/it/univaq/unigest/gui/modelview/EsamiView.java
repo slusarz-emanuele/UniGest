@@ -1,14 +1,7 @@
 package it.univaq.unigest.gui.modelview;
 
-import it.univaq.unigest.gui.Main;
-import it.univaq.unigest.gui.modelview.pannelli.aule.AulePannello2;
-import it.univaq.unigest.gui.modelview.pannelli.esami.EsamiPannello1;
 import it.univaq.unigest.gui.modelview.pannelli.esami.EsamiPannello2;
-
-import it.univaq.unigest.gui.util.CrudView;
-import it.univaq.unigest.model.Esame;
 import it.univaq.unigest.model.Iscrizione;
-import it.univaq.unigest.service.AulaService;
 import it.univaq.unigest.service.EsameService;
 import javafx.scene.layout.VBox;
 

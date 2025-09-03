@@ -1,7 +1,6 @@
 package it.univaq.unigest.model;
 
 import it.univaq.unigest.common.Identificabile;
-import it.univaq.unigest.manager.AppelloManager;
 import it.univaq.unigest.manager.EsameManager;
 import it.univaq.unigest.manager.IscrizioneManager;
 

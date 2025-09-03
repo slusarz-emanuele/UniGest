@@ -19,7 +19,7 @@ public class Reloader {
         ricaricaInterfacciaGraficaAppelliPannello2();
         ricaricaInterfacciaGraficaAulePannello2();
         ricaricaInterfacciaGraficaCorsiDiLaureaPannello2();
-        ricaricaInterfacciaGraficaDocentiPannello2();   // <- ora usa il service
+        ricaricaInterfacciaGraficaDocentiPannello2();
         ricaricaInterfacciaGraficaEdificiPannello2();
         ricaricaInterfacciaGraficaEsamiPannello2();
         ricaricaInterfacciaGraficaInsegnamentiPannello2();

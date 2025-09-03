@@ -1,7 +1,6 @@
 package it.univaq.unigest.gui.modelview;
 
 import it.univaq.unigest.gui.modelview.pannelli.studenti.StudentiPannello2;
-import it.univaq.unigest.gui.util.CrudView;
 import it.univaq.unigest.model.CorsoDiLaurea;
 import it.univaq.unigest.service.StudenteService;
 import javafx.scene.layout.VBox;

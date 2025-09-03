@@ -149,4 +149,5 @@ public class EdificiPannello2 implements CrudPanel {
         edificioService.deleteById(e.getId());
         refresh();
     }
+
 }

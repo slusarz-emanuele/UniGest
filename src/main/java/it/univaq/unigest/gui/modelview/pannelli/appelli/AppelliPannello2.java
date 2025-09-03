@@ -1,9 +1,8 @@
 package it.univaq.unigest.gui.modelview.pannelli.appelli;
 
 import it.univaq.unigest.gui.Dialogs;
-import it.univaq.unigest.gui.Main;
 import it.univaq.unigest.gui.componenti.DialogBuilder;
-import it.univaq.unigest.gui.componenti.TabelleHelper;
+import it.univaq.unigest.gui.componenti.TableMiniFactory;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
 import it.univaq.unigest.gui.util.CrudPanel;
 import it.univaq.unigest.gui.util.DialogsParser;
@@ -11,28 +10,22 @@ import it.univaq.unigest.model.Appello;
 import it.univaq.unigest.model.Aula;
 import it.univaq.unigest.model.Docente;
 import it.univaq.unigest.model.Insegnamento;
-import it.univaq.unigest.model.Iscrizione;
-import it.univaq.unigest.model.Verbale;
 import it.univaq.unigest.service.AppelloService;
-import it.univaq.unigest.util.PdfHelper;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class AppelliPannello2 implements CrudPanel {
 
-    // Etichette centralizzate
+    // Etichette
     private static final String L_ID           = "ID";
     private static final String L_INSEGNAMENTO = "Insegnamento";
     private static final String L_DATA         = "Data";
@@ -47,42 +40,38 @@ public class AppelliPannello2 implements CrudPanel {
 
     // Loader esterni
     private final Supplier<List<Insegnamento>> loadInsegnamenti;
-    private final Supplier<List<Aula>> loadAula;
-    private final Supplier<List<Docente>> loadDocenti;
+    private final Supplier<List<Aula>>         loadAule;
+    private final Supplier<List<Docente>>      loadDocenti;
 
     public AppelliPannello2(AppelloService appelloService,
                             Supplier<List<Insegnamento>> loadInsegnamenti,
-                            Supplier<List<Aula>> loadAula,
+                            Supplier<List<Aula>> loadAule,
                             Supplier<List<Docente>> loadDocenti) {
-        this.appelloService = appelloService;
+        this.appelloService   = appelloService;
         this.loadInsegnamenti = loadInsegnamenti;
-        this.loadAula = loadAula;
-        this.loadDocenti = loadDocenti;
-        this.builder = new VistaConDettagliBuilder<>(appelloService.findAll());
+        this.loadAule         = loadAule;
+        this.loadDocenti      = loadDocenti;
+        this.builder          = new VistaConDettagliBuilder<>(appelloService.findAll());
     }
 
+    // Blocchiamo il costruttore di default
+    private AppelliPannello2() {
+        this.appelloService = null;
+        this.builder = null;
+        this.loadInsegnamenti = null;
+        this.loadAule = null;
+        this.loadDocenti = null;
+    }
+
+    // ===== CrudPanel API =====
     @Override
     public VBox getView() {
-        LinkedHashMap<String, Function<Appello, String>> colonne = colonne();
-
-        // Dettagli = colonne + link azioni
-        LinkedHashMap<String, Function<Appello, String>> dettagli = new LinkedHashMap<>(colonne);
-        dettagli.put("Esporta in PDF", a -> "Esporta in PDF");
-        builder.setLinkAction("Esporta in PDF",
-                a -> PdfHelper.esportaEntita(a, "Appello " + a.getId(), "Appello_" + a.getId()));
-
-        dettagli.put("Iscrizioni", a -> "Apri");
-        builder.setLinkAction("Iscrizioni", this::mostraIscrizioniDaAppello);
-
-        dettagli.put("Verbali", a -> "Apri");
-        builder.setLinkAction("Verbali", this::mostraVerbaliDaAppello);
-
         return builder.build(
                 "Gestione Appelli",
-                colonne,
-                dettagli,
+                colonne(),
+                dettagli(),
                 this::apriDialogAggiungi,
-                this::mostraDialogModificaAppello,
+                this::mostraDialogModifica,
                 this::elimina
         );
     }
@@ -94,7 +83,7 @@ public class AppelliPannello2 implements CrudPanel {
     public void modificaSelezionato() {
         var sel = builder.getTabella().getSelectionModel().getSelectedItem();
         if (sel == null) { Dialogs.showError("Nessuna selezione", "Seleziona un appello."); return; }
-        mostraDialogModificaAppello(sel);
+        mostraDialogModifica(sel);
     }
 
     @Override
@@ -106,258 +95,197 @@ public class AppelliPannello2 implements CrudPanel {
 
     @Override
     public void refresh() {
-        builder.refresh(Main.getAppelloManager().getAll());
+        builder.refresh(appelloService.findAll());
     }
 
     public VistaConDettagliBuilder<Appello> getBuilder() { return builder; }
 
-    // ===== Colonne =====
+    // ===== Colonne / Dettagli =====
     private LinkedHashMap<String, Function<Appello, String>> colonne() {
         LinkedHashMap<String, Function<Appello, String>> map = new LinkedHashMap<>();
-        map.put(L_ID, Appello::getId);
-        // Mostriamo l'ID dell'insegnamento; se hai un helper per il nome, sostituisci qui.
-        map.put(L_INSEGNAMENTO, Appello::getRidInsegnamento);
-        map.put(L_DATA, a -> a.getData() != null ? a.getData().toString() : "");
-        map.put(L_ORA,  a -> a.getOra() != null ? a.getOra().toString() : "");
-        map.put(L_AULA, a -> a.getRidAula() != null ? Main.getAulaManager().getAulaNomeDaId(a.getRidAula()) : "");
-        map.put(L_DOCENTE, a -> a.getRidDocente() != null ? Main.getDocenteManager().getGeneralitaDaCf(a.getRidDocente()) : "");
-        map.put(L_VERBALE, a -> a.getRidVerbale() != null ? a.getRidVerbale() : "-");
+        map.put(L_ID,           Appello::getId);                    // mostra String id
+        map.put(L_INSEGNAMENTO, Appello::getRidInsegnamento);       // qui mostriamo l'id dell'insegnamento
+        map.put(L_DATA,         a -> a.getData() != null ? a.getData().toString() : "");
+        map.put(L_ORA,          a -> a.getOra()  != null ? a.getOra().toString()  : "");
+        map.put(L_AULA,         a -> a.getRidAula()    != null ? a.getRidAula()    : "");
+        map.put(L_DOCENTE,      a -> a.getRidDocente() != null ? a.getRidDocente() : "");
+        map.put(L_VERBALE,      a -> a.getRidVerbale() != null ? a.getRidVerbale() : "-");
         return map;
     }
 
-    // ===== Dialoghi CRUD =====
+    private LinkedHashMap<String, Function<Appello, String>> dettagli() {
+        return new LinkedHashMap<>(colonne());
+    }
 
+    // ===== Dialoghi CRUD =====
     private void apriDialogAggiungi() {
-        DialogBuilder<Appello> dialog = new DialogBuilder<>(
+        mostraDialogoCrud(
                 "Nuovo Appello",
                 "Inserisci i dati dell'appello",
+                null,
+                aCreato -> appelloService.create(aCreato), // id gestito dal repository
+                "Successo",
+                "Appello aggiunto correttamente!"
+        );
+    }
+
+    private void mostraDialogModifica(Appello appello) {
+        mostraDialogoCrud(
+                "Modifica Appello",
+                "Modifica i dati dell'appello",
+                appello,
+                aAgg -> appelloService.update(aAgg),
+                "Successo",
+                "Appello modificato correttamente!"
+        );
+    }
+
+    private void mostraDialogoCrud(String titolo,
+                                   String header,
+                                   Appello iniziale,
+                                   Function<Appello, Appello> persister,
+                                   String successTitle,
+                                   String successMessage) {
+        DialogBuilder<Appello> dialog = new DialogBuilder<>(
+                titolo,
+                header,
                 campi -> {
-                    // Insegnamento (tabella single)
-                    @SuppressWarnings("unchecked")
-                    TableView<Insegnamento> tblIns = (TableView<Insegnamento>) campi.get(L_INSEGNAMENTO);
-                    tblIns.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-                    Insegnamento insSel = tblIns.getSelectionModel().getSelectedItem();
-                    if (insSel == null) throw new IllegalArgumentException("Seleziona un insegnamento.");
-
-                    // Data
-                    LocalDate data = ((DatePicker) campi.get(L_DATA)).getValue();
-                    if (data == null) throw new IllegalArgumentException("Seleziona una data.");
-
-                    // Ora
-                    String oraTxt = DialogsParser.validaCampo(campi, L_ORA);
-                    LocalTime ora;
-                    try {
-                        ora = LocalTime.parse(oraTxt);
-                    } catch (DateTimeParseException ex) {
-                        throw new IllegalArgumentException("Ora non valida. Usa formato HH:mm.");
-                    }
-
-                    // Aula (tabella single)
-                    @SuppressWarnings("unchecked")
-                    TableView<Aula> tblAule = (TableView<Aula>) campi.get(L_AULA);
-                    tblAule.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-                    Aula aulaSel = tblAule.getSelectionModel().getSelectedItem();
-                    if (aulaSel == null) throw new IllegalArgumentException("Seleziona un'aula.");
-
-                    // Docente (tabella single)
-                    @SuppressWarnings("unchecked")
-                    TableView<Docente> tblDoc = (TableView<Docente>) campi.get(L_DOCENTE);
-                    tblDoc.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-                    Docente docSel = tblDoc.getSelectionModel().getSelectedItem();
-                    if (docSel == null) throw new IllegalArgumentException("Seleziona un docente.");
-
-                    Appello nuovo = new Appello(
-                            Main.getAppelloManager().assegnaIndiceCorrente(),
-                            insSel.getId(),
-                            data,
-                            ora,
-                            aulaSel.getId(),
-                            docSel.getCf(),
-                            null // ridVerbale inizialmente nullo
-                    );
-                    Main.getAppelloManager().aggiungi(nuovo);
-                    return nuovo;
+                    Appello target = estraiAppelloDaCampi(campi, iniziale);
+                    return persister.apply(target);
                 },
-                a -> {
-                    refresh();
-                    Dialogs.showInfo("Successo", "Appello aggiunto con successo!");
-                }
+                a -> { refresh(); Dialogs.showInfo(successTitle, successMessage); }
         );
 
-        dialog.aggiungiCampo(L_INSEGNAMENTO, TabelleHelper.generaTabellaFkInsegnamento(SelectionMode.SINGLE));
-        dialog.aggiungiCampo(L_DATA, new DatePicker());
-        dialog.aggiungiCampo(L_ORA, new TextField());
-        dialog.aggiungiCampo(L_AULA, TabelleHelper.generaTabellaFkAule(SelectionMode.SINGLE));
-        dialog.aggiungiCampo(L_DOCENTE, TabelleHelper.generaTabellaFkDocenti(SelectionMode.SINGLE));
+        configuraCampi(dialog, iniziale);
         dialog.mostra();
     }
 
-    private void mostraDialogModificaAppello(Appello appello) {
-        DialogBuilder<Appello> dialog = new DialogBuilder<>(
-                "Modifica Appello",
-                "Aggiorna i dati dell'appello",
-                campi -> {
-                    // Insegnamento
-                    @SuppressWarnings("unchecked")
-                    TableView<Insegnamento> tblIns = (TableView<Insegnamento>) campi.get(L_INSEGNAMENTO);
-                    Insegnamento insSel = tblIns.getSelectionModel().getSelectedItem();
-                    if (insSel == null) throw new IllegalArgumentException("Seleziona un insegnamento.");
-
-                    // Aula
-                    @SuppressWarnings("unchecked")
-                    TableView<Aula> tblAule = (TableView<Aula>) campi.get(L_AULA);
-                    Aula aulaSel = tblAule.getSelectionModel().getSelectedItem();
-                    if (aulaSel == null) throw new IllegalArgumentException("Seleziona un'aula.");
-
-                    // Docente
-                    @SuppressWarnings("unchecked")
-                    TableView<Docente> tblDoc = (TableView<Docente>) campi.get(L_DOCENTE);
-                    Docente docSel = tblDoc.getSelectionModel().getSelectedItem();
-                    if (docSel == null) throw new IllegalArgumentException("Seleziona un docente.");
-
-                    // Data/Ora
-                    LocalDate data = ((DatePicker) campi.get(L_DATA)).getValue();
-                    if (data == null) throw new IllegalArgumentException("Seleziona una data.");
-
-                    String oraTxt = DialogsParser.validaCampo(campi, L_ORA);
-                    LocalTime ora;
-                    try {
-                        ora = LocalTime.parse(oraTxt);
-                    } catch (DateTimeParseException ex) {
-                        throw new IllegalArgumentException("Ora non valida. Usa formato HH:mm.");
-                    }
-
-                    // Aggiorna
-                    appello.setRidInsegnamento(insSel.getId());
-                    appello.setRidAula(aulaSel.getId());
-                    appello.setRidDocente(docSel.getCf());
-                    appello.setData(data);
-                    appello.setOra(ora);
-
-                    Main.getAppelloManager().aggiorna(appello);
-                    return appello;
-                },
-                a -> {
-                    refresh();
-                    Dialogs.showInfo("Successo", "Appello modificato con successo!");
-                }
+    // ===== Configurazione campi (ordine richiesto: Insegnamento -> Data -> Ora -> Aula -> Docente) =====
+    private void configuraCampi(DialogBuilder<Appello> dialog, Appello iniziale) {
+        // Insegnamento
+        TableView<Insegnamento> tabIns = TableMiniFactory.creaTabella(
+                loadInsegnamenti,
+                SelectionMode.SINGLE,
+                240,
+                new LinkedHashMap<>() {{
+                    put("ID",   Insegnamento::getId);
+                    put("Nome", Insegnamento::getNome);
+                }}
         );
+        if (iniziale != null && iniziale.getRidInsegnamento() != null) {
+            tabIns.getItems().stream()
+                    .filter(i -> i.getId().equals(iniziale.getRidInsegnamento()))
+                    .findFirst().ifPresent(i -> tabIns.getSelectionModel().select(i));
+        }
 
-        // Preselezioni
-        TableView<Insegnamento> tblIns = TabelleHelper.generaTabellaFkInsegnamento(SelectionMode.SINGLE);
-        tblIns.getItems().stream()
-                .filter(i -> i.getId().equals(appello.getRidInsegnamento()))
-                .findFirst().ifPresent(i -> tblIns.getSelectionModel().select(i));
+        // Data
+        DatePicker dpData = new DatePicker(iniziale != null ? iniziale.getData() : null);
 
-        TableView<Aula> tblAule = TabelleHelper.generaTabellaFkAule(SelectionMode.SINGLE);
-        tblAule.getItems().stream()
-                .filter(a -> a.getId().equals(appello.getRidAula()))
-                .findFirst().ifPresent(a -> tblAule.getSelectionModel().select(a));
+        // Ora (TextField in formato HH:mm)
+        TextField tfOra = new TextField(iniziale != null && iniziale.getOra() != null ? iniziale.getOra().toString() : "");
+        tfOra.setPromptText("HH:mm");
 
-        TableView<Docente> tblDoc = TabelleHelper.generaTabellaFkDocenti(SelectionMode.SINGLE);
-        tblDoc.getItems().stream()
-                .filter(d -> d.getCf().equals(appello.getRidDocente()))
-                .findFirst().ifPresent(d -> tblDoc.getSelectionModel().select(d));
+        // Aula
+        TableView<Aula> tabAule = TableMiniFactory.creaTabella(
+                loadAule,
+                SelectionMode.SINGLE,
+                220,
+                new LinkedHashMap<>() {{
+                    put("ID",       Aula::getId);
+                    put("Capienza", a -> Integer.toString(a.getCapienza()));
+                }}
+        );
+        if (iniziale != null && iniziale.getRidAula() != null) {
+            tabAule.getItems().stream()
+                    .filter(a -> a.getId().equals(iniziale.getRidAula()))
+                    .findFirst().ifPresent(a -> tabAule.getSelectionModel().select(a));
+        }
 
-        dialog.aggiungiCampo(L_INSEGNAMENTO, tblIns);
-        dialog.aggiungiCampo(L_DATA, new DatePicker(appello.getData()));
-        dialog.aggiungiCampo(L_ORA, new TextField(appello.getOra() != null ? appello.getOra().toString() : ""));
-        dialog.aggiungiCampo(L_AULA, tblAule);
-        dialog.aggiungiCampo(L_DOCENTE, tblDoc);
+        // Docente
+        TableView<Docente> tabDoc = TableMiniFactory.creaTabella(
+                loadDocenti,
+                SelectionMode.SINGLE,
+                240,
+                new LinkedHashMap<>() {{
+                    put("CF",      Docente::getCf);
+                    put("Nome",    Docente::getNome);
+                    put("Cognome", Docente::getCognome);
+                }}
+        );
+        if (iniziale != null && iniziale.getRidDocente() != null) {
+            tabDoc.getItems().stream()
+                    .filter(d -> d.getCf().equals(iniziale.getRidDocente()))
+                    .findFirst().ifPresent(d -> tabDoc.getSelectionModel().select(d));
+        }
 
-        dialog.mostra();
+        // Aggiunta campi nel giusto ordine
+        dialog.aggiungiCampo(L_INSEGNAMENTO, tabIns);
+        dialog.aggiungiCampo(L_DATA,         dpData);
+        dialog.aggiungiCampo(L_ORA,          tfOra);
+        dialog.aggiungiCampo(L_AULA,         tabAule);
+        dialog.aggiungiCampo(L_DOCENTE,      tabDoc);
+    }
+
+    // ===== Lettura/validazione campi =====
+    private Appello estraiAppelloDaCampi(Map<String, Control> campi, Appello target) {
+        // Insegnamento
+        @SuppressWarnings("unchecked")
+        TableView<Insegnamento> tabIns = (TableView<Insegnamento>) campi.get(L_INSEGNAMENTO);
+        Insegnamento insSel = tabIns.getSelectionModel().getSelectedItem();
+        if (insSel == null) throw new IllegalArgumentException("Seleziona un insegnamento.");
+
+        // Data
+        LocalDate data = ((DatePicker) campi.get(L_DATA)).getValue();
+        if (data == null) throw new IllegalArgumentException("Seleziona una data.");
+
+        // Ora
+        String oraStr = DialogsParser.validaCampo(campi, L_ORA); // controlla non vuoto
+        LocalTime ora;
+        try {
+            ora = LocalTime.parse(oraStr);
+        } catch (DateTimeParseException ex) {
+            throw new IllegalArgumentException("Ora non valida. Usa il formato HH:mm (es. 09:30).");
+        }
+
+        // Aula
+        @SuppressWarnings("unchecked")
+        TableView<Aula> tabAule = (TableView<Aula>) campi.get(L_AULA);
+        Aula aulaSel = tabAule.getSelectionModel().getSelectedItem();
+        if (aulaSel == null) throw new IllegalArgumentException("Seleziona un'aula.");
+
+        // Docente
+        @SuppressWarnings("unchecked")
+        TableView<Docente> tabDoc = (TableView<Docente>) campi.get(L_DOCENTE);
+        Docente docSel = tabDoc.getSelectionModel().getSelectedItem();
+        if (docSel == null) throw new IllegalArgumentException("Seleziona un docente.");
+
+        // Costruzione/aggiornamento
+        if (target == null) {
+            // NB: per l’auto-increment il repository deve riconoscere l’ID "nuovo".
+            // Se il tuo modello non consente id null, passa un placeholder e lascia
+            // al repository/servizio il compito di assegnare quello definitivo.
+            return new Appello(
+                    0,
+                    insSel.getId(),
+                    data,
+                    ora,
+                    aulaSel.getId(),
+                    docSel.getCf(),
+                    null                        // ridVerbale inizialmente assente
+            );
+        } else {
+            target.setRidInsegnamento(insSel.getId());
+            target.setData(data);
+            target.setOra(ora);
+            target.setRidAula(aulaSel.getId());
+            target.setRidDocente(docSel.getCf());
+            // non tocchiamo ridVerbale qui
+            return target;
+        }
     }
 
     private void elimina(Appello a) {
-        Main.getAppelloManager().rimuovi(a);
+        appelloService.deleteById(a.getId());
         refresh();
-    }
-
-    // ===== Finestrine di dettaglio =====
-
-    private void mostraIscrizioniDaAppello(Appello appello) {
-        List<Iscrizione> iscrizioni = Main.getIscrizioneManager()
-                .getIscrizioniDaAppello(String.valueOf(appello.getId()));
-
-        Stage stage = new Stage();
-        TableView<Iscrizione> table = new TableView<>();
-
-        TableColumn<Iscrizione, String> colId = new TableColumn<>("ID");
-        colId.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().getId())));
-
-        TableColumn<Iscrizione, String> colStudente = new TableColumn<>("Studente");
-        colStudente.setCellValueFactory(d -> new SimpleStringProperty(
-                d.getValue().getRidStudenteCf() != null
-                        ? Main.getStudenteManager().getGeneralitaDaCf(d.getValue().getRidStudenteCf())
-                        : "-"
-        ));
-
-        TableColumn<Iscrizione, String> colData = new TableColumn<>("Data Iscrizione");
-        colData.setCellValueFactory(d -> new SimpleStringProperty(
-                d.getValue().getDataIscrizione() != null ? d.getValue().getDataIscrizione().toString() : "-"
-        ));
-
-        TableColumn<Iscrizione, String> colRitirato = new TableColumn<>("Ritirato");
-        colRitirato.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getRitirato() ? "Sì" : "No"));
-
-        table.getColumns().addAll(colId, colStudente, colData, colRitirato);
-        table.setItems(FXCollections.observableArrayList(iscrizioni));
-
-        Button exportBtn = new Button("Esporta in PDF");
-        exportBtn.setOnAction(e -> PdfHelper.esportaTabellaInPdf(
-                table,
-                "Iscrizioni all'appello ID: " + appello.getId(),
-                "Iscrizioni_Appello_" + appello.getId()
-        ));
-
-        VBox root = new VBox(10, table, exportBtn);
-        root.setStyle("-fx-padding: 10;");
-
-        stage.setScene(new Scene(root, 700, 400));
-        stage.setTitle("Iscrizioni — Appello " + appello.getId());
-        stage.show();
-    }
-
-    private void mostraVerbaliDaAppello(Appello appello) {
-        List<Verbale> verbali = Main.getVerbaleManager().getVerbaliDaAppello(String.valueOf(appello.getId()));
-
-        Stage stage = new Stage();
-        TableView<Verbale> table = new TableView<>();
-
-        TableColumn<Verbale, String> colId = new TableColumn<>("ID Verbale");
-        colId.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().getId())));
-
-        TableColumn<Verbale, String> colDataCh = new TableColumn<>("Data Chiusura");
-        colDataCh.setCellValueFactory(d -> new SimpleStringProperty(
-                d.getValue().getDataChiusura() != null ? d.getValue().getDataChiusura().toString() : "-"
-        ));
-
-        TableColumn<Verbale, String> colStato = new TableColumn<>("Stato");
-        colStato.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getChiuso() ? "Chiuso" : "Aperto"));
-
-        TableColumn<Verbale, String> colFirmato = new TableColumn<>("Firmato");
-        colFirmato.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getFirmato() ? "Sì" : "No"));
-
-        TableColumn<Verbale, String> colNote = new TableColumn<>("Note");
-        colNote.setCellValueFactory(d -> new SimpleStringProperty(
-                d.getValue().getNote() != null ? d.getValue().getNote() : "-"
-        ));
-
-        table.getColumns().addAll(colId, colDataCh, colStato, colFirmato, colNote);
-        table.setItems(FXCollections.observableArrayList(verbali));
-
-        Button exportBtn = new Button("Esporta in PDF");
-        exportBtn.setOnAction(e -> PdfHelper.esportaTabellaInPdf(
-                table,
-                "Verbali dell'appello ID: " + appello.getId(),
-                "Verbali_Appello_" + appello.getId()
-        ));
-
-        VBox root = new VBox(10, table, exportBtn);
-        root.setStyle("-fx-padding: 10;");
-
-        stage.setScene(new Scene(root, 700, 400));
-        stage.setTitle("Verbali — Appello " + appello.getId());
-        stage.show();
     }
 }

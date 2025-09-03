@@ -1,18 +1,18 @@
 package it.univaq.unigest.gui.modelview.pannelli.edifici;
 
 import it.univaq.unigest.gui.Dialogs;
-import it.univaq.unigest.gui.Main;
 import it.univaq.unigest.gui.componenti.DialogBuilder;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
 import it.univaq.unigest.gui.util.CrudPanel;
 import it.univaq.unigest.gui.util.DialogsParser;
 import it.univaq.unigest.model.Edificio;
 import it.univaq.unigest.service.EdificioService;
-import it.univaq.unigest.util.PdfHelper;
+import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 public class EdificiPannello2 implements CrudPanel {
@@ -30,20 +30,19 @@ public class EdificiPannello2 implements CrudPanel {
         this.builder = new VistaConDettagliBuilder<>(edificioService.findAll());
     }
 
+    // Blocchiamo il costruttore di default
+    private EdificiPannello2() {
+        this.edificioService = null;
+        this.builder = null;
+    }
+
+    // ===== CrudPanel API =====
     @Override
     public VBox getView() {
-        LinkedHashMap<String, Function<Edificio, String>> colonne = colonne();
-
-        LinkedHashMap<String, Function<Edificio, String>> dettagli = new LinkedHashMap<>(colonne);
-        dettagli.put("Esporta in PDF", e -> "Esporta in PDF");
-        builder.setLinkAction("Esporta in PDF", e ->
-                PdfHelper.esportaEntita(e, "Edificio " + e.getId(), "Edificio_" + e.getId())
-        );
-
         return builder.build(
                 "Gestione Edifici",
-                colonne,
-                dettagli,
+                colonne(),
+                dettagli(),
                 this::apriDialogAggiungi,
                 this::mostraDialogModifica,
                 this::elimina
@@ -69,66 +68,85 @@ public class EdificiPannello2 implements CrudPanel {
 
     @Override
     public void refresh() {
-        builder.refresh(Main.getEdificioManager().getAll());
+        builder.refresh(edificioService.findAll());
     }
 
     public VistaConDettagliBuilder<Edificio> getBuilder() { return builder; }
 
-    // ===== Colonne =====
+    // ===== Colonne / Dettagli =====
     private LinkedHashMap<String, Function<Edificio, String>> colonne() {
         LinkedHashMap<String, Function<Edificio, String>> map = new LinkedHashMap<>();
-        map.put(L_ID, Edificio::getId);
+        map.put(L_ID,   Edificio::getId);
         map.put(L_NOME, Edificio::getNome);
         return map;
     }
 
+    private LinkedHashMap<String, Function<Edificio, String>> dettagli() {
+        return new LinkedHashMap<>(colonne());
+    }
+
     // ===== Dialoghi CRUD =====
     private void apriDialogAggiungi() {
-        DialogBuilder<Edificio> dialog = new DialogBuilder<>(
+        mostraDialogoCrud(
                 "Nuovo Edificio",
                 "Inserisci i dati dell'edificio",
-                campi -> {
-                    String nome = DialogsParser.validaCampo(campi, L_NOME);
-                    Edificio nuovo = new Edificio(
-                            String.valueOf(Main.getEdificioManager().assegnaIndiceCorrente()),
-                            nome
-                    );
-                    Main.getEdificioManager().aggiungi(nuovo);
-                    return nuovo;
-                },
-                e -> {
-                    refresh();
-                    Dialogs.showInfo("Successo", "Edificio aggiunto con successo!");
-                }
+                null,
+                eCreato -> edificioService.create(eCreato),   // id null -> auto-increment nel repo
+                "Successo",
+                "Edificio aggiunto correttamente!"
         );
-
-        dialog.aggiungiCampo(L_NOME, new TextField());
-        dialog.mostra();
     }
 
     private void mostraDialogModifica(Edificio edificio) {
-        DialogBuilder<Edificio> dialog = new DialogBuilder<>(
+        mostraDialogoCrud(
                 "Modifica Edificio",
-                "Aggiorna i dati dell'edificio",
+                "Modifica i dati dell'edificio",
+                edificio,
+                eAgg -> edificioService.update(eAgg),
+                "Successo",
+                "Edificio modificato correttamente!"
+        );
+    }
+
+    private void mostraDialogoCrud(String titolo,
+                                   String header,
+                                   Edificio iniziale,
+                                   Function<Edificio, Edificio> persister,
+                                   String successTitle,
+                                   String successMessage) {
+        DialogBuilder<Edificio> dialog = new DialogBuilder<>(
+                titolo,
+                header,
                 campi -> {
-                    String nome = ((TextField) campi.get(L_NOME)).getText();
-                    edificio.setNome(nome);
-                    Main.getEdificioManager().aggiorna(edificio);
-                    return edificio;
+                    Edificio target = estraiEdificioDaCampi(campi, iniziale);
+                    return persister.apply(target);
                 },
-                e -> {
-                    refresh();
-                    Dialogs.showInfo("Successo", "Edificio modificato con successo!");
-                }
+                e -> { refresh(); Dialogs.showInfo(successTitle, successMessage); }
         );
 
-        dialog.aggiungiCampo(L_ID, new TextField(edificio.getId()) {{ setEditable(false); }});
-        dialog.aggiungiCampo(L_NOME, new TextField(edificio.getNome()));
+        configuraCampi(dialog, iniziale);
         dialog.mostra();
     }
 
+    private void configuraCampi(DialogBuilder<Edificio> dialog, Edificio iniziale) {
+        // Solo il nome Ã¨ editabile; l'ID viene gestito dal repository
+        dialog.aggiungiCampo(L_NOME, new TextField(iniziale != null ? iniziale.getNome() : ""));
+    }
+
+    private Edificio estraiEdificioDaCampi(Map<String, Control> campi, Edificio target) {
+        String nome = DialogsParser.validaCampo(campi, L_NOME);
+
+        if (target == null) {
+            // create: id null per auto-increment
+            return new Edificio(null, nome);
+        } else {
+            target.setNome(nome);
+            return target;
+        }
+    }
+
     private void elimina(Edificio e) {
-        Main.getEdificioManager().rimuovi(e);
+        edificioService.deleteById(e.getId());
         refresh();
     }
 }

@@ -104,7 +104,7 @@ public class EsamiPannello2 implements CrudPanel {
         return columns;
     }
 
-   // Dettagli, TODO: Aggiungere i dettagli o verificare che siano solo questi
+   // Dettagli
    private LinkedHashMap<String, Function<Esame, String>> dettagli() {
        LinkedHashMap<String, Function<Esame, String>> details = new LinkedHashMap<>(colonne());
        return details;
@@ -163,8 +163,9 @@ public class EsamiPannello2 implements CrudPanel {
                 0,
                 // TODO: da modificare per iscrizioni
                 new LinkedHashMap<>() {{
-                    put("Data", a -> LocalDateUtil.toString(a.getData()));
-                    put("Docente", Appello::getRidDocente);
+                    put("Data", a -> LocalDateUtil.toString(a.getDataIscrizione()));
+                    put("Studente", Iscrizione::getRidStudenteCf);
+                    put("Appello", a -> String.valueOf(a.getRidAppello()));
                 }}
         );
 
@@ -177,41 +178,52 @@ public class EsamiPannello2 implements CrudPanel {
         }
 
 
-        dialog.aggiungiCampo(L_APPELLO, tabIscrizione);
-        dialog.aggiungiCampo(L_DATA_CHIUSURA, new DatePicker());
-        dialog.aggiungiCampo(L_CHIUSO, new CheckBox(L_CHIUSO));
-        dialog.aggiungiCampo(L_FIRMATO, new CheckBox(L_FIRMATO));
-        dialog.aggiungiCampo(L_NOTE, new TextField());
+        dialog.aggiungiCampo(L_ISCRIZIONE, tabIscrizione);
+        dialog.aggiungiCampo(L_VOTO, generaComboVoti(iniziale != null ? iniziale.getVoto() : null));
+        dialog.aggiungiCampo(L_LODE, new CheckBox(L_LODE));
+        dialog.aggiungiCampo(L_RIFIUTATO, new CheckBox(L_RIFIUTATO));
+        dialog.aggiungiCampo(L_VERBALIZZATO, new CheckBox(L_VERBALIZZATO));
     }
 
     private Esame estraiEsameDaCampi(Map<String, Control> campi, Esame target) {
-        // Esame id
+        // Esame id -> selezione Iscrizione
         @SuppressWarnings("unchecked")
-        TableView<Iscrizione> tabIscrizioni = (TableView<Iscrizione>) campi.get(L_APPELLO);
+        TableView<Iscrizione> tabIscrizioni = (TableView<Iscrizione>) campi.get(L_ISCRIZIONE);
         if (tabIscrizioni == null) {
-            throw new IllegalStateException("Campo 'Iscrizioni' non trovato nel dialog.");
+            throw new IllegalStateException("Campo 'Iscrizione' non trovato nel dialog.");
         }
         Iscrizione sel = tabIscrizioni.getSelectionModel().getSelectedItem();
         if (sel == null) {
-            throw new IllegalArgumentException("Seleziona una iscrizione.");
+            throw new IllegalArgumentException("Seleziona un'iscrizione.");
         }
         String iscrizioneId = String.valueOf(sel.getId());
 
-        // Altri Campi (da modificare)
-        LocalDate dataChiusura = ((DatePicker) campi.get(L_DATA_CHIUSURA)).getValue();
-        boolean chiuso = ((CheckBox) campi.get(L_CHIUSO)).isSelected();
-        boolean firmato = ((CheckBox) campi.get(L_FIRMATO)).isSelected();
-        String note = ((TextField) campi.get(L_NOTE)).getText();
+        // Altri Campi
+        @SuppressWarnings("unchecked")
+        ComboBox<Double> cbVoto = (ComboBox<Double>) campi.get(L_VOTO);
+        Double voto = cbVoto != null ? cbVoto.getValue() : null;
+        double votoVal = (voto != null) ? voto : 0.0;
+
+        boolean lode         = ((CheckBox) campi.get(L_LODE)).isSelected();
+        boolean rifiutato    = ((CheckBox) campi.get(L_RIFIUTATO)).isSelected();
+        boolean verbalizzato = ((CheckBox) campi.get(L_VERBALIZZATO)).isSelected();
 
         if (target == null) {
             // id null -> il repository assegnerà l'auto-increment
-            return new Iscrizione(null, appelloId, dataChiusura, chiuso, firmato, note, null);
+            return new Esame(
+                    null,
+                    iscrizioneId,
+                    votoVal,
+                    lode,
+                    rifiutato,
+                    verbalizzato
+            );
         } else {
-            target.setAppelloId(appelloId);
-            target.setDataChiusura(dataChiusura);
-            target.setChiuso(chiuso);
-            target.setFirmato(firmato);
-            target.setNote(note);
+            target.setIscrizioneId(iscrizioneId);
+            target.setVoto(votoVal);
+            target.setLode(lode);
+            target.setRifiutato(rifiutato);
+            target.setVerbalizzato(verbalizzato);
             return target;
         }
     }
@@ -220,6 +232,7 @@ public class EsamiPannello2 implements CrudPanel {
         esameService.deleteById(v.getId());
         refresh();
     }
+
     private ComboBox<Double> generaComboVoti(Double preselezione) {
         List<Double> voti = new ArrayList<>();
         for (double v = 0.0; v <= 30.0 + 1e-9; v += 0.25) voti.add(Math.round(v * 100.0) / 100.0);

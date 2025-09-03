@@ -46,7 +46,7 @@ public class FileJsonRepository<T extends Identificabile<String>> implements Rep
 
     @Override
     public T save (T e){
-        if(e.getId() == null || e.getId().isBlank() || e.getId().equalsIgnoreCase("null")){
+        if(e.getId() == null || e.getId().isBlank() || e.getId().equalsIgnoreCase("null") || e.getId().equals("0")){
             e.setId(nextId());
         }
         findById(e.getId()).ifPresentOrElse(

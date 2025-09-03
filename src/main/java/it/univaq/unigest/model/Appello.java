@@ -30,6 +30,7 @@ public class Appello implements Identificabile<String> {
         this.ridVerbale=ridVerbale;
 
     }
+
     @Override
     public String getId(){return String.valueOf(this.id);}
 

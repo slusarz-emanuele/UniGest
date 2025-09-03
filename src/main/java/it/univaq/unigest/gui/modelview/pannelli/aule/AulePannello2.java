@@ -1,25 +1,19 @@
 package it.univaq.unigest.gui.modelview.pannelli.aule;
 
 import it.univaq.unigest.gui.Dialogs;
-import it.univaq.unigest.gui.Main;
 import it.univaq.unigest.gui.componenti.DialogBuilder;
-import it.univaq.unigest.gui.componenti.TabelleHelper;
+import it.univaq.unigest.gui.componenti.TableMiniFactory;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
 import it.univaq.unigest.gui.util.CrudPanel;
-import it.univaq.unigest.gui.util.DialogsParser;
 import it.univaq.unigest.model.Aula;
-import it.univaq.unigest.model.CorsoDiLaurea;
 import it.univaq.unigest.model.Edificio;
 import it.univaq.unigest.service.AulaService;
-import it.univaq.unigest.service.StudenteService;
-import it.univaq.unigest.util.PdfHelper;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -37,6 +31,7 @@ public class AulePannello2 implements CrudPanel {
     // Loader Esterni
     private final Supplier<List<Edificio>> loadEdifici;
 
+    // Costruttore
     public AulePannello2(AulaService aulaService,
                          Supplier<List<Edificio>> loadEdifici) {
         this.aulaService = aulaService;
@@ -44,20 +39,20 @@ public class AulePannello2 implements CrudPanel {
         this.builder = new VistaConDettagliBuilder<>(aulaService.findAll());
     }
 
+    // Blocchiamo il costruttore di default
+    private AulePannello2() {
+        this.aulaService = null;
+        this.loadEdifici = null;
+        this.builder = null;
+    }
+
+    // API CrudPanel
     @Override
     public VBox getView() {
-        LinkedHashMap<String, Function<Aula, String>> colonne = colonne();
-
-        LinkedHashMap<String, Function<Aula, String>> dettagli = new LinkedHashMap<>(colonne);
-        dettagli.put("Esporta in PDF", a -> "Esporta in PDF");
-        builder.setLinkAction("Esporta in PDF", a ->
-                PdfHelper.esportaEntita(a, "Aula " + a.getId(), "Aula_" + a.getId())
-        );
-
         return builder.build(
                 "Gestione Aule",
-                colonne,
-                dettagli,
+                colonne(),
+                dettagli(),
                 this::apriDialogAggiungi,
                 this::mostraDialogModificaAula,
                 this::elimina
@@ -83,95 +78,141 @@ public class AulePannello2 implements CrudPanel {
 
     @Override
     public void refresh() {
-        builder.refresh(Main.getAulaManager().getAll());
+        builder.refresh(aulaService.findAll());
     }
 
     public VistaConDettagliBuilder<Aula> getBuilder() { return builder; }
 
-    // ===== Colonne =====
+    // Colonne
     private LinkedHashMap<String, Function<Aula, String>> colonne() {
-        LinkedHashMap<String, Function<Aula, String>> map = new LinkedHashMap<>();
-        map.put(L_ID, Aula::getId);
-        map.put(L_CAPIENZA, a -> Integer.toString(a.getCapienza()));
-        map.put(L_EDIFICIO, a -> Main.getEdificioManager().getNomeEdificioDaId(a.getEdificio()));
-        return map;
+        LinkedHashMap<String, Function<Aula, String>> columns = new LinkedHashMap<>();
+        columns.put(L_ID, Aula::getId);
+        columns.put(L_CAPIENZA, a -> Integer.toString(a.getCapienza()));
+        columns.put(L_EDIFICIO, a -> nomeEdificioById(a.getEdificio()));
+        return columns;
     }
 
-    // ===== Dialoghi CRUD =====
-    private void apriDialogAggiungi() {
-        DialogBuilder<Aula> dialog = new DialogBuilder<>(
+    // Dettagli
+    private LinkedHashMap<String, Function<Aula, String>> dettagli() {
+        return new LinkedHashMap<>(colonne());
+    }
+
+    // Dialoghi CRUD
+    public void apriDialogAggiungi() {
+        mostraDialogoCrud(
                 "Nuova Aula",
                 "Inserisci i dati dell'aula",
+                null,
+                aCreato -> aulaService.create(aCreato),
+                "Successo",
+                "Aula aggiunta correttamente!"
+        );
+    }
+
+    public void mostraDialogModificaAula(Aula aula) {
+        mostraDialogoCrud(
+                "Modifica Aula",
+                "Modifica i dati dell'aula",
+                aula,
+                aAgg -> aulaService.update(aAgg),
+                "Successo",
+                "Aula modificata correttamente!"
+        );
+    }
+
+    private void mostraDialogoCrud(String titolo,
+                                   String header,
+                                   Aula iniziale,
+                                   Function<Aula, Aula> persister,
+                                   String successTitle,
+                                   String successMessage) {
+        DialogBuilder<Aula> dialog = new DialogBuilder<>(
+                titolo,
+                header,
                 campi -> {
-                    // capienza
-                    String capienzaText = DialogsParser.validaCampo(campi, L_CAPIENZA);
-                    int capienza = Integer.parseInt(capienzaText);
-
-                    // edificio (tabella single-selection)
-                    @SuppressWarnings("unchecked")
-                    TableView<Edificio> tableEdifici = (TableView<Edificio>) campi.get(L_EDIFICIO);
-                    tableEdifici.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-                    Edificio sel = tableEdifici.getSelectionModel().getSelectedItem();
-                    if (sel == null) throw new IllegalArgumentException("Seleziona un edificio.");
-
-                    Aula nuova = new Aula(
-                            String.valueOf(Main.getAulaManager().assegnaIndiceCorrente()),
-                            capienza,
-                            sel.getId()
-                    );
-                    Main.getAulaManager().aggiungi(nuova);
-                    return nuova;
+                    Aula target = estraiAulaDaCampi(campi, iniziale);
+                    return persister.apply(target);
                 },
-                a -> {
-                    refresh();
-                    Dialogs.showInfo("Successo", "Aula aggiunta con successo!");
-                }
+                a -> { refresh(); Dialogs.showInfo(successTitle, successMessage); }
         );
 
-        dialog.aggiungiCampo(L_CAPIENZA, new TextField());
-        dialog.aggiungiCampo(L_EDIFICIO, TabelleHelper.generaTabellaFkEdifici(SelectionMode.SINGLE));
+        configuraCampi(dialog, iniziale);
         dialog.mostra();
     }
 
-    private void mostraDialogModificaAula(Aula aula) {
-        DialogBuilder<Aula> dialog = new DialogBuilder<>(
-                "Modifica Aula",
-                "Aggiorna i dati dell'aula",
-                campi -> {
-                    int capienza = Integer.parseInt(((TextField) campi.get(L_CAPIENZA)).getText());
+    // Configurazione dei campi (ordine: Capienza -> Edificio)
+    private void configuraCampi(DialogBuilder<Aula> dialog, Aula iniziale) {
+        // Capienza
+        TextField tfCapienza = new TextField(iniziale != null ? String.valueOf(iniziale.getCapienza()) : "");
+        dialog.aggiungiCampo(L_CAPIENZA, tfCapienza);
 
-                    @SuppressWarnings("unchecked")
-                    TableView<Edificio> tableEdifici = (TableView<Edificio>) campi.get(L_EDIFICIO);
-                    Edificio sel = tableEdifici.getSelectionModel().getSelectedItem();
-                    if (sel == null) throw new IllegalArgumentException("Seleziona un edificio.");
-
-                    aula.setCapienza(capienza);
-                    aula.setEdificio(sel.getId());
-                    Main.getAulaManager().aggiorna(aula);
-                    return aula;
-                },
-                a -> {
-                    refresh();
-                    Dialogs.showInfo("Successo", "Aula modificata con successo!");
-                }
+        // Tabellina Edifici
+        TableView<Edificio> tabEdifici = TableMiniFactory.creaTabella(
+                loadEdifici,
+                SelectionMode.SINGLE,
+                0,
+                new LinkedHashMap<>() {{
+                    put("ID", Edificio::getId);
+                    put("Nome", e -> {
+                        try { return (String) Edificio.class.getMethod("getNome").invoke(e); }
+                        catch (Exception ex) { return e.getId(); }
+                    });
+                }}
         );
 
-        // Pre-compilazione
-        TableView<Edificio> tableEdifici = TabelleHelper.generaTabellaFkEdifici(SelectionMode.SINGLE);
-        tableEdifici.getItems().stream()
-                .filter(e -> e.getId().equals(aula.getEdificio()))
-                .findFirst()
-                .ifPresent(e -> tableEdifici.getSelectionModel().select(e));
+        // Preselezione in modifica
+        if (iniziale != null && iniziale.getEdificio() != null) {
+            tabEdifici.getItems().stream()
+                    .filter(ed -> ed.getId().equals(iniziale.getEdificio()))
+                    .findFirst()
+                    .ifPresent(ed -> tabEdifici.getSelectionModel().select(ed));
+        }
 
-        dialog.aggiungiCampo(L_ID, new TextField(aula.getId()) {{ setEditable(false); }});
-        dialog.aggiungiCampo(L_CAPIENZA, new TextField(Integer.toString(aula.getCapienza())));
-        dialog.aggiungiCampo(L_EDIFICIO, tableEdifici);
+        dialog.aggiungiCampo(L_EDIFICIO, tabEdifici);
+    }
 
-        dialog.mostra();
+    private Aula estraiAulaDaCampi(Map<String, Control> campi, Aula target) {
+        // Capienza
+        String capStr = ((TextField) campi.get(L_CAPIENZA)).getText();
+        int capienza;
+        try {
+            capienza = Integer.parseInt(capStr.trim());
+        } catch (NumberFormatException ex) {
+            throw new IllegalArgumentException("La capienza deve essere un numero intero valido.");
+        }
+
+        // Edificio selezionato
+        @SuppressWarnings("unchecked")
+        TableView<Edificio> tabEdifici = (TableView<Edificio>) campi.get(L_EDIFICIO);
+        if (tabEdifici == null) throw new IllegalStateException("Campo 'Edificio' non trovato nel dialog.");
+        Edificio sel = tabEdifici.getSelectionModel().getSelectedItem();
+        if (sel == null) throw new IllegalArgumentException("Seleziona un edificio.");
+
+        if (target == null) {
+            // id null -> repository assegna auto-increment
+            return new Aula(null, capienza, sel.getId());
+        } else {
+            target.setCapienza(capienza);
+            target.setEdificio(sel.getId());
+            return target;
+        }
     }
 
     private void elimina(Aula a) {
-        Main.getAulaManager().rimuovi(a);
+        aulaService.deleteById(a.getId());
         refresh();
+    }
+
+    // Helper
+    private String nomeEdificioById(String id) {
+        if (id == null) return "";
+        return loadEdifici.get().stream()
+                .filter(e -> id.equals(e.getId()))
+                .map(e -> {
+                    try { return (String) Edificio.class.getMethod("getNome").invoke(e); }
+                    catch (Exception ex) { return e.getId(); }
+                })
+                .findFirst()
+                .orElse("");
     }
 }

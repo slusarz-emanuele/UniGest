@@ -30,8 +30,8 @@ public class FileJsonRepository<T extends Identificabile<String>> implements Rep
     public FileJsonRepository (String path, Type typeList){
         this.path = path;
         this.typeList = typeList;
-        loadCurrentIndex();
         loadByFile();
+        loadCurrentIndex();
     }
 
     @Override
@@ -46,7 +46,7 @@ public class FileJsonRepository<T extends Identificabile<String>> implements Rep
 
     @Override
     public T save (T e){
-        if(e.getId() == null || e.getId().isBlank()){
+        if(e.getId() == null || e.getId().isBlank() || e.getId().equalsIgnoreCase("null")){
             e.setId(nextId());
         }
         findById(e.getId()).ifPresentOrElse(
@@ -131,6 +131,17 @@ public class FileJsonRepository<T extends Identificabile<String>> implements Rep
         }catch (IOException e){
             LogHelper.saveLog(LogType.ERROR, "Error during the saving of current index: " + e.getMessage());
         }
+    }
+
+    private int nextIndexFromData() {
+        return list.stream()
+                .map(Identificabile::getId)
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(s -> s.matches("\\d+"))
+                .mapToInt(Integer::parseInt)
+                .max()
+                .orElse(0) + 1;
     }
 
 }

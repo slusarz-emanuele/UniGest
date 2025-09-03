@@ -27,7 +27,7 @@ public class AppelloManager extends AbstractManager<Appello> {
     @Override
     public List<Appello> filtra(Appello filtro) {
         return lista.stream()
-                .filter(a -> filtro.getId() == 0 || a.getId() == filtro.getId())
+                .filter(a -> Integer.parseInt(filtro.getId()) == 0 || a.getId() == filtro.getId())
                 .filter(a -> filtro.getRidInsegnamento() == null || a.getRidInsegnamento().equalsIgnoreCase(filtro.getRidInsegnamento()))
                 .filter(a -> filtro.getData() == null || a.getData().equals(filtro.getData()))
                 .filter(a -> filtro.getOra() == null || a.getOra().equals(filtro.getOra()))

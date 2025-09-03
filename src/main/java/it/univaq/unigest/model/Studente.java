@@ -158,7 +158,7 @@ public class Studente extends Persona implements Identificabile<String> {
         // 1. Trova tutte le iscrizioni fatte da questo studente
         List<Integer> iscrizioniIds = iscrizioneManager.getAll().stream()
                 .filter(i -> i.getRidStudenteCf().equalsIgnoreCase(this.getCf()))
-                .map(Iscrizione::getId)
+                .map(i -> Integer.parseInt(i.getId()))
                 .toList();
 
         // 2. Trova tutti gli esami legati a quelle iscrizioni

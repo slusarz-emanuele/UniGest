@@ -38,6 +38,8 @@ public class StudentiPannello2 implements CrudPanel {
 
     // Dipendenze
     private final StudenteService studenteService;
+
+    // Loader Esterni
     private final Supplier<List<CorsoDiLaurea>> loadCorsi;
     private final Function<String, String> nomeCdlById;
 

@@ -1,9 +1,15 @@
 package it.univaq.unigest.gui;
 
 import it.univaq.unigest.gui.modelview.pannelli.appelli.AppelliPannello2;
+import it.univaq.unigest.gui.modelview.pannelli.aule.AulePannello2;
 import it.univaq.unigest.gui.modelview.pannelli.cdl.CorsiDiLaureaPannello2;
 import it.univaq.unigest.gui.modelview.pannelli.docenti.DocentiPannello2;
+import it.univaq.unigest.gui.modelview.pannelli.edifici.EdificiPannello2;
+import it.univaq.unigest.gui.modelview.pannelli.esami.EsamiPannello2;
+import it.univaq.unigest.gui.modelview.pannelli.insegnamenti.InsegnamentiPannello2;
+import it.univaq.unigest.gui.modelview.pannelli.iscrizioni.IscrizioniPannello2;
 import it.univaq.unigest.gui.modelview.pannelli.studenti.StudentiPannello2;
+import it.univaq.unigest.gui.modelview.pannelli.verbali.VerbaliPannello2;
 import it.univaq.unigest.util.LogHelper;
 import it.univaq.unigest.util.LogType;
 
@@ -23,9 +29,44 @@ public class Reloader {
         LogHelper.saveLog(LogType.DEBUG, "it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGrafica() invocato");
     }
 
+    private static AppelliPannello2 appelliPanel;
+    private static AulePannello2 aulePanel;
+    private static CorsiDiLaureaPannello2 corsiDiLaureaPanel;
+    private static EdificiPannello2 edificiPanel;
+    private static EsamiPannello2 esamiPanel;
+    private static InsegnamentiPannello2 insegnamentiPanel;
+    private static IscrizioniPannello2 iscrizioniPanel;
+    private static VerbaliPannello2 verbaliPanel;
     private static DocentiPannello2 docentiPanel;
     private static StudentiPannello2 studentiPanel;
-    private static CorsiDiLaureaPannello2 corsiDiLaureaPanel;
+
+    public static void registerAppelliPannello(AppelliPannello2 p){
+        appelliPanel = p;
+    }
+
+    public static void registerAulePannello(AulePannello2 p){
+        aulePanel = p;
+    }
+
+    public static void registerEdificiPannello(EdificiPannello2 p){
+        edificiPanel = p;
+    }
+
+    public static void registerEsamiPannello(EsamiPannello2 p){
+        esamiPanel = p;
+    }
+
+    public static void registerInsegnamentiPannello(InsegnamentiPannello2 p){
+        insegnamentiPanel = p;
+    }
+
+    public static void registerIscrizioniPannello(IscrizioniPannello2 p){
+        iscrizioniPanel = p;
+    }
+
+    public static void registerVerbaliPannello(VerbaliPannello2 p){
+        verbaliPanel = p;
+    }
 
     public static void registerDocentiPannello(DocentiPannello2 p) {
         docentiPanel = p;
@@ -39,6 +80,7 @@ public class Reloader {
         corsiDiLaureaPanel = p;
     }
 
+
     public static void ricaricaInterfacciaGraficaDocentiPannello2(){
         if (docentiPanel != null) {
             docentiPanel.refresh();
@@ -50,48 +92,62 @@ public class Reloader {
         if (studentiPanel != null) {
             studentiPanel.refresh();
         }
-        LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaDocentiPannello2()");
+        LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaStudentiPannello2()");
     }
 
     public static void ricaricaInterfacciaGraficaCorsiDiLaureaPannello2(){
-        if (studentiPanel != null) {
-            studentiPanel.refresh();
+        if (corsiDiLaureaPanel != null) {
+            corsiDiLaureaPanel.refresh();
         }
-        LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaDocentiPannello2()");
+        LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaCDLPannello2()");
     }
 
     public static void ricaricaInterfacciaGraficaAppelliPannello2(){
-        AppelliPannello2.getBuilder().refresh(Main.getAppelloManager().getAll());
+        if(appelliPanel != null){
+            appelliPanel.refresh();
+        }
         LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaAppelliPannello2()");
     }
 
     public static void ricaricaInterfacciaGraficaAulePannello2(){
-        //AulePannello2.getBuilder().refresh(Main.getAulaManager().getAll());
+        if(aulePanel != null){
+            aulePanel.refresh();
+        }
         LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaAulePannello2()");
     }
 
     public static void ricaricaInterfacciaGraficaEdificiPannello2(){
-        //EdificiPannello2.getBuilder().refresh(Main.getEdificioManager().getAll());
+        if(edificiPanel != null){
+            edificiPanel.refresh();
+        }
         LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaEdificiPannello2()");
     }
 
     public static void ricaricaInterfacciaGraficaEsamiPannello2(){
-        //EsamiPannello2.getBuilder().refresh(Main.getEsameManager().getAll());
+        if(esamiPanel != null){
+            esamiPanel.refresh();
+        }
         LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaEsamiPannello2()");
     }
 
     public static void ricaricaInterfacciaGraficaInsegnamentiPannello2(){
-        //InsegnamentiPannello2.getBuilder().refresh(Main.getInsegnamentoManager().getAll());
+        if(insegnamentiPanel != null){
+            insegnamentiPanel.refresh();
+        }
         LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaInsegnamentiPannello2()");
     }
 
     public static void ricaricaInterfacciaGraficaIscrizioniPannello2(){
-        //IscrizioniPannello2.getBuilder().refresh(Main.getIscrizioneManager().getAll());
+        if(iscrizioniPanel != null){
+            iscrizioniPanel.refresh();
+        }
         LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaIscrizioniPannello2()");
     }
 
     public static void ricaricaInterfacciaGraficaVerbaliPannelli2(){
-        //VerbaliPannello2.getBuilder().refresh(Main.getVerbaleManager().getAll());
+        if(verbaliPanel != null){
+            verbaliPanel.refresh();
+        }
         LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaVerbaliPannelli2()");
     }
 }

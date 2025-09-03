@@ -26,6 +26,8 @@ public class StartView {
     private AbstractModelView vistaCorrente;
     private Stage stagePrimario;
 
+    //private
+
     public void start(Stage stagePrimario) {
 
         this.stagePrimario = stagePrimario;
@@ -143,9 +145,85 @@ public class StartView {
                 root
         );
 
+        bindNav(
+                insegnamentiBtn,
+                () -> new InsegnamentiView(
+                        Main.getInsegnamentoService(),
+                        () -> Main.getCorsoDiLaureaService().findAll(),
+                        () -> Main.getDocenteService().findAll()
+                        ),
+                "Insegnamenti",
+                Reloader::registerInsegnamentiPannello,
+                root
+        );
 
-        // TODO: quando migrerai gli altri, aggiungi i bindNav analoghi.
-        // Per ora puoi lasciare i pulsanti senza azione o con la vecchia logica.
+        bindNav(
+                appelliBtn,
+                () -> new AppelliModelView(
+                        Main.getAppelloService(),
+                        () -> Main.getInsegnamentoService().findAll(),
+                        () -> Main.getAulaService().findAll(),
+                        () -> Main.getDocenteService().findAll()
+                ),
+                "Appelli",
+                Reloader::registerAppelliPannello,
+                root
+        );
+
+        bindNav(
+                iscrizioniBtn,
+                () -> new IscrizioniView(
+                        Main.getIscrizioneService(),
+                        () -> Main.getStudenteService().findAll(),
+                        () -> Main.getAppelloService().findAll()
+                ),
+                "Iscrizioni",
+                Reloader::registerIscrizioniPannello,
+                root
+        );
+
+        bindNav(
+                esamiBtn,
+                () -> new EsamiView(
+                        Main.getEsameService(),
+                        () -> Main.getIscrizioneService().findAll()
+                ),
+                "Esami",
+                Reloader::registerEsamiPannello,
+                root
+        );
+
+        bindNav(
+                verbaliBtn,
+                () -> new VerbaliView(
+                        Main.getVerbaleService(),
+                        () -> Main.getAppelloService().findAll()   // <— supplier degli appelli
+                ),
+                "Verbali",
+                Reloader::registerVerbaliPannello,
+                root
+        );
+
+
+        bindNav(
+                auleliBtn,
+                () -> new AuleModelView(
+                        Main.getAulaService(),
+                        () -> Main.getEdificioService().findAll()
+                ),
+                "Aule",
+                Reloader::registerAulePannello,
+                root
+        );
+
+        bindNav(
+                edificiBtn,
+                () -> new EdificioView(Main.getEdificioService()),
+                "Edifici",
+                Reloader::registerEdificiPannello,
+                root
+        );
+
 
         // --- Scena
         Scene scena = new Scene(root, 1100, 900);

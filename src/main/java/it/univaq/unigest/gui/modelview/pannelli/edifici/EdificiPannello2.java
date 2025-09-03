@@ -4,194 +4,131 @@ import it.univaq.unigest.gui.Dialogs;
 import it.univaq.unigest.gui.Main;
 import it.univaq.unigest.gui.componenti.DialogBuilder;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
-import it.univaq.unigest.gui.modelview.pannelli.exceptions.CampoRichiestoVuoto;
 import it.univaq.unigest.gui.util.CrudPanel;
 import it.univaq.unigest.gui.util.DialogsParser;
-import it.univaq.unigest.model.Appello;
 import it.univaq.unigest.model.Edificio;
+import it.univaq.unigest.service.EdificioService;
 import it.univaq.unigest.util.PdfHelper;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.function.Function;
 
-import static it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaAppelliPannello2;
-import static it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaEdificiPannello2;
-
-/**
- * Pannello grafico per la gestione degli edifici.
- * <p>
- * Fornisce una vista tabellare con dettagli aggiuntivi e funzioni per:
- * <ul>
- *   <li>Creare nuovi edifici</li>
- *   <li>Modificare edifici esistenti</li>
- *   <li>Eliminare edifici selezionati</li>
- * </ul>
- * Utilizza {@link VistaConDettagliBuilder} per costruire la vista e
- * {@link DialogBuilder} per la gestione delle finestre di input.
- * </p>
- */
 public class EdificiPannello2 implements CrudPanel {
 
-    /**
-     * Lista degli edifici attualmente disponibili.
-     * <p>
-     * Inizializzata all'avvio da {@link Main#getEdificioManager()}.
-     */
-    private static List<Edificio> edifici = Main.getEdificioManager().getAll();
+    // Etichette
+    private static final String L_ID   = "ID";
+    private static final String L_NOME = "Nome";
 
-    /**
-     * Builder grafico di {@link Edificio}.
-     */
-    private static VistaConDettagliBuilder<Edificio> builder = new VistaConDettagliBuilder<>(edifici);
+    // Dipendenze
+    private final VistaConDettagliBuilder<Edificio> builder;
+    private final EdificioService edificioService;
 
-    /**
-     * Costruisce e restituisce la vista principale per la gestione degli edifici.
-     * <p>
-     * La vista comprende:
-     * <ul>
-     *     <li>Tabella degli edifici correnti con colonne base e dettagli aggiuntivi</li>
-     *     <li>Azioni per creare, modificare ed eliminare edifici</li>
-     * </ul>
-     *
-     * @return un oggetto {@link VBox} contenente la vista completa del pannello edifici.
-     */
-    public static VBox getView() {
+    public EdificiPannello2(EdificioService edificioService) {
+        this.edificioService = edificioService;
+        this.builder = new VistaConDettagliBuilder<>(edificioService.findAll());
+    }
 
-        LinkedHashMap<String, Function<Edificio, String>> colonne = new LinkedHashMap<>();
-        colonne.put(Main.getParametrizzazioneHelper().getBundle().getString("string.esamiPannello2.id"), Edificio::getId);
-        colonne.put(Main.getParametrizzazioneHelper().getBundle().getString("string.esamiPannello2.nome"), Edificio::getNome);
+    @Override
+    public VBox getView() {
+        LinkedHashMap<String, Function<Edificio, String>> colonne = colonne();
 
         LinkedHashMap<String, Function<Edificio, String>> dettagli = new LinkedHashMap<>(colonne);
-
-        dettagli.put(Main.getParametrizzazioneHelper().getBundle().getString("field.esportaEntita"), s -> Main.getParametrizzazioneHelper().getBundle().getString("field.esportaEntita"));
-        builder.setLinkAction(Main.getParametrizzazioneHelper().getBundle().getString("field.esportaEntita"), iscrizione -> PdfHelper.esportaEntita(iscrizione, Main.getParametrizzazioneHelper().getBundle().getString("string.esportaEntita.edificio.descrizione") + " " + iscrizione.getId(), Main.getParametrizzazioneHelper().getBundle().getString("string.esportaEntita.edificio.descrizione") + " " + iscrizione.getId()));
+        dettagli.put("Esporta in PDF", e -> "Esporta in PDF");
+        builder.setLinkAction("Esporta in PDF", e ->
+                PdfHelper.esportaEntita(e, "Edificio " + e.getId(), "Edificio_" + e.getId())
+        );
 
         return builder.build(
-                Main.getParametrizzazioneHelper().getBundle().getString("string.esamiPannello2.titolo"),
+                "Gestione Edifici",
                 colonne,
                 dettagli,
-                () -> {
-                    DialogBuilder<Edificio> dialogBuilder = new DialogBuilder<>(
-                            Main.getParametrizzazioneHelper().getBundle().getString("string.esamiPannello2.builder.titolo"),
-                            Main.getParametrizzazioneHelper().getBundle().getString("string.esamiPannello2.builder.header"),
-                            campi -> {
-                                try {
-                                    String nome = DialogsParser.validaCampo(campi, Main.getParametrizzazioneHelper().getBundle().getString("string.esamiPannello2.nome"));
-                                return new Edificio(String.valueOf(Main.getEdificioManager().assegnaIndiceCorrente()), nome);
-                                } catch (CampoRichiestoVuoto e) {
-                                    throw new CampoRichiestoVuoto(e.getMessage());
-                                } catch (Exception e) {
-                                    throw new IllegalArgumentException("Errore nei dati: " + e.getMessage());
-                                }
-
-
-                            },
-                            edificio -> {
-                                Main.getEdificioManager().aggiungi(edificio);
-                                ricaricaInterfacciaGraficaEdificiPannello2();
-                                Dialogs.showInfo(Main.getParametrizzazioneHelper().getBundle().getString("string.esamiPannello2.builder.success1"), Main.getParametrizzazioneHelper().getBundle().getString("string.esamiPannello2.builder.success2"));
-                            }
-                    );
-
-                    dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("string.esamiPannello2.nome"), new TextField());
-                    dialogBuilder.mostra();
-                },
-                edificio -> {
-                    mostraDialogModificaEdificio(edificio, builder);
-                    System.out.println(Main.getParametrizzazioneHelper().getBundle().getString("string.esamiPannello2.modifica.titolo") + edificio.getId());
-                },
-                edificio -> {
-                    Main.getEdificioManager().rimuovi(edificio);
-                    ricaricaInterfacciaGraficaEdificiPannello2();
-                }
+                this::apriDialogAggiungi,
+                this::mostraDialogModifica,
+                this::elimina
         );
     }
 
-    /**
-     * Crea una finestra di modifica per edifici selezionati sfruttando la logica di creazione.
-     * @param edificio Gli edifici a cui apportare le modifiche.
-     * @param builder Il builder grafico utilizzato per costruire la vista degli edifici.
-     */
-    private static void mostraDialogModificaEdificio(Edificio edificio, VistaConDettagliBuilder<Edificio> builder) {
-        DialogBuilder<Edificio> dialogBuilder = new DialogBuilder<>(
-                Main.getParametrizzazioneHelper().getBundle().getString("string.esamiPannello2.modifica.titolo"),
-                Main.getParametrizzazioneHelper().getBundle().getString("string.esamiPannello2.modifica.header"),
-                campi -> {
-                    String nome = ((TextField) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("string.esamiPannello2.nome"))).getText();
+    @Override
+    public void apriDialogAggiungiPubblico() { apriDialogAggiungi(); }
 
+    @Override
+    public void modificaSelezionato() {
+        var sel = builder.getTabella().getSelectionModel().getSelectedItem();
+        if (sel == null) { Dialogs.showError("Nessuna selezione", "Seleziona un edificio."); return; }
+        mostraDialogModifica(sel);
+    }
+
+    @Override
+    public void eliminaSelezionato() {
+        var sel = builder.getTabella().getSelectionModel().getSelectedItem();
+        if (sel == null) { Dialogs.showError("Nessuna selezione", "Seleziona un edificio."); return; }
+        elimina(sel);
+    }
+
+    @Override
+    public void refresh() {
+        builder.refresh(Main.getEdificioManager().getAll());
+    }
+
+    public VistaConDettagliBuilder<Edificio> getBuilder() { return builder; }
+
+    // ===== Colonne =====
+    private LinkedHashMap<String, Function<Edificio, String>> colonne() {
+        LinkedHashMap<String, Function<Edificio, String>> map = new LinkedHashMap<>();
+        map.put(L_ID, Edificio::getId);
+        map.put(L_NOME, Edificio::getNome);
+        return map;
+    }
+
+    // ===== Dialoghi CRUD =====
+    private void apriDialogAggiungi() {
+        DialogBuilder<Edificio> dialog = new DialogBuilder<>(
+                "Nuovo Edificio",
+                "Inserisci i dati dell'edificio",
+                campi -> {
+                    String nome = DialogsParser.validaCampo(campi, L_NOME);
+                    Edificio nuovo = new Edificio(
+                            String.valueOf(Main.getEdificioManager().assegnaIndiceCorrente()),
+                            nome
+                    );
+                    Main.getEdificioManager().aggiungi(nuovo);
+                    return nuovo;
+                },
+                e -> {
+                    refresh();
+                    Dialogs.showInfo("Successo", "Edificio aggiunto con successo!");
+                }
+        );
+
+        dialog.aggiungiCampo(L_NOME, new TextField());
+        dialog.mostra();
+    }
+
+    private void mostraDialogModifica(Edificio edificio) {
+        DialogBuilder<Edificio> dialog = new DialogBuilder<>(
+                "Modifica Edificio",
+                "Aggiorna i dati dell'edificio",
+                campi -> {
+                    String nome = ((TextField) campi.get(L_NOME)).getText();
                     edificio.setNome(nome);
+                    Main.getEdificioManager().aggiorna(edificio);
                     return edificio;
                 },
                 e -> {
-                    ricaricaInterfacciaGraficaEdificiPannello2();
-                    Dialogs.showInfo(Main.getParametrizzazioneHelper().getBundle().getString("string.esamiPannello2.builder.success1"), Main.getParametrizzazioneHelper().getBundle().getString("string.esamiPannello2.modifica.success"));
+                    refresh();
+                    Dialogs.showInfo("Successo", "Edificio modificato con successo!");
                 }
         );
 
-        dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("string.esamiPannello2.nome"), new TextField(edificio.getNome()));
-
-        dialogBuilder.mostra();
+        dialog.aggiungiCampo(L_ID, new TextField(edificio.getId()) {{ setEditable(false); }});
+        dialog.aggiungiCampo(L_NOME, new TextField(edificio.getNome()));
+        dialog.mostra();
     }
 
-    /**
-     * Apre la finestra di aggiunta studente (usa la stessa logica di getView()).
-     */
-    public static void apriDialogAggiungi() {
-        // Riutilizziamo direttamente la logica del builder
-        if (builder != null && builder.getAggiungiAction() != null) {
-            builder.getAggiungiAction().run();
-        }
-    }
-
-    /**
-     * Modifica lo studente selezionato nella tabella.
-     */
-    public static void modificaSelezionato() {
-        if (builder == null || builder.getTabella() == null) return;
-
-        //
-        Edificio selezionato = builder.getTabella().getSelectionModel().getSelectedItem();
-        if (selezionato == null) {
-            Dialogs.showError("Nessuna selezione", "Seleziona un'appello da modificare.");
-            return;
-        }
-
-        //
-        mostraDialogModificaEdificio(selezionato, builder);
-
-        //
-        Main.getEdificioManager().salvaSuFile();
-    }
-
-    /**
-     * Elimina lo studente selezionato dalla tabella.
-     */
-    public static void eliminaSelezionato() {
-        if (builder == null || builder.getTabella() == null) return;
-
-        //
-        Edificio selezionato = builder.getTabella().getSelectionModel().getSelectedItem();
-        if (selezionato == null) {
-            Dialogs.showError("Nessuna selezione", "Seleziona uno studente da eliminare.");
-            return;
-        }
-
-        //
-        Main.getEdificioManager().rimuovi(selezionato);
-
-        //
-        ricaricaInterfacciaGraficaEdificiPannello2();
-    }
-
-    /**
-     * Restituisce il builder grafico utilizzato per costruire la vista degli edifici.
-     *
-     * @return il {@link VistaConDettagliBuilder} associato agli edifici.
-     */
-    public static VistaConDettagliBuilder<Edificio> getBuilder() {
-        return builder;
+    private void elimina(Edificio e) {
+        Main.getEdificioManager().rimuovi(e);
+        refresh();
     }
 }

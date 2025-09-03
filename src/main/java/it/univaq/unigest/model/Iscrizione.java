@@ -24,8 +24,14 @@ public class Iscrizione implements Identificabile<String> {
         this.dataIscrizione=dataIscrizione;
         this.ritirato=ritirato;
 
-    } 
-      public Integer getId() {return this.id;}
+    }
+
+    @Override
+    public String getId() {return String.valueOf(this.id);}
+    @Override
+    public void setId(String id){
+        this.id = Integer.parseInt(id);
+    }
 
     public String getRidStudenteCf(){
         return this.ridStudenteCf;

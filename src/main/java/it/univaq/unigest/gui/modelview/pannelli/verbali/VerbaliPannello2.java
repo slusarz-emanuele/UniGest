@@ -1,327 +1,223 @@
 package it.univaq.unigest.gui.modelview.pannelli.verbali;
 
 import it.univaq.unigest.gui.Dialogs;
-import it.univaq.unigest.gui.Main;
 import it.univaq.unigest.gui.componenti.DialogBuilder;
-import it.univaq.unigest.gui.componenti.TabelleHelper;
+import it.univaq.unigest.gui.componenti.TableMiniFactory;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
-import it.univaq.unigest.gui.modelview.pannelli.exceptions.CampoRichiestoVuoto;
 import it.univaq.unigest.gui.util.CrudPanel;
-import it.univaq.unigest.manager.exceptions.VerbaleConAppelloPresente;
 import it.univaq.unigest.model.Appello;
 import it.univaq.unigest.model.Verbale;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
+import it.univaq.unigest.service.VerbaleService;
+import it.univaq.unigest.util.LocalDateUtil;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-import static it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaAppelliPannello2;
-import static it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaVerbaliPannelli2;
-
-/**
- * Pannello grafico per la gestione dei verbali.
- * <p>
- * Fornisce una vista tabellare con dettagli aggiuntivi e funzioni per:
- * <ul>
- *   <li>Creare nuovi verbali</li>
- *   <li>Modificare verbali esistenti</li>
- *   <li>Eliminare verbali selezionati</li>
- * </ul>
- * Utilizza {@link VistaConDettagliBuilder} per costruire la vista e
- * {@link DialogBuilder} per la gestione delle finestre di input.
- * </p>
- */
 public class VerbaliPannello2 implements CrudPanel {
 
-    /**
-     * Lista dei verbali attualmente disponibili.
-     * <p>
-     * Inizializzata all'avvio da {@link Main#getVerbaleManager()}.
-     */
-    private static List<Verbale> verbali = Main.getVerbaleManager().getAll();
+    // Etichette
+    private static final String L_ID            = "ID Verbale";
+    private static final String L_APPELLO       = "Appello";
+    private static final String L_DATA_CHIUSURA = "Data chiusura";
+    private static final String L_CHIUSO        = "Chiuso";
+    private static final String L_FIRMATO       = "Firmato";
+    private static final String L_NOTE          = "Note";
+    private static final String L_NUM_ESAMI     = "Numero esami";
 
-    /**
-     * Builder grafico di {@link Verbale}.
-     */
-    private static VistaConDettagliBuilder<Verbale> builder = new VistaConDettagliBuilder<>(verbali);
+    // Dipendenze
+    private final VerbaleService verbaleService;
+    private final VistaConDettagliBuilder<Verbale> builder;
 
-    /**
-     * Costruisce e restituisce la vista principale per la gestione dei verbali.
-     * <p>
-     * La vista comprende:
-     * <ul>
-     *     <li>Tabella dei verbali correnti con colonne base e dettagli aggiuntivi</li>
-     *     <li>Azioni per creare, modificare ed eliminare verbali</li>
-     * </ul>
-     *
-     * @return un oggetto {@link VBox} contenente la vista completa del pannello verbali.
-     */
-    public static VBox getView() {
+    // Loader esterni
+    private final Supplier<List<Appello>> loadAppelli;
 
-        LinkedHashMap<String, Function<Verbale, String>> colonne = new LinkedHashMap<>();
-        colonne.put(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.id"), v -> v.getId() != null ? v.getId().toString() : "");
-        colonne.put(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.appello"), Verbale::getAppelloId);
-        colonne.put(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.dataChiusura"), v -> v.getDataChiusura() != null ? v.getDataChiusura().toString() : "");
-        colonne.put(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.chiusura"), v -> v.getChiuso() ? "Sì" : "No");
-        colonne.put(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.firmato"), v -> v.getFirmato() ? "Sì" : "No");
-        colonne.put(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.note"), Verbale::getNote);
-        colonne.put(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.numeroEsami"), v -> v.getEsami() != null ? String.valueOf(v.getEsami().size()) : "0");
+    // Costruttore
+    public VerbaliPannello2(VerbaleService verbaleService,
+                            Supplier<List<Appello>> loadAppelli) {
+        this.verbaleService = verbaleService;
+        this.loadAppelli = loadAppelli;
+        this.builder = new VistaConDettagliBuilder<>(verbaleService.findAll());
+    }
 
-        LinkedHashMap<String, Function<Verbale, String>> dettagli = new LinkedHashMap<>(colonne);
+    // Blocchiamo il costruttore di default
+    private VerbaliPannello2(){
+        this.verbaleService = null;
+        this.builder = null;
+        this.loadAppelli = null;
+    }
 
-        dettagli.put("Visualizza Appello", s -> "Visualizza Appello");
-        builder.setLinkAction("Visualizza Appello", iscrizione -> mostraAppelloDaVerbale(iscrizione));
-
+    // API CrudPanel
+    @Override
+    public VBox getView() {
         return builder.build(
-                Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.gestioneVerbali"),
-                colonne,
-                dettagli,
-                () -> {
-                    DialogBuilder<Verbale> dialogBuilder = new DialogBuilder<>(
-                            Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.builder.titolo"),
-                            Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.builder.header"),
-                            campi -> {
-                                try {
-                                    @SuppressWarnings("unchecked")
-                                    TableView<Appello> tableAppelli = (TableView<Appello>) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.appello"));
-                                    tableAppelli.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-                                    Appello appelloSelezionato = tableAppelli.getSelectionModel().getSelectedItem();
-                                    if (appelloSelezionato == null) {
-                                        throw new IllegalArgumentException(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.builder.appello.error"));
-                                    }
-                                    String appelloSelezionatoStr = String.valueOf(appelloSelezionato.getId());
-
-                                    LocalDate dataChiusura = ((DatePicker) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.dataChiusura"))).getValue();
-                                    boolean chiuso = ((CheckBox) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.chiusura"))).isSelected();
-                                    boolean firmato = ((CheckBox) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.firmato"))).isSelected();
-                                    String note = ((TextField) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.note"))).getText();
-
-
-                                    return new Verbale(
-                                            Main.getVerbaleManager().assegnaIndiceCorrente(),
-                                            appelloSelezionatoStr, dataChiusura, chiuso, firmato, note, null
-                                    );
-                                } catch (CampoRichiestoVuoto e) {
-                                    throw new CampoRichiestoVuoto(e.getMessage());
-                                } catch (NumberFormatException e) {
-                                    throw new IllegalArgumentException("I CFU devono essere un numero valido.");
-                                } catch (Exception e) {
-                                    throw new IllegalArgumentException("Errore nei dati: " + e.getMessage());
-                                }
-                            },
-                            verbale -> {
-                                try {
-                                    Main.getVerbaleManager().aggiungi(verbale);
-                                }catch (VerbaleConAppelloPresente e){
-                                    Dialogs.showError(
-                                            Main.getParametrizzazioneHelper().getBundle().getString("alert.header.error"),
-                                            e.getMessage()
-                                    );
-                                    return;
-                                }
-                                ricaricaInterfacciaGraficaVerbaliPannelli2();
-                                Dialogs.showInfo(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.builder.success1"), Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.builder.success2"));
-                            }
-                    );
-
-                    dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.appello"), TabelleHelper.generaTabellaFkAppelli(SelectionMode.SINGLE));
-                    dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.dataChiusura"), new DatePicker());
-                    dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.chiusura"), new CheckBox(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.chiusura")));
-                    dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.firmato"), new CheckBox(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.firmato")));
-                    dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.note"), new TextField());
-                    dialogBuilder.mostra();
-
-                },
-                verbale -> mostraDialogModificaVerbale(verbale, builder),
-                verbale -> {
-                    Main.getVerbaleManager().rimuovi(verbale);
-                    ricaricaInterfacciaGraficaVerbaliPannelli2();
-                }
+                "Gestione Verbali",
+                colonne(),
+                dettagli(),
+                this::apriDialogAggiungi,
+                this::mostraDialogModificaVerbale,
+                this::elimina
         );
     }
 
-    /**
-     * Crea una finestra di modifica per un verbale selezionato sfruttando la logica di creazione.
-     * @param verbale Il verbale a cui apportare le modifiche.
-     * @param builder Il builder grafico utilizzato per costruire la vista dei verbali
-     */
-    private static void mostraDialogModificaVerbale(Verbale verbale, VistaConDettagliBuilder<Verbale> builder) {
-        DialogBuilder<Verbale> dialogBuilder = new DialogBuilder<>(
-                Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.modifica.titolo"),
-                Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.modifica.header"),
+    // Dialog di aggiunta
+    @Override
+    public void apriDialogAggiungiPubblico() { apriDialogAggiungi(); }
+
+    // Dialog di modifica
+    @Override
+    public void modificaSelezionato() {
+        var sel = builder.getTabella().getSelectionModel().getSelectedItem();
+        if (sel == null) { Dialogs.showError("Nessuna selezione", "Seleziona un verbale."); return; }
+        mostraDialogModificaVerbale(sel);
+    }
+
+    // Dialog di eliminazione
+    @Override
+    public void eliminaSelezionato() {
+        var sel = builder.getTabella().getSelectionModel().getSelectedItem();
+        if (sel == null) { Dialogs.showError("Nessuna selezione", "Seleziona un verbale."); return; }
+        elimina(sel);
+    }
+
+    // Funzione di aggiornamento grafica tabella dopo aver apportato una modifica
+    @Override
+    public void refresh() {
+        builder.refresh(verbaleService.findAll());
+    }
+
+    public VistaConDettagliBuilder<Verbale> getBuilder() { return builder; }
+
+    // Colonne
+    private LinkedHashMap<String, Function<Verbale, String>> colonne() {
+        LinkedHashMap<String, Function<Verbale, String>> columns = new LinkedHashMap<>();
+        columns.put(L_ID, v -> v.getId() != null ? v.getId().toString() : "");
+        columns.put(L_APPELLO, Verbale::getAppelloId);
+        columns.put(L_DATA_CHIUSURA, v -> v.getDataChiusura() != null ? v.getDataChiusura().toString() : "");
+        columns.put(L_CHIUSO, v -> Boolean.TRUE.equals(v.getChiuso()) ? "Sì" : "No");
+        columns.put(L_FIRMATO, v -> Boolean.TRUE.equals(v.getFirmato()) ? "Sì" : "No");
+        columns.put(L_NOTE, Verbale::getNote);
+        columns.put(L_NUM_ESAMI, v -> v.getEsami() != null ? String.valueOf(v.getEsami().size()) : "0");
+        return columns;
+    }
+
+    // Dettagli, TODO: Aggiungere i dettagli o verificare che siano solo questi
+    private LinkedHashMap<String, Function<Verbale, String>> dettagli() {
+        LinkedHashMap<String, Function<Verbale, String>> details = new LinkedHashMap<>(colonne());
+        return details;
+    }
+
+    // Dialoghi CRUD
+    public void apriDialogAggiungi() {
+        mostraDialogoCrud(
+                "Nuovo Verbale",
+                "Inserisci i dati del verbale",
+                null,
+                vCreato -> verbaleService.create(vCreato),
+                "Successo",
+                "Verbale aggiunto correttamente!"
+        );
+    }
+
+    public void mostraDialogModificaVerbale(Verbale verbale) {
+        mostraDialogoCrud(
+                "Modifica Verbale",
+                "Modifica i dati del verbale",
+                verbale,
+                vAgg -> verbaleService.create(vAgg),
+                "Successo",
+                "Verbale modificato correttamente!"
+        );
+    }
+
+    private void mostraDialogoCrud(String titolo,
+                                   String header,
+                                   Verbale iniziale,
+                                   Function<Verbale, Verbale> persister,
+                                   String successTitle,
+                                   String successMessage){
+        DialogBuilder<Verbale> dialog = new DialogBuilder<>(
+                titolo,
+                header,
                 campi -> {
-                    @SuppressWarnings("unchecked")
-                    TableView<Appello> tableAppelli = (TableView<Appello>) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.appello"));
-                    Appello appelloSelezionato = tableAppelli.getSelectionModel().getSelectedItem();
-                    if (appelloSelezionato == null) throw new IllegalArgumentException(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.builder.appello.error"));
-
-                    LocalDate dataChiusura = ((DatePicker) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.dataChiusura"))).getValue();
-                    boolean chiuso = ((CheckBox) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.chiusura"))).isSelected();
-                    boolean firmato = ((CheckBox) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.firmato"))).isSelected();
-                    String note = ((TextField) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.note"))).getText();
-
-                    verbale.setAppelloId(String.valueOf(appelloSelezionato.getId()));
-                    verbale.setDataChiusura(dataChiusura);
-                    verbale.setChiuso(chiuso);
-                    verbale.setFirmato(firmato);
-                    verbale.setNote(note);
-
-                    Verbale nuovoVerbale = new Verbale(
-                            verbale.getId(),
-                            String.valueOf(appelloSelezionato.getId()),
-                            dataChiusura,
-                            chiuso,
-                            firmato,
-                            note,
-                            null
-                    );
-
-                    try {
-                        Main.getVerbaleManager().aggiorna(nuovoVerbale);
-                    }catch (VerbaleConAppelloPresente e){
-                        Dialogs.showError(
-                                Main.getParametrizzazioneHelper().getBundle().getString("alert.header.error"),
-                                e.getMessage()
-                        );
-                        return null;
-                    }
-
-                    return verbale;
+                    Verbale target = estraiVerbaleDaCampi(campi, iniziale);
+                    return persister.apply(target);
                 },
-                v -> {
-                    ricaricaInterfacciaGraficaVerbaliPannelli2();
-                    Dialogs.showInfo(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.builder.success1"), Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.modifica.success"));
-                }
+                v -> {refresh(); Dialogs.showInfo(successTitle, successMessage);}
         );
 
-        TableView<Appello> tableAppelli = TabelleHelper.generaTabellaFkAppelli(SelectionMode.SINGLE);
-        tableAppelli.getItems().stream()
-                .filter(a -> String.valueOf(a.getId()).equals(verbale.getAppelloId()))
-                .findFirst().ifPresent(a -> tableAppelli.getSelectionModel().select(a));
-
-        dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.appello"), tableAppelli);
-        dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.dataChiusura"), new DatePicker(verbale.getDataChiusura()));
-        dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.chiusura"), new CheckBox(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.chiusura")) {{ setSelected(verbale.getChiuso()); }});
-        dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.firmato"), new CheckBox(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.firmato")) {{ setSelected(verbale.getFirmato()); }});
-        dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("etichetta.verbaliPannello2.note"), new TextField(verbale.getNote() != null ? verbale.getNote() : ""));
-
-        dialogBuilder.mostra();
+        configuraCampi(dialog, iniziale);
+        dialog.mostra();
     }
 
-    public static void mostraAppelloDaVerbale(Verbale verbale) {
-        // 1) Recupera l'appello collegato al verbale
-        Appello appello = Main.getAppelloManager().getAppelloDaVerbale(String.valueOf(verbale.getId()));
+    // Configurazione dei campi
+    private void configuraCampi(DialogBuilder<Verbale> dialog,
+                                Verbale iniziale){
 
-        // 2) Prepara la lista (anche se è solo un elemento)
-        List<Appello> appelli = new ArrayList<>();
-        if (appello != null) {
-            appelli.add(appello);
+        TableView<Appello> tabAppelli = TableMiniFactory.creaTabella(
+                loadAppelli,
+                SelectionMode.SINGLE,
+                0,
+                new LinkedHashMap<>() {{
+                    put("Data", a -> LocalDateUtil.toString(a.getData()));
+                    put("Docente", Appello::getRidDocente);
+                }}
+        );
+
+        // Preselezione in modifica
+        if (iniziale != null && iniziale.getAppelloId() != null) {
+            tabAppelli.getItems().stream()
+                    .filter(a -> String.valueOf(a.getId()).equals(iniziale.getAppelloId()))
+                    .findFirst()
+                    .ifPresent(a -> tabAppelli.getSelectionModel().select(a));
         }
 
-        // 3) Costruisci la finestra
-        Stage stage = new Stage();
-        TableView<Appello> table = new TableView<>();
-
-        TableColumn<Appello, String> colId = new TableColumn<>("ID");
-        colId.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getId())));
-
-        TableColumn<Appello, String> colInsegnamento = new TableColumn<>("Insegnamento");
-        colInsegnamento.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getRidInsegnamento()));
-
-        TableColumn<Appello, String> colData = new TableColumn<>("Data");
-        colData.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getData().toString()));
-
-        TableColumn<Appello, String> colOra = new TableColumn<>("Ora");
-        colOra.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getOra().toString()));
-
-        TableColumn<Appello, String> colAula = new TableColumn<>("Aula");
-        colAula.setCellValueFactory(data -> new SimpleStringProperty(
-                data.getValue().getRidAula() != null ? Main.getAulaManager().getAulaNomeDaId(data.getValue().getRidAula()) : "-"
-        ));
-
-        TableColumn<Appello, String> colDocente = new TableColumn<>("Docente");
-        colDocente.setCellValueFactory(data -> new SimpleStringProperty(
-                data.getValue().getRidDocente() != null ? Main.getDocenteManager().getGeneralitaDaCf(data.getValue().getRidDocente()) : "-"
-        ));
-
-        table.getColumns().addAll(colId, colInsegnamento, colData, colOra, colAula, colDocente);
-        table.setItems(FXCollections.observableArrayList(appelli));
-
-        VBox layout = new VBox(10, table);
-        layout.setPadding(new Insets(10));
-
-        Scene scene = new Scene(layout, 700, 400);
-        stage.setScene(scene);
-        stage.setTitle("Appello del Verbale ID: " + verbale.getId());
-        stage.show();
+        dialog.aggiungiCampo(L_APPELLO, tabAppelli);
+        dialog.aggiungiCampo(L_DATA_CHIUSURA, new DatePicker());
+        dialog.aggiungiCampo(L_CHIUSO, new CheckBox(L_CHIUSO));
+        dialog.aggiungiCampo(L_FIRMATO, new CheckBox(L_FIRMATO));
+        dialog.aggiungiCampo(L_NOTE, new TextField());
     }
 
-    /**
-     * Apre la finestra di aggiunta studente (usa la stessa logica di getView()).
-     */
-    public static void apriDialogAggiungi() {
-        // Riutilizziamo direttamente la logica del builder
-        if (builder != null && builder.getAggiungiAction() != null) {
-            builder.getAggiungiAction().run();
+    private Verbale estraiVerbaleDaCampi(Map<String, Control> campi, Verbale target) {
+        // Appello id
+        @SuppressWarnings("unchecked")
+        TableView<Appello> tabAppelli = (TableView<Appello>) campi.get(L_APPELLO);
+        if (tabAppelli == null) {
+            throw new IllegalStateException("Campo 'Appello' non trovato nel dialog.");
+        }
+        Appello sel = tabAppelli.getSelectionModel().getSelectedItem();
+        if (sel == null) {
+            throw new IllegalArgumentException("Seleziona un appello.");
+        }
+        String appelloId = String.valueOf(sel.getId());
+
+        // Altri Campi
+        LocalDate dataChiusura = ((DatePicker) campi.get(L_DATA_CHIUSURA)).getValue();
+        boolean chiuso = ((CheckBox) campi.get(L_CHIUSO)).isSelected();
+        boolean firmato = ((CheckBox) campi.get(L_FIRMATO)).isSelected();
+        String note = ((TextField) campi.get(L_NOTE)).getText();
+
+        if (target == null) {
+            // id null -> il repository assegnerà l'auto-increment
+            return new Verbale(null, appelloId, dataChiusura, chiuso, firmato, note, null);
+        } else {
+            target.setAppelloId(appelloId);
+            target.setDataChiusura(dataChiusura);
+            target.setChiuso(chiuso);
+            target.setFirmato(firmato);
+            target.setNote(note);
+            return target;
         }
     }
 
-    /**
-     * Modifica lo studente selezionato nella tabella.
-     */
-    public static void modificaSelezionato() {
-        if (builder == null || builder.getTabella() == null) return;
-
-        //
-        Verbale selezionato = builder.getTabella().getSelectionModel().getSelectedItem();
-        if (selezionato == null) {
-            Dialogs.showError("Nessuna selezione", "Seleziona un'appello da modificare.");
-            return;
-        }
-
-        //
-        mostraDialogModificaVerbale(selezionato, builder);
-
-        //
-        Main.getVerbaleManager().salvaSuFile();
-    }
-
-    /**
-     * Elimina lo studente selezionato dalla tabella.
-     */
-    public static void eliminaSelezionato() {
-        if (builder == null || builder.getTabella() == null) return;
-
-        //
-        Verbale selezionato = builder.getTabella().getSelectionModel().getSelectedItem();
-        if (selezionato == null) {
-            Dialogs.showError("Nessuna selezione", "Seleziona uno studente da eliminare.");
-            return;
-        }
-
-        //
-        Main.getVerbaleManager().rimuovi(selezionato);
-
-        //
-        ricaricaInterfacciaGraficaVerbaliPannelli2();
-    }
-
-
-    /**
-     * Restituisce il builder grafico utilizzato per costruire la vista dei verbali.
-     *
-     * @return il {@link VistaConDettagliBuilder} associato ai verbali.
-     */
-    public static VistaConDettagliBuilder<Verbale> getBuilder() {
-        return builder;
+    private void elimina(Verbale v) {
+        verbaleService.deleteById(v.getId());
+        refresh();
     }
 }

@@ -17,12 +17,14 @@ import javafx.scene.control.Control;
 
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class DocentiPannello2 implements CrudPanel {
 
-    // ===== Etichette centralizzate =====
+    // Etichette
     private static final String L_CF = "CF";
     private static final String L_NOME = "Nome";
     private static final String L_COGNOME = "Cognome";
@@ -34,6 +36,7 @@ public class DocentiPannello2 implements CrudPanel {
     private static final String L_QUALIFICA = "Qualifica";
     private static final String L_EMAIL = "Email";
 
+    // Dipendenze
     private final DocenteService docenteService;
     private final VistaConDettagliBuilder<Docente> builder;
 

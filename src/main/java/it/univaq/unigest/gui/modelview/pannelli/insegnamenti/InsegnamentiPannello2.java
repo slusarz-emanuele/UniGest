@@ -3,15 +3,14 @@ package it.univaq.unigest.gui.modelview.pannelli.insegnamenti;
 import it.univaq.unigest.gui.Dialogs;
 import it.univaq.unigest.gui.Main;
 import it.univaq.unigest.gui.componenti.DialogBuilder;
-import it.univaq.unigest.gui.componenti.TabelleHelper;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
-import it.univaq.unigest.gui.modelview.pannelli.exceptions.CampoRichiestoVuoto;
 import it.univaq.unigest.gui.util.CrudPanel;
 import it.univaq.unigest.gui.util.DialogsParser;
 import it.univaq.unigest.model.Appello;
 import it.univaq.unigest.model.CorsoDiLaurea;
-import it.univaq.unigest.model.Insegnamento;
 import it.univaq.unigest.model.Docente;
+import it.univaq.unigest.model.Insegnamento;
+import it.univaq.unigest.service.InsegnamentoService;
 import it.univaq.unigest.util.PdfHelper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -25,337 +24,320 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-import static it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaAppelliPannello2;
-import static it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaInsegnamentiPannello2;
-
-/**
- * Pannello grafico per la gestione degli insegnamenti.
- * <p>
- * Fornisce una vista tabellare con dettagli aggiuntivi e funzioni per:
- * <ul>
- *   <li>Creare nuovi insegnamenti</li>
- *   <li>Modificare insegnamenti esistenti</li>
- *   <li>Eliminare insegnamenti selezionati</li>
- * </ul>
- * Utilizza {@link VistaConDettagliBuilder} per costruire la vista e
- * {@link DialogBuilder} per la gestione delle finestre di input.
- * </p>
- */
 public class InsegnamentiPannello2 implements CrudPanel {
 
-    /**
-     * Lista degli insegnamenti attualmente disponibili.
-     * <p>
-     * Inizializzata all'avvio da {@link Main#getInsegnamentoManager()}.
-     */
-    private static List<Insegnamento> insegnamenti = Main.getInsegnamentoManager().getAll();
+    // Etichette
+    private static final String L_ID        = "ID";
+    private static final String L_NOME      = "Nome";
+    private static final String L_CFU       = "CFU";
+    private static final String L_CDL       = "Corso di Laurea";
+    private static final String L_ANNO      = "Anno";
+    private static final String L_SEMESTRE  = "Semestre";
+    private static final String L_DOCENTI   = "Docenti";
 
-    /**
-     * Builder grafico di {@link Insegnamento}.
-     */
-    private static VistaConDettagliBuilder<Insegnamento> builder = new VistaConDettagliBuilder<>(insegnamenti);
+    // Dipendenze
+    private final InsegnamentoService insegnamentoService;
 
-    /**
-     * Costruisce e restituisce la vista principale per la gestione degli insegnamenti.
-     * <p>
-     * La vista comprende:
-     * <ul>
-     *     <li>Tabella degli insegnamenti correnti con colonne base e dettagli aggiuntivi</li>
-     *     <li>Azioni per creare, modificare ed eliminare insegnamenti</li>
-     * </ul>
-     *
-     * @return un oggetto {@link VBox} contenente la vista completa del pannello insegnamenti.
-     */
-    public static VBox getView() {
+    // Loader Liste esterne
+    private final Supplier<List<CorsoDiLaurea>> loadCorsi;
+    private final Supplier<List<Docente>> loadDocenti;
 
-        LinkedHashMap<String, Function<Insegnamento, String>> colonne = new LinkedHashMap<>();
-        colonne.put("ID", Insegnamento::getId);
-        colonne.put("Nome", Insegnamento::getNome);
-        colonne.put("CFU", i -> String.valueOf(i.getCfu()));
-        colonne.put("Corso di Laurea", s-> s.getCorsoDiLaureaId() != null ? Main.getCorsoDiLaureaManager().getNomeCorsoDiLauraDaID(s.getCorsoDiLaureaId()) : "");
-        colonne.put("Anno", i -> String.valueOf(i.getAnno()));
-        colonne.put("Semestre", i -> String.valueOf(i.getSemestre()));
+    private final VistaConDettagliBuilder<Insegnamento> builder;
 
+
+    public InsegnamentiPannello2(InsegnamentoService insegnamentoService,
+                                 Supplier<List<CorsoDiLaurea>> loadCorsi,
+                                 Supplier<List<Docente>> loadDocenti) {
+        this.insegnamentoService = insegnamentoService;
+        this.loadCorsi = loadCorsi;
+        this.loadDocenti = loadDocenti;
+        this.builder = new VistaConDettagliBuilder<>(insegnamentoService.findAll());
+    }
+
+    @Override
+    public VBox getView() {
+        LinkedHashMap<String, Function<Insegnamento, String>> colonne = colonne();
         LinkedHashMap<String, Function<Insegnamento, String>> dettagli = new LinkedHashMap<>(colonne);
-        dettagli.put("Docenti", i -> String.join(", ", i.getDocenti()));
-
-        dettagli.put(Main.getParametrizzazioneHelper().getBundle().getString("field.esportaEntita"), s -> Main.getParametrizzazioneHelper().getBundle().getString("field.esportaEntita"));
-        builder.setLinkAction(Main.getParametrizzazioneHelper().getBundle().getString("field.esportaEntita"), iscrizione -> PdfHelper.esportaEntita(iscrizione, Main.getParametrizzazioneHelper().getBundle().getString("string.esportaEntita.insegnamento.descrizione") + " " + iscrizione.getId(), Main.getParametrizzazioneHelper().getBundle().getString("string.esportaEntita.insegnamento.descrizione") + " " + iscrizione.getId()));
-
-        dettagli.put("Visualizza Appelli", s -> "Visualizza Appelli");
-        builder.setLinkAction("Visualizza Appelli", iscrizione -> mostraAppelliPerInsegnamento(iscrizione));
+        dettagli.put(L_DOCENTI, i -> String.join(", ", i.getDocenti()));
+        dettagli.put("Visualizza Appelli", i -> "Visualizza Appelli");
+        builder.setLinkAction("Visualizza Appelli", this::mostraAppelliPerInsegnamento);
 
         return builder.build(
                 "Gestione Insegnamenti",
                 colonne,
                 dettagli,
-                () -> {
-                    DialogBuilder<Insegnamento> dialogBuilder = new DialogBuilder<>(
-                            "Nuovo Insegnamento",
-                            "Inserisci i dati del nuovo insegnamento",
-                            campi -> {
-                                try {
-                                    // Nome
-                                    String nome = DialogsParser.validaCampo(campi, "Nome");
-
-                                    // CFU
-                                    String cfuText = DialogsParser.validaCampo(campi, "CFU");
-                                    int cfu = Integer.parseInt(cfuText);
-
-                                    // Corso di laurea
-                                    @SuppressWarnings("unchecked")
-                                    TableView<CorsoDiLaurea> tableCDL = (TableView<CorsoDiLaurea>) campi.get("Corso di Laurea");
-                                    tableCDL.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);                            // La scelta di elementi è solo 1
-                                    CorsoDiLaurea cdlSelezionato = tableCDL.getSelectionModel().getSelectedItem();
-                                    if (cdlSelezionato == null) {
-                                        throw new IllegalArgumentException("Devi selezionare un corso di laurea!");
-                                    }
-                                    String cdlId = cdlSelezionato.getId();
-
-                                    // Anno
-                                    String annoText = DialogsParser.validaCampo(campi, "Anno");
-                                    int anno = Integer.parseInt(annoText);
-
-                                    // Semestre
-                                    @SuppressWarnings("unchecked")
-                                    ComboBox<Integer> comboSemestre = (ComboBox<Integer>) campi.get("Semestre");
-                                    Integer semestre = comboSemestre.getValue();
-                                    if (semestre == null) {
-                                        throw new IllegalArgumentException("Devi selezionare un semestre!");
-                                    }
-
-                                    // Docenti
-                                    @SuppressWarnings("unchecked")
-                                    TableView<Docente> tableDocenti = (TableView<Docente>) campi.get("Docenti");
-                                    List<Docente> docentiSelezionati = new ArrayList<>(tableDocenti.getSelectionModel().getSelectedItems());
-                                    List<String> docenti = docentiSelezionati.stream()
-                                            .map(d -> d.getNome() + " " + d.getCognome() + " (" + d.getCodiceDocente() + ")")
-                                            .toList();
-
-                                    return new Insegnamento(String.valueOf(Main.getInsegnamentoManager().assegnaIndiceCorrente()), nome, cfu, cdlId, docenti, anno, semestre);
-                                } catch (CampoRichiestoVuoto e) {
-                                    throw new CampoRichiestoVuoto(e.getMessage());
-                                } catch (NumberFormatException e) {
-                                    throw new IllegalArgumentException("I numeri devono essere scritti correttamente!");
-                                } catch (Exception e) {
-                                    throw new IllegalArgumentException("Errore nei dati: " + e.getMessage());
-                                }
-                            },
-                            insegnamento -> {
-                                Main.getInsegnamentoManager().aggiungi(insegnamento);
-                                ricaricaInterfacciaGraficaInsegnamentiPannello2();
-                                Dialogs.showInfo("Successo", "Insegnamento aggiunto con successo!");
-                            }
-                    );
-
-                    dialogBuilder.aggiungiCampo("Nome", new TextField());
-                    dialogBuilder.aggiungiCampo("CFU", new TextField());
-                    dialogBuilder.aggiungiCampo("Corso di Laurea", TabelleHelper.generaTabellaFkCorsiDiLaurea(SelectionMode.SINGLE));
-                    dialogBuilder.aggiungiCampo("Anno", new TextField());
-
-                    ComboBox<Integer> comboSemestre = new ComboBox<>();
-                    comboSemestre.setItems(FXCollections.observableArrayList(1, 2));
-                    comboSemestre.setPrefWidth(150);
-                    dialogBuilder.aggiungiCampo("Semestre", comboSemestre);
-
-                    dialogBuilder.aggiungiCampo("Docenti", TabelleHelper.generaTabellaFkDocenti(SelectionMode.MULTIPLE));
-                    dialogBuilder.mostra();
-
-                },
-                insegnamento -> {
-
-                    mostraDialogModificaInsegnamento(insegnamento, builder);
-
-                    Dialogs.showInfo("Successo", "Insegnamento modificato con successo!");
-                },
-                insegnamento -> {
-                    Main.getInsegnamentoManager().rimuovi(insegnamento);
-                    ricaricaInterfacciaGraficaInsegnamentiPannello2();
-                }
+                this::apriDialogAggiungi,
+                this::mostraDialogModifica,
+                this::elimina
         );
     }
 
-    /**
-     * Crea una finestra di modifica per un insegnamento selezionato sfruttando la logica di creazione.
-     * @param insegnamento L'insegnamento a cui apportare le modifiche.
-     * @param builder Il builder grafico utilizzato per costruire la vista degli insegnamenti.
-     */
-    private static void mostraDialogModificaInsegnamento(Insegnamento insegnamento, VistaConDettagliBuilder<Insegnamento> builder) {
-        DialogBuilder<Insegnamento> dialogBuilder = new DialogBuilder<>(
-                "Modifica Insegnamento",
-                "Modifica i dati dell'insegnamento",
+    @Override
+    public void apriDialogAggiungiPubblico() { apriDialogAggiungi(); }
+
+    @Override
+    public void modificaSelezionato() {
+        var sel = builder.getTabella().getSelectionModel().getSelectedItem();
+        if (sel == null) { Dialogs.showError("Nessuna selezione", "Seleziona un insegnamento."); return; }
+        mostraDialogModifica(sel);
+    }
+
+    @Override
+    public void eliminaSelezionato() {
+        var sel = builder.getTabella().getSelectionModel().getSelectedItem();
+        if (sel == null) { Dialogs.showError("Nessuna selezione", "Seleziona un insegnamento."); return; }
+        elimina(sel);
+    }
+
+    @Override
+    public void refresh() {
+        builder.refresh(Main.getInsegnamentoManager().getAll());
+    }
+
+    public VistaConDettagliBuilder<Insegnamento> getBuilder() { return builder; }
+
+    // ===== Colonne =====
+    private LinkedHashMap<String, Function<Insegnamento, String>> colonne() {
+        LinkedHashMap<String, Function<Insegnamento, String>> map = new LinkedHashMap<>();
+        map.put(L_ID, Insegnamento::getId);
+        map.put(L_NOME, Insegnamento::getNome);
+        map.put(L_CFU, i -> String.valueOf(i.getCfu()));
+        map.put(L_CDL, i -> {
+            String id = i.getCorsoDiLaureaId();
+            return id != null ? Main.getCorsoDiLaureaManager().getNomeCorsoDiLauraDaID(id) : "";
+        });
+        map.put(L_ANNO, i -> String.valueOf(i.getAnno()));
+        map.put(L_SEMESTRE, i -> String.valueOf(i.getSemestre()));
+        return map;
+    }
+
+    // ===== Dialoghi CRUD =====
+    private void apriDialogAggiungi() {
+        DialogBuilder<Insegnamento> dialog = new DialogBuilder<>(
+                "Nuovo Insegnamento",
+                "Inserisci i dati del nuovo insegnamento",
                 campi -> {
-                    String nome = ((TextField) campi.get("Nome")).getText();
-                    int cfu = Integer.parseInt(((TextField) campi.get("CFU")).getText());
+                    String nome = DialogsParser.validaCampo(campi, L_NOME);
 
-                    // Corso di laurea
-                    @SuppressWarnings("unchecked")
-                    TableView<CorsoDiLaurea> tableCDL = (TableView<CorsoDiLaurea>) campi.get("Corso di Laurea");
-                    CorsoDiLaurea cdlSelezionato = tableCDL.getSelectionModel().getSelectedItem();
-                    if (cdlSelezionato == null) throw new IllegalArgumentException("Devi selezionare un corso di laurea!");
-
-                    int anno = Integer.parseInt(((TextField) campi.get("Anno")).getText());
+                    int cfu;
+                    try { cfu = Integer.parseInt(DialogsParser.validaCampo(campi, L_CFU)); }
+                    catch (NumberFormatException ex) { throw new IllegalArgumentException("CFU non valido."); }
 
                     @SuppressWarnings("unchecked")
-                    ComboBox<Integer> comboSemestre = (ComboBox<Integer>) campi.get("Semestre");
-                    Integer semestre = comboSemestre.getValue();
-                    if (semestre == null) throw new IllegalArgumentException("Devi selezionare un semestre!");
+                    TableView<CorsoDiLaurea> tabCdl = (TableView<CorsoDiLaurea>) campi.get(L_CDL);
+                    tabCdl.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+                    CorsoDiLaurea cdl = tabCdl.getSelectionModel().getSelectedItem();
+                    if (cdl == null) throw new IllegalArgumentException("Seleziona un corso di laurea.");
+
+                    int anno;
+                    try { anno = Integer.parseInt(DialogsParser.validaCampo(campi, L_ANNO)); }
+                    catch (NumberFormatException ex) { throw new IllegalArgumentException("Anno non valido."); }
 
                     @SuppressWarnings("unchecked")
-                    TableView<Docente> tableDocenti = (TableView<Docente>) campi.get("Docenti");
-                    List<Docente> docentiSelezionati = new ArrayList<>(tableDocenti.getSelectionModel().getSelectedItems());
-                    List<String> docenti = docentiSelezionati.stream()
+                    ComboBox<Integer> cbSem = (ComboBox<Integer>) campi.get(L_SEMESTRE);
+                    Integer semestre = cbSem.getValue();
+                    if (semestre == null) throw new IllegalArgumentException("Seleziona un semestre.");
+
+                    @SuppressWarnings("unchecked")
+                    TableView<Docente> tabDoc = (TableView<Docente>) campi.get(L_DOCENTI);
+                    List<Docente> selDoc = new ArrayList<>(tabDoc.getSelectionModel().getSelectedItems());
+                    List<String> docenti = selDoc.stream()
                             .map(d -> d.getNome() + " " + d.getCognome() + " (" + d.getCodiceDocente() + ")")
                             .toList();
 
-                    // Aggiorna l'oggetto
-                    insegnamento.setNome(nome);
-                    insegnamento.setCfu(cfu);
-                    insegnamento.setCorsoDiLaureaId(cdlSelezionato.getId());
-                    insegnamento.setAnno(anno);
-                    insegnamento.setSemestre(semestre);
-                    insegnamento.setDocenti(docenti);
+                    Insegnamento nuovo = new Insegnamento(
+                            String.valueOf(Main.getInsegnamentoManager().assegnaIndiceCorrente()),
+                            nome, cfu, cdl.getId(), docenti, anno, semestre
+                    );
 
-                    return insegnamento;
+                    Main.getInsegnamentoManager().aggiungi(nuovo);
+                    return nuovo;
                 },
                 i -> {
-                    ricaricaInterfacciaGraficaInsegnamentiPannello2();
+                    refresh();
+                    Dialogs.showInfo("Successo", "Insegnamento aggiunto con successo!");
+                }
+        );
+
+        dialog.aggiungiCampo(L_NOME, new TextField());
+        dialog.aggiungiCampo(L_CFU, new TextField());
+        dialog.aggiungiCampo(L_CDL, generaTabellaCdl());
+        dialog.aggiungiCampo(L_ANNO, new TextField());
+        dialog.aggiungiCampo(L_SEMESTRE, new ComboBox<>(FXCollections.observableArrayList(1, 2)));
+        dialog.aggiungiCampo(L_DOCENTI, generaTabellaDocenti(true));
+        dialog.mostra();
+    }
+
+    private void mostraDialogModifica(Insegnamento ins) {
+        DialogBuilder<Insegnamento> dialog = new DialogBuilder<>(
+                "Modifica Insegnamento",
+                "Aggiorna i dati dell'insegnamento",
+                campi -> {
+                    String nome = ((TextField) campi.get(L_NOME)).getText();
+
+                    int cfu;
+                    try { cfu = Integer.parseInt(((TextField) campi.get(L_CFU)).getText()); }
+                    catch (NumberFormatException ex) { throw new IllegalArgumentException("CFU non valido."); }
+
+                    @SuppressWarnings("unchecked")
+                    TableView<CorsoDiLaurea> tabCdl = (TableView<CorsoDiLaurea>) campi.get(L_CDL);
+                    CorsoDiLaurea cdl = tabCdl.getSelectionModel().getSelectedItem();
+                    if (cdl == null) throw new IllegalArgumentException("Seleziona un corso di laurea.");
+
+                    int anno;
+                    try { anno = Integer.parseInt(((TextField) campi.get(L_ANNO)).getText()); }
+                    catch (NumberFormatException ex) { throw new IllegalArgumentException("Anno non valido."); }
+
+                    @SuppressWarnings("unchecked")
+                    ComboBox<Integer> cbSem = (ComboBox<Integer>) campi.get(L_SEMESTRE);
+                    Integer semestre = cbSem.getValue();
+                    if (semestre == null) throw new IllegalArgumentException("Seleziona un semestre.");
+
+                    @SuppressWarnings("unchecked")
+                    TableView<Docente> tabDoc = (TableView<Docente>) campi.get(L_DOCENTI);
+                    List<Docente> selDoc = new ArrayList<>(tabDoc.getSelectionModel().getSelectedItems());
+                    List<String> docenti = selDoc.stream()
+                            .map(d -> d.getNome() + " " + d.getCognome() + " (" + d.getCodiceDocente() + ")")
+                            .toList();
+
+                    // aggiorna e salva
+                    ins.setNome(nome);
+                    ins.setCfu(cfu);
+                    ins.setCorsoDiLaureaId(cdl.getId());
+                    ins.setAnno(anno);
+                    ins.setSemestre(semestre);
+                    ins.setDocenti(docenti);
+
+                    Main.getInsegnamentoManager().aggiorna(ins);
+                    return ins;
+                },
+                i -> {
+                    refresh();
                     Dialogs.showInfo("Successo", "Insegnamento modificato con successo!");
                 }
         );
 
-        // Pre-seleziona i valori esistenti
-        TableView<CorsoDiLaurea> tableCDL = TabelleHelper.generaTabellaFkCorsiDiLaurea(SelectionMode.SINGLE);
-        tableCDL.getItems().stream()
-                .filter(cdl -> cdl.getId().equals(insegnamento.getCorsoDiLaureaId()))
-                .findFirst().ifPresent(cdl -> tableCDL.getSelectionModel().select(cdl));
+        // Pre-popola i controlli
+        TableView<CorsoDiLaurea> tabCdl = generaTabellaCdl();
+        tabCdl.getItems().stream()
+                .filter(c -> c.getId().equals(ins.getCorsoDiLaureaId()))
+                .findFirst().ifPresent(c -> tabCdl.getSelectionModel().select(c));
 
-        ComboBox<Integer> comboSemestre = new ComboBox<>(FXCollections.observableArrayList(1, 2));
-        comboSemestre.setValue(insegnamento.getSemestre());
+        ComboBox<Integer> cbSem = new ComboBox<>(FXCollections.observableArrayList(1, 2));
+        cbSem.setValue(ins.getSemestre());
 
-        TableView<Docente> tableDocenti = TabelleHelper.generaTabellaFkDocenti(SelectionMode.MULTIPLE);
-        tableDocenti.getItems().forEach(doc -> {
-            boolean selected = insegnamento.getDocenti().stream()
-                    .anyMatch(d -> d.contains(doc.getCodiceDocente()));
-            if (selected) tableDocenti.getSelectionModel().select(doc);
+        TableView<Docente> tabDoc = generaTabellaDocenti(true);
+        tabDoc.getItems().forEach(doc -> {
+            boolean selected = ins.getDocenti() != null &&
+                    ins.getDocenti().stream().anyMatch(s -> s.contains(doc.getCodiceDocente()));
+            if (selected) tabDoc.getSelectionModel().select(doc);
         });
 
-        dialogBuilder.aggiungiCampo("Nome", new TextField(insegnamento.getNome()));
-        dialogBuilder.aggiungiCampo("CFU", new TextField(String.valueOf(insegnamento.getCfu())));
-        dialogBuilder.aggiungiCampo("Corso di Laurea", tableCDL);
-        dialogBuilder.aggiungiCampo("Anno", new TextField(String.valueOf(insegnamento.getAnno())));
-        dialogBuilder.aggiungiCampo("Semestre", comboSemestre);
-        dialogBuilder.aggiungiCampo("Docenti", tableDocenti);
-
-        dialogBuilder.mostra();
+        dialog.aggiungiCampo(L_ID, new TextField(ins.getId()) {{ setEditable(false); }});
+        dialog.aggiungiCampo(L_NOME, new TextField(ins.getNome()));
+        dialog.aggiungiCampo(L_CFU, new TextField(String.valueOf(ins.getCfu())));
+        dialog.aggiungiCampo(L_CDL, tabCdl);
+        dialog.aggiungiCampo(L_ANNO, new TextField(String.valueOf(ins.getAnno())));
+        dialog.aggiungiCampo(L_SEMESTRE, cbSem);
+        dialog.aggiungiCampo(L_DOCENTI, tabDoc);
+        dialog.mostra();
     }
 
-    private static void mostraAppelliPerInsegnamento(Insegnamento insegnamento) {
-        // 1) Recupera appelli legati all'insegnamento
-        List<Appello> appelli = Main.getAppelloManager()
-                .getAppelliDaInsegnamenti(insegnamento.getId());
+    private void elimina(Insegnamento i) {
+        Main.getInsegnamentoManager().rimuovi(i);
+        refresh();
+    }
 
-        // 2) Creazione della finestra e tabella
+    // ===== Supporto UI: tabelle di scelta =====
+    private TableView<CorsoDiLaurea> generaTabellaCdl() {
+        TableView<CorsoDiLaurea> table = new TableView<>();
+        table.setPrefHeight(220);
+
+        TableColumn<CorsoDiLaurea, String> c1 = new TableColumn<>("ID");
+        c1.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getId()));
+
+        TableColumn<CorsoDiLaurea, String> c2 = new TableColumn<>("Nome");
+        c2.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getNome()));
+
+        TableColumn<CorsoDiLaurea, String> c3 = new TableColumn<>("CFU totali");
+        c3.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().getCfuTotali())));
+
+        table.getColumns().addAll(c1, c2, c3);
+        table.setItems(FXCollections.observableArrayList(Main.getCorsoDiLaureaManager().getAll()));
+        table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        return table;
+    }
+
+    private TableView<Docente> generaTabellaDocenti(boolean multiple) {
+        TableView<Docente> table = new TableView<>();
+        table.setPrefHeight(240);
+
+        TableColumn<Docente, String> c1 = new TableColumn<>("CF");
+        c1.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getCf()));
+
+        TableColumn<Docente, String> c2 = new TableColumn<>("Nome");
+        c2.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getNome()));
+
+        TableColumn<Docente, String> c3 = new TableColumn<>("Cognome");
+        c3.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getCognome()));
+
+        TableColumn<Docente, String> c4 = new TableColumn<>("Codice");
+        c4.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getCodiceDocente()));
+
+        table.getColumns().addAll(c1, c2, c3, c4);
+        table.setItems(FXCollections.observableArrayList(Main.getDocenteManager().getAll()));
+        table.getSelectionModel().setSelectionMode(multiple ? SelectionMode.MULTIPLE : SelectionMode.SINGLE);
+        return table;
+    }
+
+    // ===== Link: Visualizza Appelli =====
+    private void mostraAppelliPerInsegnamento(Insegnamento insegnamento) {
+        List<Appello> appelli = Main.getAppelloManager().getAppelliDaInsegnamenti(insegnamento.getId());
+
         Stage stage = new Stage();
         TableView<Appello> table = new TableView<>();
 
-        TableColumn<Appello, String> colId = new TableColumn<>(
-                Main.getParametrizzazioneHelper().getBundle().getString("field.appelli.id"));
+        TableColumn<Appello, String> colId = new TableColumn<>("ID");
         colId.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getId())));
 
-        TableColumn<Appello, String> colData = new TableColumn<>(
-                Main.getParametrizzazioneHelper().getBundle().getString("field.appelli.data"));
+        TableColumn<Appello, String> colData = new TableColumn<>("Data");
         colData.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getData().toString()));
 
-        TableColumn<Appello, String> colOra = new TableColumn<>(
-                Main.getParametrizzazioneHelper().getBundle().getString("field.appelli.ora"));
+        TableColumn<Appello, String> colOra = new TableColumn<>("Ora");
         colOra.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getOra().toString()));
 
-        TableColumn<Appello, String> colAula = new TableColumn<>(
-                Main.getParametrizzazioneHelper().getBundle().getString("field.appelli.aula"));
-        colAula.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getRidAula()));
+        TableColumn<Appello, String> colAula = new TableColumn<>("Aula");
+        colAula.setCellValueFactory(data -> new SimpleStringProperty(
+                data.getValue().getRidAula() != null
+                        ? Main.getAulaManager().getAulaNomeDaId(data.getValue().getRidAula())
+                        : "-"
+        ));
 
-        TableColumn<Appello, String> colDocente = new TableColumn<>(
-                Main.getParametrizzazioneHelper().getBundle().getString("field.appelli.docente"));
-        colDocente.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getRidDocente()));
+        TableColumn<Appello, String> colDocente = new TableColumn<>("Docente");
+        colDocente.setCellValueFactory(data -> new SimpleStringProperty(
+                data.getValue().getRidDocente() != null
+                        ? Main.getDocenteManager().getGeneralitaDaCf(data.getValue().getRidDocente())
+                        : "-"
+        ));
 
         table.getColumns().addAll(colId, colData, colOra, colAula, colDocente);
         table.setItems(FXCollections.observableArrayList(appelli));
 
-        // Pulsante PDF
         Button exportBtn = new Button("Esporta in PDF");
         exportBtn.setOnAction(e -> PdfHelper.esportaTabellaInPdf(
                 table,
                 "Appelli dell'insegnamento: " + insegnamento.getNome(),
-                insegnamento.getNome() + "_appelli"));
+                insegnamento.getNome() + "_appelli"
+        ));
 
         VBox layout = new VBox(10, table, exportBtn);
         layout.setPadding(new Insets(10));
 
-        Scene scene = new Scene(layout, 700, 400);
+        Scene scene = new Scene(layout, 760, 420);
         stage.setScene(scene);
-        stage.setTitle(Main.getParametrizzazioneHelper().getBundle()
-                .getString("insegnamentiPannello2.appelliPannello.titolo") + insegnamento.getNome());
+        stage.setTitle("Appelli • " + insegnamento.getNome());
         stage.show();
-    }
-
-    /**
-     * Apre la finestra di aggiunta studente (usa la stessa logica di getView()).
-     */
-    public static void apriDialogAggiungi() {
-        // Riutilizziamo direttamente la logica del builder
-        if (builder != null && builder.getAggiungiAction() != null) {
-            builder.getAggiungiAction().run();
-        }
-    }
-
-    /**
-     * Modifica lo studente selezionato nella tabella.
-     */
-    public static void modificaSelezionato() {
-        if (builder == null || builder.getTabella() == null) return;
-
-        //
-        Insegnamento selezionato = builder.getTabella().getSelectionModel().getSelectedItem();
-        if (selezionato == null) {
-            Dialogs.showError("Nessuna selezione", "Seleziona un'appello da modificare.");
-            return;
-        }
-
-        //
-        mostraDialogModificaInsegnamento(selezionato, builder);
-
-        //
-        Main.getInsegnamentoManager().salvaSuFile();
-    }
-
-    /**
-     * Elimina lo studente selezionato dalla tabella.
-     */
-    public static void eliminaSelezionato() {
-        if (builder == null || builder.getTabella() == null) return;
-
-        //
-        Insegnamento selezionato = builder.getTabella().getSelectionModel().getSelectedItem();
-        if (selezionato == null) {
-            Dialogs.showError("Nessuna selezione", "Seleziona uno studente da eliminare.");
-            return;
-        }
-
-        //
-        Main.getInsegnamentoManager().rimuovi(selezionato);
-
-        //
-        ricaricaInterfacciaGraficaInsegnamentiPannello2();
-    }
-
-    /**
-     * Restituisce il builder grafico utilizzato per costruire la vista degli insegnamenti.
-     *
-     * @return il {@link VistaConDettagliBuilder} associato agli insegnamenti.
-     */
-    public static VistaConDettagliBuilder<Insegnamento> getBuilder() {
-        return builder;
     }
 }

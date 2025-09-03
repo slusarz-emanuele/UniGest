@@ -4,53 +4,35 @@ import it.univaq.unigest.gui.Main;
 import it.univaq.unigest.gui.modelview.pannelli.appelli.AppelliPannello1;
 import it.univaq.unigest.gui.modelview.pannelli.appelli.AppelliPannello2;
 
+import it.univaq.unigest.gui.modelview.pannelli.docenti.DocentiPannello2;
 import it.univaq.unigest.gui.modelview.pannelli.studenti.StudentiPannello2;
 import it.univaq.unigest.gui.util.CrudView;
+import it.univaq.unigest.model.Aula;
+import it.univaq.unigest.model.Docente;
+import it.univaq.unigest.model.Insegnamento;
+import it.univaq.unigest.service.AppelloService;
+import it.univaq.unigest.service.DocenteService;
 import javafx.scene.layout.VBox;
+
+import java.util.List;
+import java.util.function.Supplier;
 
 public class AppelliModelView extends AbstractModelView<AppelliPannello2> {
 
-    /**
-     * Costruisce e restituisce il contenuto per la tab "Gestione".
-     * <p>
-     * Utilizza {@link AppelliPannello2} per fornire una vista completa delle operazioni CRUD sugli appelli.
-     * </p>
-     * 
-     * @return un {@link VBox} con la gestione degli appelli.
-     */
-    protected VBox creaGestioneContenuto(){
-        return AppelliPannello2.getView();
-    }
-
-    /**
-     * Costruisce e restituisce il contenuto per la tab "Statistiche".
-     * <p>
-     * Utilizza {@link AppelliPannello1} per visualizzare le informazioni statistiche sugli appelli.
-     * </p>
-     * 
-     * @return un {@link VBox} con le statistiche degli appelli.
-     */
-    protected VBox creaStatisticheContenuto(){
-        return AppelliPannello1.getView();
+    public AppelliModelView(AppelloService appelloService,
+                            Supplier<List<Insegnamento>> loadInsegnamenti,
+                            Supplier<List<Aula>> loadAula,
+                            Supplier<List<Docente>> loadDocenti) {
+        this.panel = new AppelliPannello2(appelloService, loadInsegnamenti, loadAula, loadDocenti);
     }
 
     @Override
-    public void onAdd(){
-        AppelliPannello2.apriDialogAggiungi();
-    }
+    protected VBox creaGestioneContenuto() { return panel.getView(); }
 
     @Override
-    public void onEdit(){
-        AppelliPannello2.modificaSelezionato();
+    protected VBox creaStatisticheContenuto() {
+        // VBox vuota per ora
+        return new VBox();
     }
 
-    @Override
-    public void onDelete(){
-        AppelliPannello2.eliminaSelezionato();
-    }
-
-    @Override
-    public void onSave(){
-        Main.getAppelloManager().salvaSuFile();
-    }
 }

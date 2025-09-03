@@ -17,13 +17,14 @@ import java.util.function.Function;
 
 public class CorsiDiLaureaPannello2 implements CrudPanel {
 
-    // ===== Etichette centralizzate =====
+    // Etichette
     private static final String L_ID              = "ID";
     private static final String L_NOME            = "Nome";
     private static final String L_CFU_TOTALI      = "CFU totali";
     private static final String L_DIPARTIMENTO    = "Dipartimento";
     private static final String L_COORDINATORE_ID = "Coordinatore ID";
 
+    // Dipendenze
     private final CorsoDiLaureaService corsoDiLaureaService;
     private final VistaConDettagliBuilder<CorsoDiLaurea> builder;
 
@@ -39,7 +40,7 @@ public class CorsiDiLaureaPannello2 implements CrudPanel {
         return builder.build(
                 "Gestione Corsi di laurea",
                 colonne(),
-                dettagli(), // <— popolata, non più vuota
+                dettagli(),
                 this::apriDialogAggiungi,
                 this::mostraDialogModificaCorsoDiLaurea,
                 this::elimina
@@ -89,7 +90,6 @@ public class CorsiDiLaureaPannello2 implements CrudPanel {
     }
 
     private LinkedHashMap<String, Function<CorsoDiLaurea, String>> dettagli() {
-        // per ora mostriamo gli stessi campi delle colonne
         return new LinkedHashMap<>(colonne());
     }
 

@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "ridInsegnamento": "1",
+    "data": "2025-09-01",
+    "ora": "12:00",
+    "ridAula": "1",
+    "ridDocente": "PPLNTN80A02G273I"
+  },
+  {
+    "id": 2,
+    "ridInsegnamento": "1",
+    "data": "2025-09-01",
+    "ora": "12:00",
+    "ridAula": "1",
+    "ridDocente": "PPLNTN80A02G273I"
+  }
+]

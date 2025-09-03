@@ -30,7 +30,13 @@ public class Appello implements Identificabile<String> {
         this.ridVerbale=ridVerbale;
 
     }
-     public int getId(){return this.id;}
+    @Override
+    public String getId(){return String.valueOf(this.id);}
+
+    @Override
+    public void setId(String id){
+        this.id = Integer.parseInt(id);
+    }
 
     public String getRidInsegnamento(){
         return this.ridInsegnamento;
@@ -101,6 +107,7 @@ public class Appello implements Identificabile<String> {
                 "ridDocente: " + this.ridDocente + " " +
                 "ridVerbale: " + this.ridVerbale;
     }
+
     
 }
 

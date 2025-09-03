@@ -36,7 +36,12 @@ public class Verbale implements Identificabile<String> {
     }
 
     // Getters
-    public Integer getId() { return id; }
+    @Override
+    public String getId() {return String.valueOf(this.id);}
+    @Override
+    public void setId(String id){
+        this.id = Integer.parseInt(id);
+    }
 
     public String getAppelloId() { return appelloId; }
 
@@ -71,10 +76,13 @@ public class Verbale implements Identificabile<String> {
             if (this.getId() == null) return;
 
             // 1. Dagli appelli troviamo le iscrizioni
+            int appelloId = Integer.parseInt(this.getAppelloId());
+
             List<Integer> iscrizioniIds = iscrizioneManager.getAll().stream()
-                    .filter(i -> i.getRidAppello() == Integer.parseInt(this.getAppelloId()))
-                    .map(Iscrizione::getId)
+                    .filter(i -> i.getRidAppello() == appelloId)
+                    .map(i -> Integer.parseInt(i.getId()))  // <-- parse da String a int
                     .toList();
+
 
             // 2. Dalle iscrizioni troviamo gli esami
             List<Esame> esamiTrovvati = esameManager.getAll().stream()

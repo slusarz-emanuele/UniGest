@@ -3,13 +3,14 @@ package it.univaq.unigest.gui.modelview.pannelli.esami;
 import it.univaq.unigest.gui.Dialogs;
 import it.univaq.unigest.gui.Main;
 import it.univaq.unigest.gui.componenti.DialogBuilder;
-import it.univaq.unigest.gui.componenti.TabelleHelper;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
-import it.univaq.unigest.gui.modelview.pannelli.exceptions.CampoRichiestoVuoto;
+import it.univaq.unigest.gui.util.CrudPanel;
+import it.univaq.unigest.gui.util.DialogsParser;
 import it.univaq.unigest.manager.exceptions.EsameConIdPresente;
-import it.univaq.unigest.model.Appello;
+import it.univaq.unigest.model.CorsoDiLaurea;
 import it.univaq.unigest.model.Esame;
 import it.univaq.unigest.model.Iscrizione;
+import it.univaq.unigest.service.EsameService;
 import it.univaq.unigest.util.PdfHelper;
 import it.univaq.unigest.util.loader.StudenteLoader;
 import it.univaq.unigest.util.loader.VerbaleLoader;
@@ -21,303 +22,241 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-import static it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaAppelliPannello2;
-import static it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaEsamiPannello2;
+public class EsamiPannello2 implements CrudPanel {
 
-/**
- * Pannello grafico per la gestione degli esami.
- * <p>
- * Fornisce una vista tabellare con dettagli aggiuntivi e funzioni per:
- * <ul>
- *   <li>Creare nuovi esami</li>
- *   <li>Modificare esami esistenti</li>
- *   <li>Eliminare esami selezionati</li>
- * </ul>
- * Utilizza {@link VistaConDettagliBuilder} per costruire la vista e
- * {@link DialogBuilder} per la gestione delle finestre di input.
- * </p>
- */
-public class EsamiPannello2 {
+    // Etichette
+    private static final String L_ID          = "ID";
+    private static final String L_ISCRIZIONE  = "Iscrizione ID";
+    private static final String L_VOTO        = "Voto";
+    private static final String L_LODE        = "Lode";
+    private static final String L_RIFIUTATO   = "Rifiutato";
+    private static final String L_VERBALIZZATO = "Verbalizzato";
 
-    /**
-     * Lista degli esami attualmente disponibili.
-     * <p>
-     * Inizializzata all'avvio da {@link Main#getEsameManager()}.
-     */
-    private static List<Esame> esami = Main.getEsameManager().getAll();
+    private final VistaConDettagliBuilder<Esame> builder;
 
-    /**
-     * Builder grafico di {@link Esame}.
-     */
-    private static VistaConDettagliBuilder<Esame> builder = new VistaConDettagliBuilder<>(esami);
+    private final EsameService esameService;
 
-    /**
-     * Costruisce e restituisce la vista principale per la gestione degli esami.
-     * <p>
-     * La vista comprende:
-     * <ul>
-     *     <li>Tabella degli esami correnti con colonne base e dettagli aggiuntivi</li>
-     *     <li>Azioni per creare, modificare ed eliminare esami</li>
-     * </ul>
-     *
-     * @return un oggetto {@link VBox} contenente la vista completa del pannello esami.
-     */
-    public static VBox getView() {
+    private final Supplier<List<Iscrizione>> loadIscrizioni;
 
-        // Colonne principali per tabella
-        LinkedHashMap<String, Function<Esame, String>> colonne = new LinkedHashMap<>();
-        colonne.put(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.id"), Esame::getId);
-        colonne.put(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.iscrizioneId"), Esame::getIscrizioneId);
-        colonne.put(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.voto"), e -> e.getVoto() == null ? "" : e.getVoto().toString());
-        colonne.put(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.lode"), e -> e.isLode() ? "Si" : "No");
-        colonne.put(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.rifiutato"), e -> e.isRifiutato() ? "Si" : "No");
-        colonne.put(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.verbalizzato"), e -> e.isVerbalizzato() ? "Si" : "No");
+    public EsamiPannello2(EsameService esameService,
+                          Supplier<List<Iscrizione>> loadIscrizioni) {
+        this.esameService = esameService;
+        this.loadIscrizioni = loadIscrizioni;
+        this.builder = new VistaConDettagliBuilder<>(esameService.findAll());
+    }
 
-        // Dettagli (aggiungo eventuali altre info)
+    @Override
+    public VBox getView() {
+        LinkedHashMap<String, Function<Esame, String>> colonne = colonne();
         LinkedHashMap<String, Function<Esame, String>> dettagli = new LinkedHashMap<>(colonne);
-
-        dettagli.put(Main.getParametrizzazioneHelper().getBundle().getString("field.esportaEntita"), s -> Main.getParametrizzazioneHelper().getBundle().getString("field.esportaEntita"));
-        builder.setLinkAction(Main.getParametrizzazioneHelper().getBundle().getString("field.esportaEntita"), iscrizione -> PdfHelper.esportaEntita(iscrizione, Main.getParametrizzazioneHelper().getBundle().getString("string.esportaEntita.esame.descrizione") + " " + iscrizione.getId(), Main.getParametrizzazioneHelper().getBundle().getString("string.esportaEntita.esame.descrizione") + " " + iscrizione.getId()));
+        dettagli.put("Esporta in PDF", e -> "Esporta in PDF");
+        builder.setLinkAction("Esporta in PDF", e ->
+                PdfHelper.esportaEntita(e, "Esame " + e.getId(), "Esame_" + e.getId())
+        );
 
         return builder.build(
-                Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.titolo"),
+                "Gestione Esami",
                 colonne,
                 dettagli,
-                () -> {
-                    DialogBuilder<Esame> dialogBuilder = new DialogBuilder<>(
-                            Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.builder.titolo"),
-                            Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.builder.header"),
-                            campi -> {
-                                try {
-
-                                    // Iscrizioni
-                                    @SuppressWarnings("unchecked")
-                                    TableView<Iscrizione> tableIscizioni = (TableView<Iscrizione>) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.iscrizioneId"));
-                                    tableIscizioni.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);                            // La scelta di elementi è solo 1
-                                    Iscrizione iscrizioneSelezionata = tableIscizioni.getSelectionModel().getSelectedItem();
-                                    if (iscrizioneSelezionata == null) {
-                                        throw new IllegalArgumentException(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.builder.iscrizioneId.errore"));
-                                    }
-                                    String iscrizioneSelezionataStr = String.valueOf(iscrizioneSelezionata.getId());   // id del corso selezionatto
-
-                                    // Voto
-                                    @SuppressWarnings("unchecked")
-                                    ComboBox<Double> comboVoto = (ComboBox<Double>) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.voto"));
-                                    Double votoSelezionato = comboVoto.getValue();
-                                    double voto = votoSelezionato != null ? votoSelezionato : 0.0;
-
-
-                                    boolean lode = ((CheckBox) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.lode"))).isSelected();
-                                    boolean rifiutato = ((CheckBox) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.rifiutato"))).isSelected();
-                                    boolean verbalizzato = ((CheckBox) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.verbalizzato"))).isSelected();
-
-                                    return new Esame(String.valueOf(Main.getEsameManager().assegnaIndiceCorrente()), iscrizioneSelezionataStr, voto, lode, rifiutato, verbalizzato);
-                                } catch (CampoRichiestoVuoto e) {
-                                    throw new CampoRichiestoVuoto(e.getMessage());
-                                } catch (NumberFormatException e) {
-                                    throw new IllegalArgumentException("I CFU devono essere un numero valido.");
-                                } catch (Exception e) {
-                                    throw new IllegalArgumentException("Errore nei dati: " + e.getMessage());
-                                }
-                            },
-                            esame -> {
-                                try{
-                                    Main.getEsameManager().aggiungi(esame);
-                                }catch (EsameConIdPresente e){
-                                    Dialogs.showError(
-                                            Main.getParametrizzazioneHelper().getBundle().getString("alert.header.error"),
-                                            e.getMessage()
-                                    );
-                                    return;
-                                }
-                                ricaricaInterfacciaGraficaEsamiPannello2();
-                                Dialogs.showInfo(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.builder.success1"), Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.builder.success2"));
-                            }
-                    );
-
-                    dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.iscrizioneId"), TabelleHelper.generaTabellaFkIscrizioni(SelectionMode.SINGLE));
-
-                    // Genera la lista dei voti con step 0.25
-                    List<Double> votiDisponibili = new ArrayList<>();
-                    for (double v = 0; v <= 30; v += 0.25) {
-                        votiDisponibili.add(v);
-                    }
-
-                    // ComboBox con valori di tipo Double
-                    ComboBox<Double> comboVoto = new ComboBox<>(FXCollections.observableArrayList(votiDisponibili));
-                    comboVoto.setPrefWidth(150);
-                    dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.voto"), comboVoto);
-
-                    dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.lode"), new CheckBox(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.lode")));
-                    dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.rifiutato"), new CheckBox(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.rifiutato")));
-                    dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.verbalizzato"), new CheckBox(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.verbalizzato")));
-                    dialogBuilder.mostra();
-
-                    StudenteLoader.caricaEsamiPerOgniStudente(Main.getStudenteManager(), Main.getIscrizioneManager(), Main.getEsameManager());
-                    VerbaleLoader.caricaEsamiPerOgniVerbale(Main.getVerbaleManager(), Main.getIscrizioneManager(), Main.getEsameManager());
-                    },
-                esame -> {
-                    // TODO: modifica esame
-                    System.out.println("Modifica Esame: " + esame.getId());
-                    mostraDialogModificaEsame(esame, builder);
-                },
-                esame -> {
-                    Main.getEsameManager().rimuovi(esame);
-                    ricaricaInterfacciaGraficaEsamiPannello2();
-                    StudenteLoader.caricaEsamiPerOgniStudente(Main.getStudenteManager(), Main.getIscrizioneManager(), Main.getEsameManager());
-                }
+                this::apriDialogAggiungi,
+                this::mostraDialogModifica,
+                this::elimina
         );
     }
 
-    /**
-     * Crea una finestra di modifica esami sfruttando la logica di creazione.
-     * @param esame L'esame a cui apportare le modifiche.
-     * @param builder Il builder grafico utilizzato per costruire la vista degli esami.
-     */
-    private static void mostraDialogModificaEsame(Esame esame, VistaConDettagliBuilder<Esame> builder) {
-        DialogBuilder<Esame> dialogBuilder = new DialogBuilder<>(
-                "Modifica Esame",
-                "Modifica i dati dell'esame",
+    @Override
+    public void apriDialogAggiungiPubblico() { apriDialogAggiungi(); }
+
+    @Override
+    public void modificaSelezionato() {
+        var sel = builder.getTabella().getSelectionModel().getSelectedItem();
+        if (sel == null) { Dialogs.showError("Nessuna selezione", "Seleziona un esame."); return; }
+        mostraDialogModifica(sel);
+    }
+
+    @Override
+    public void eliminaSelezionato() {
+        var sel = builder.getTabella().getSelectionModel().getSelectedItem();
+        if (sel == null) { Dialogs.showError("Nessuna selezione", "Seleziona un esame."); return; }
+        elimina(sel);
+    }
+
+    @Override
+    public void refresh() {
+        builder.refresh(Main.getEsameManager().getAll());
+    }
+
+    public VistaConDettagliBuilder<Esame> getBuilder() { return builder; }
+
+    // ===== Colonne =====
+    private LinkedHashMap<String, Function<Esame, String>> colonne() {
+        LinkedHashMap<String, Function<Esame, String>> map = new LinkedHashMap<>();
+        map.put(L_ID, Esame::getId);
+        map.put(L_ISCRIZIONE, Esame::getIscrizioneId);
+        map.put(L_VOTO, e -> e.getVoto() == null ? "" : e.getVoto().toString());
+        map.put(L_LODE, e -> e.isLode() ? "Sì" : "No");
+        map.put(L_RIFIUTATO, e -> e.isRifiutato() ? "Sì" : "No");
+        map.put(L_VERBALIZZATO, e -> e.isVerbalizzato() ? "Sì" : "No");
+        return map;
+    }
+
+    // ===== Dialoghi CRUD =====
+    private void apriDialogAggiungi() {
+        DialogBuilder<Esame> dialog = new DialogBuilder<>(
+                "Nuovo Esame",
+                "Inserisci i dati dell'esame",
                 campi -> {
-                    // Tabella Iscrizioni
+                    // Iscrizione
                     @SuppressWarnings("unchecked")
-                    TableView<Iscrizione> tableIscrizioni = (TableView<Iscrizione>) campi.get("Iscrizione ID");
-                    Iscrizione iscrizioneSelezionata = tableIscrizioni.getSelectionModel().getSelectedItem();
-                    if (iscrizioneSelezionata == null) {
-                        throw new IllegalArgumentException("Devi selezionare una Iscrizione!");
-                    }
+                    TableView<Iscrizione> tabIscr = (TableView<Iscrizione>) campi.get(L_ISCRIZIONE);
+                    tabIscr.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+                    Iscrizione iscr = tabIscr.getSelectionModel().getSelectedItem();
+                    if (iscr == null) throw new IllegalArgumentException("Seleziona un'iscrizione.");
 
                     // Voto
                     @SuppressWarnings("unchecked")
-                    ComboBox<Double> comboVoto = (ComboBox<Double>) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.voto"));
-                    Double votoSelezionato = comboVoto.getValue();
-                    double voto = votoSelezionato != null ? votoSelezionato : 0.0;
+                    ComboBox<Double> cbVoto = (ComboBox<Double>) campi.get(L_VOTO);
+                    Double votoSel = cbVoto.getValue();
+                    double voto = votoSel != null ? votoSel : 0.0;
 
-                    boolean lode = ((CheckBox) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.lode"))).isSelected();
-                    boolean rifiutato = ((CheckBox) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.rifiutato"))).isSelected();
-                    boolean verbalizzato = ((CheckBox) campi.get(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.verbalizzato"))).isSelected();
+                    boolean lode = ((CheckBox) campi.get(L_LODE)).isSelected();
+                    boolean rifiutato = ((CheckBox) campi.get(L_RIFIUTATO)).isSelected();
+                    boolean verbalizzato = ((CheckBox) campi.get(L_VERBALIZZATO)).isSelected();
 
-                    Esame esameAggiornato=new Esame(
-                            esame.getId(),
-                            String.valueOf(iscrizioneSelezionata.getId()),
+                    Esame nuovo = new Esame(
+                            String.valueOf(Main.getEsameManager().assegnaIndiceCorrente()),
+                            String.valueOf(iscr.getId()),
                             voto,
                             lode,
                             rifiutato,
-                            verbalizzato);
+                            verbalizzato
+                    );
+                    Main.getEsameManager().aggiungi(nuovo);
 
+                    // aggiorna relazioni
+                    StudenteLoader.caricaEsamiPerOgniStudente(Main.getStudenteManager(), Main.getIscrizioneManager(), Main.getEsameManager());
+                    VerbaleLoader.caricaEsamiPerOgniVerbale(Main.getVerbaleManager(), Main.getIscrizioneManager(), Main.getEsameManager());
 
-                    try{
-                        Main.getEsameManager().aggiorna(esameAggiornato);
-                    } catch (EsameConIdPresente e){
-                        Dialogs.showError(
-                                Main.getParametrizzazioneHelper().getBundle().getString("alert.header.error"),
-                                e.getMessage()
-                        );
-                        return null;
-                    }
-
-                    return esame;
+                    return nuovo;
                 },
                 e -> {
-                    ricaricaInterfacciaGraficaEsamiPannello2();
-                    Dialogs.showInfo(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.builder.success1"), Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.editor.success2"));
+                    refresh();
+                    Dialogs.showInfo("Successo", "Esame aggiunto con successo!");
                 }
         );
 
-        // Tabella iscrizioni con selezione predefinita
-        TableView<Iscrizione> tableIscrizioni = TabelleHelper.generaTabellaFkIscrizioni(SelectionMode.SINGLE);
-        tableIscrizioni.getItems().stream()
+        dialog.aggiungiCampo(L_ISCRIZIONE, generaTabellaIscrizioni());
+        dialog.aggiungiCampo(L_VOTO, generaComboVoti(null));
+        dialog.aggiungiCampo(L_LODE, new CheckBox(L_LODE));
+        dialog.aggiungiCampo(L_RIFIUTATO, new CheckBox(L_RIFIUTATO));
+        dialog.aggiungiCampo(L_VERBALIZZATO, new CheckBox(L_VERBALIZZATO));
+        dialog.mostra();
+    }
+
+    private void mostraDialogModifica(Esame esame) {
+        DialogBuilder<Esame> dialog = new DialogBuilder<>(
+                "Modifica Esame",
+                "Aggiorna i dati dell'esame",
+                campi -> {
+                    @SuppressWarnings("unchecked")
+                    TableView<Iscrizione> tabIscr = (TableView<Iscrizione>) campi.get(L_ISCRIZIONE);
+                    Iscrizione iscr = tabIscr.getSelectionModel().getSelectedItem();
+                    if (iscr == null) throw new IllegalArgumentException("Seleziona un'iscrizione.");
+
+                    @SuppressWarnings("unchecked")
+                    ComboBox<Double> cbVoto = (ComboBox<Double>) campi.get(L_VOTO);
+                    Double votoSel = cbVoto.getValue();
+                    double voto = votoSel != null ? votoSel : 0.0;
+
+                    boolean lode = ((CheckBox) campi.get(L_LODE)).isSelected();
+                    boolean rifiutato = ((CheckBox) campi.get(L_RIFIUTATO)).isSelected();
+                    boolean verbalizzato = ((CheckBox) campi.get(L_VERBALIZZATO)).isSelected();
+
+                    Esame aggiornato = new Esame(
+                            esame.getId(),
+                            String.valueOf(iscr.getId()),
+                            voto,
+                            lode,
+                            rifiutato,
+                            verbalizzato
+                    );
+
+                    try {
+                        Main.getEsameManager().aggiorna(aggiornato);
+                    } catch (EsameConIdPresente ex) {
+                        Dialogs.showError("Errore", ex.getMessage());
+                        return null;
+                    }
+
+                    // aggiorna relazioni
+                    StudenteLoader.caricaEsamiPerOgniStudente(Main.getStudenteManager(), Main.getIscrizioneManager(), Main.getEsameManager());
+                    VerbaleLoader.caricaEsamiPerOgniVerbale(Main.getVerbaleManager(), Main.getIscrizioneManager(), Main.getEsameManager());
+
+                    return aggiornato;
+                },
+                e -> {
+                    refresh();
+                    Dialogs.showInfo("Successo", "Esame modificato con successo!");
+                }
+        );
+
+        // Pre-popola controlli
+        TableView<Iscrizione> tabIscr = generaTabellaIscrizioni();
+        tabIscr.getItems().stream()
                 .filter(i -> String.valueOf(i.getId()).equals(esame.getIscrizioneId()))
-                .findFirst().ifPresent(i -> tableIscrizioni.getSelectionModel().select(i));
+                .findFirst().ifPresent(i -> tabIscr.getSelectionModel().select(i));
 
-        // Combo voti con step 0.25
-        List<Double> votiDisponibili = new ArrayList<>();
-        for (double v = 0; v <= 30; v += 0.25) {
-            votiDisponibili.add(v);
-        }
-        ComboBox<Double> comboVoto = new ComboBox<>(FXCollections.observableArrayList(votiDisponibili));
-        comboVoto.setValue(esame.getVoto());
+        ComboBox<Double> cbVoto = generaComboVoti(esame.getVoto());
 
-        // CheckBox preimpostati
-        CheckBox checkLode = new CheckBox(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.lode"));
-        checkLode.setSelected(esame.isLode());
+        CheckBox cbLode = new CheckBox(L_LODE); cbLode.setSelected(esame.isLode());
+        CheckBox cbRif  = new CheckBox(L_RIFIUTATO); cbRif.setSelected(esame.isRifiutato());
+        CheckBox cbVerb = new CheckBox(L_VERBALIZZATO); cbVerb.setSelected(esame.isVerbalizzato());
 
-        CheckBox checkRifiutato = new CheckBox(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.rifiutato"));
-        checkRifiutato.setSelected(esame.isRifiutato());
+        dialog.aggiungiCampo(L_ID, new TextField(esame.getId()) {{ setEditable(false); }});
+        dialog.aggiungiCampo(L_ISCRIZIONE, tabIscr);
+        dialog.aggiungiCampo(L_VOTO, cbVoto);
+        dialog.aggiungiCampo(L_LODE, cbLode);
+        dialog.aggiungiCampo(L_RIFIUTATO, cbRif);
+        dialog.aggiungiCampo(L_VERBALIZZATO, cbVerb);
+        dialog.mostra();
+    }
 
-        CheckBox checkVerbalizzato = new CheckBox(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.verbalizzato"));
-        checkVerbalizzato.setSelected(esame.isVerbalizzato());
-
-        dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.iscrizioneId"), tableIscrizioni);
-        dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.voto"), comboVoto);
-        dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.lode"), checkLode);
-        dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.rifiutato"), checkRifiutato);
-        dialogBuilder.aggiungiCampo(Main.getParametrizzazioneHelper().getBundle().getString("string.edificiPannello2.verbalizzato"), checkVerbalizzato);
-
-        dialogBuilder.mostra();
-
-        // Aggiornamento relazioni dopo modifica
+    private void elimina(Esame e) {
+        Main.getEsameManager().rimuovi(e);
+        refresh();
+        // aggiorna relazioni dopo delete
         StudenteLoader.caricaEsamiPerOgniStudente(Main.getStudenteManager(), Main.getIscrizioneManager(), Main.getEsameManager());
         VerbaleLoader.caricaEsamiPerOgniVerbale(Main.getVerbaleManager(), Main.getIscrizioneManager(), Main.getEsameManager());
     }
 
-    /**
-     * Apre la finestra di aggiunta studente (usa la stessa logica di getView()).
-     */
-    public static void apriDialogAggiungi() {
-        // Riutilizziamo direttamente la logica del builder
-        if (builder != null && builder.getAggiungiAction() != null) {
-            builder.getAggiungiAction().run();
-        }
+    // ===== Supporto UI =====
+    private TableView<Iscrizione> generaTabellaIscrizioni() {
+        TableView<Iscrizione> table = new TableView<>();
+        table.setPrefHeight(220);
+
+        TableColumn<Iscrizione, String> c1 = new TableColumn<>("ID");
+        c1.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(String.valueOf(d.getValue().getId())));
+
+        TableColumn<Iscrizione, String> c2 = new TableColumn<>("Studente CF");
+        c2.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(d.getValue().getRidStudenteCf()));
+
+        TableColumn<Iscrizione, String> c3 = new TableColumn<>("Appello ID");
+        c3.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(String.valueOf(d.getValue().getRidAppello())));
+
+        table.getColumns().addAll(c1, c2, c3);
+        table.setItems(FXCollections.observableArrayList(Main.getIscrizioneManager().getAll()));
+        table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        return table;
     }
 
-    /**
-     * Modifica lo studente selezionato nella tabella.
-     */
-    public static void modificaSelezionato() {
-        if (builder == null || builder.getTabella() == null) return;
-
-        //
-        Esame selezionato = builder.getTabella().getSelectionModel().getSelectedItem();
-        if (selezionato == null) {
-            Dialogs.showError("Nessuna selezione", "Seleziona un'appello da modificare.");
-            return;
-        }
-
-        //
-        mostraDialogModificaEsame(selezionato, builder);
-
-        //
-        Main.getEsameManager().salvaSuFile();
-    }
-
-    /**
-     * Elimina lo studente selezionato dalla tabella.
-     */
-    public static void eliminaSelezionato() {
-        if (builder == null || builder.getTabella() == null) return;
-
-        //
-        Esame selezionato = builder.getTabella().getSelectionModel().getSelectedItem();
-        if (selezionato == null) {
-            Dialogs.showError("Nessuna selezione", "Seleziona uno studente da eliminare.");
-            return;
-        }
-
-        //
-        Main.getEsameManager().rimuovi(selezionato);
-
-        //
-        ricaricaInterfacciaGraficaEsamiPannello2();
-    }
-
-    /**
-     * Restituisce il builder grafico utilizzato per costruire la vista degli esami.
-     *
-     * @return il {@link VistaConDettagliBuilder} associato agli esami.
-     */
-    public static VistaConDettagliBuilder<Esame> getBuilder() {
-        return builder;
+    private ComboBox<Double> generaComboVoti(Double preselezione) {
+        List<Double> voti = new ArrayList<>();
+        for (double v = 0.0; v <= 30.0 + 1e-9; v += 0.25) voti.add(Math.round(v * 100.0) / 100.0);
+        ComboBox<Double> combo = new ComboBox<>(FXCollections.observableArrayList(voti));
+        combo.setPrefWidth(150);
+        if (preselezione != null) combo.setValue(preselezione);
+        return combo;
     }
 }

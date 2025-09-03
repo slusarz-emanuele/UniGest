@@ -1,38 +1,31 @@
 package it.univaq.unigest.gui.modelview.pannelli.iscrizioni;
 
 import it.univaq.unigest.gui.Dialogs;
-import it.univaq.unigest.gui.Main;
 import it.univaq.unigest.gui.componenti.DialogBuilder;
 import it.univaq.unigest.gui.componenti.TableMiniFactory;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
 import it.univaq.unigest.gui.util.CrudPanel;
-import it.univaq.unigest.model.*;
+import it.univaq.unigest.model.Appello;
+import it.univaq.unigest.model.Iscrizione;
+import it.univaq.unigest.model.Studente;
 import it.univaq.unigest.service.IscrizioneService;
-import it.univaq.unigest.service.StudenteService;
 import it.univaq.unigest.util.LocalDateUtil;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class IscrizioniPannello2 implements CrudPanel {
 
     // Etichette
-    private static final String L_ID               = "ID Iscrizione";
-    private static final String L_DATA_ISCRIZIONE  = "Data iscrizione";
-    private static final String L_RITIRATO         = "Ritirato";
-    private static final String L_STUDENTE         = "Studente (CF)";
-    private static final String L_APPELLO          = "Appello";
+    private static final String L_ID              = "ID Iscrizione";
+    private static final String L_STUDENTE        = "Studente (CF)";
+    private static final String L_APPELLO         = "Appello";
+    private static final String L_DATA_ISCRIZIONE = "Data iscrizione";
+    private static final String L_RITIRATO        = "Ritirato";
 
     // Dipendenze
     private final IscrizioneService iscrizioneService;
@@ -40,26 +33,26 @@ public class IscrizioniPannello2 implements CrudPanel {
 
     // Loader esterni
     private final Supplier<List<Studente>> loadStudenti;
-    private final Supplier<List<Appello>> loadAppelli;
+    private final Supplier<List<Appello>>  loadAppelli;
 
-    // Costruttore
     public IscrizioniPannello2(IscrizioneService iscrizioneService,
                                Supplier<List<Studente>> loadStudenti,
                                Supplier<List<Appello>> loadAppelli) {
         this.iscrizioneService = iscrizioneService;
         this.loadStudenti = loadStudenti;
-        this.loadAppelli = loadAppelli;
+        this.loadAppelli  = loadAppelli;
         this.builder = new VistaConDettagliBuilder<>(iscrizioneService.findAll());
     }
 
     // Blocchiamo il costruttore di default
-    public IscrizioniPannello2() {
+    private IscrizioniPannello2() {
         this.iscrizioneService = null;
+        this.loadStudenti = null;
+        this.loadAppelli  = null;
         this.builder = null;
-        this.loadAppelli = null;
-        loadStudenti = null;
     }
 
+    // ===== CrudPanel API =====
     @Override
     public VBox getView() {
         return builder.build(
@@ -67,24 +60,21 @@ public class IscrizioniPannello2 implements CrudPanel {
                 colonne(),
                 dettagli(),
                 this::apriDialogAggiungi,
-                this::mostraDialogModificaIscrizione,
+                this::mostraDialogModifica,
                 this::elimina
         );
     }
 
-    // Dialog di aggiunta
     @Override
     public void apriDialogAggiungiPubblico() { apriDialogAggiungi(); }
 
-    // Dialog di modifica
     @Override
     public void modificaSelezionato() {
         var sel = builder.getTabella().getSelectionModel().getSelectedItem();
         if (sel == null) { Dialogs.showError("Nessuna selezione", "Seleziona un'iscrizione."); return; }
-        mostraDialogModificaIscrizione(sel);
+        mostraDialogModifica(sel);
     }
 
-    // Dialog di eliminazione
     @Override
     public void eliminaSelezionato() {
         var sel = builder.getTabella().getSelectionModel().getSelectedItem();
@@ -92,7 +82,6 @@ public class IscrizioniPannello2 implements CrudPanel {
         elimina(sel);
     }
 
-    // Funzione di aggiornamento grafica tabella dopo aver apportato una modifica
     @Override
     public void refresh() {
         builder.refresh(iscrizioneService.findAll());
@@ -100,42 +89,52 @@ public class IscrizioniPannello2 implements CrudPanel {
 
     public VistaConDettagliBuilder<Iscrizione> getBuilder() { return builder; }
 
-    // Colonne
+    // ===== Colonne / Dettagli =====
     private LinkedHashMap<String, Function<Iscrizione, String>> colonne() {
-        LinkedHashMap<String, Function<Iscrizione, String>> columns = new LinkedHashMap<>();
-        columns.put(L_ID, i -> i.getId() != null ? i.getId().toString() : "");
-        columns.put(L_DATA_ISCRIZIONE, i -> i.getDataIscrizione() != null ? i.getDataIscrizione().toString() : "");
-        columns.put(L_RITIRATO, i -> Boolean.TRUE.equals(i.getRitirato()) ? "Sì" : "No");
-        columns.put(L_STUDENTE, Iscrizione::getRidStudenteCf);
-        columns.put(L_APPELLO, i -> i.getRidAppello() != 0 ? String.valueOf(i.getRidAppello()) : "");
-        return columns;
+        LinkedHashMap<String, Function<Iscrizione, String>> map = new LinkedHashMap<>();
+        map.put(L_ID, Iscrizione::getId);
+        map.put(L_STUDENTE, i -> studenteLabelByCf(i.getRidStudenteCf()));
+        map.put(L_APPELLO,  i -> String.valueOf(i.getRidAppello()));
+        map.put(L_DATA_ISCRIZIONE, i -> i.getDataIscrizione() != null ? i.getDataIscrizione().toString() : "");
+        map.put(L_RITIRATO, i -> i.getRitirato() ? "Sì" : "No");
+        return map;
     }
 
-    // Dettagli
     private LinkedHashMap<String, Function<Iscrizione, String>> dettagli() {
-        LinkedHashMap<String, Function<Iscrizione, String>> details = new LinkedHashMap<>(colonne());
-        return details;
+        return new LinkedHashMap<>(colonne());
     }
 
-    // Dialoghi CRUD
-    public void apriDialogAggiungi() {
+    private String studenteLabelByCf(String cf) {
+        if (cf == null || cf.isBlank()) return "";
+        return loadStudenti.get().stream()
+                .filter(s -> cf.equals(s.getCf()))
+                .findFirst()
+                .map(s -> {
+                    String nome = s.getNome() != null ? s.getNome() : "";
+                    String cognome = s.getCognome() != null ? s.getCognome() : "";
+                    return (nome + " " + cognome + " (" + cf + ")").trim();
+                })
+                .orElse(cf); // fallback
+    }
+
+    // ===== Dialoghi CRUD =====
+    private void apriDialogAggiungi() {
         mostraDialogoCrud(
-                "Nuova iscrizione",
+                "Nuova Iscrizione",
                 "Inserisci i dati dell'iscrizione",
                 null,
                 iCreato -> iscrizioneService.create(iCreato),
                 "Successo",
-                "Iscrizione aggiunto correttamente!"
+                "Iscrizione aggiunta correttamente!"
         );
     }
 
-
-    private void mostraDialogModificaIscrizione(Iscrizione iscrizione) {
+    private void mostraDialogModifica(Iscrizione iniziale) {
         mostraDialogoCrud(
                 "Modifica Iscrizione",
                 "Modifica i dati dell'iscrizione",
-                iscrizione,
-                iAgg -> iscrizioneService.create(iAgg),
+                iniziale,
+                iAgg -> iscrizioneService.update(iAgg),
                 "Successo",
                 "Iscrizione modificata correttamente!"
         );
@@ -146,7 +145,7 @@ public class IscrizioniPannello2 implements CrudPanel {
                                    Iscrizione iniziale,
                                    Function<Iscrizione, Iscrizione> persister,
                                    String successTitle,
-                                   String successMessage){
+                                   String successMessage) {
         DialogBuilder<Iscrizione> dialog = new DialogBuilder<>(
                 titolo,
                 header,
@@ -154,59 +153,107 @@ public class IscrizioniPannello2 implements CrudPanel {
                     Iscrizione target = estraiIscrizioneDaCampi(campi, iniziale);
                     return persister.apply(target);
                 },
-                i -> {refresh(); Dialogs.showInfo(successTitle, successMessage);}
+                v -> { refresh(); Dialogs.showInfo(successTitle, successMessage); }
         );
 
         configuraCampi(dialog, iniziale);
         dialog.mostra();
     }
 
-    // Configurazione dei campi
-    private void configuraCampi(DialogBuilder<Iscrizione> dialog,
-                                Iscrizione iniziale) {
-
+    // ===== Configurazione campi (ordine: studente → appello → data → ritirato) =====
+    private void configuraCampi(DialogBuilder<Iscrizione> dialog, Iscrizione iniziale) {
+        // Studente (single)
         TableView<Studente> tabStudenti = TableMiniFactory.creaTabella(
                 loadStudenti,
                 SelectionMode.SINGLE,
-                0,
+                240,
                 new LinkedHashMap<>() {{
-                    put("Data", s -> LocalDateUtil.toString(s.getData()));
-                    put("Docente", Appello::getRidDocente);
+                    put("CF",      Studente::getCf);
+                    put("Nome",    Studente::getNome);
+                    put("Cognome", Studente::getCognome);
                 }}
         );
+        if (iniziale != null && iniziale.getRidStudenteCf() != null) {
+            tabStudenti.getItems().stream()
+                    .filter(s -> iniziale.getRidStudenteCf().equals(s.getCf()))
+                    .findFirst().ifPresent(s -> tabStudenti.getSelectionModel().select(s));
+        }
 
+        // Appello (single)
         TableView<Appello> tabAppelli = TableMiniFactory.creaTabella(
                 loadAppelli,
                 SelectionMode.SINGLE,
-                0,
+                220,
                 new LinkedHashMap<>() {{
-                    put("Data", a -> LocalDateUtil.toString(a.getData()));
+                    put("Data",  a -> LocalDateUtil.toString(a.getData()));
                     put("Docente", Appello::getRidDocente);
                 }}
         );
-
-    // Preselezione in modifica
-        if (iniziale != null && iniziale.getRidStudenteCf() != null) {
-            tabStudenti.getItems().stream()
-                .filter(s -> String.valueOf(s.getId()).equals(iniziale.getRidStudenteCf()))
-                .findFirst()
-                .ifPresent(s -> tabStudenti.getSelectionModel().select(s));
-    }
-        if (iniziale != null && iniziale.getRidAppello() != 0) {
+        if (iniziale != null) {
+            int rid = iniziale.getRidAppello();
             tabAppelli.getItems().stream()
-                    .filter(a -> String.valueOf(a.getId()).equals(iniziale.getRidAppello()))
-                    .findFirst()
-                    .ifPresent(a -> tabAppelli.getSelectionModel().select(a));
+                    .filter(a -> {
+                        try { return Integer.parseInt(a.getId()) == rid; }
+                        catch (Exception e) { return false; }
+                    })
+                    .findFirst().ifPresent(a -> tabAppelli.getSelectionModel().select(a));
         }
 
-        dialog.aggiungiCampo(L_DATA_ISCRIZIONE, new DatePicker());
-        dialog.aggiungiCampo(L_RITIRATO, new CheckBox(L_RITIRATO));
-        dialog.aggiungiCampo(L_STUDENTE, tabStudenti);
-        dialog.aggiungiCampo(L_APPELLO, tabAppelli);
-}
+        // Data iscrizione
+        DatePicker dpData = new DatePicker(iniziale != null ? iniziale.getDataIscrizione() : null);
 
-        private void elimina (Iscrizione i){
-            iscrizioneService.deleteById(i.getId());
-            refresh();
+        // Ritirato
+        CheckBox cbRitirato = new CheckBox(L_RITIRATO);
+        if (iniziale != null) cbRitirato.setSelected(iniziale.getRitirato());
+
+        // Aggiunta secondo ordine richiesto
+        dialog.aggiungiCampo(L_STUDENTE, tabStudenti);
+        dialog.aggiungiCampo(L_APPELLO,  tabAppelli);
+        dialog.aggiungiCampo(L_DATA_ISCRIZIONE, dpData);
+        dialog.aggiungiCampo(L_RITIRATO, cbRitirato);
+    }
+
+    // ===== Lettura/validazione =====
+    private Iscrizione estraiIscrizioneDaCampi(Map<String, Control> campi, Iscrizione target) {
+        // Studente
+        @SuppressWarnings("unchecked")
+        TableView<Studente> tabStudenti = (TableView<Studente>) campi.get(L_STUDENTE);
+        if (tabStudenti == null) throw new IllegalStateException("Campo 'Studente' non trovato.");
+        Studente stud = tabStudenti.getSelectionModel().getSelectedItem();
+        if (stud == null) throw new IllegalArgumentException("Seleziona uno studente.");
+        String studCf = stud.getCf();
+
+        // Appello
+        @SuppressWarnings("unchecked")
+        TableView<Appello> tabAppelli = (TableView<Appello>) campi.get(L_APPELLO);
+        if (tabAppelli == null) throw new IllegalStateException("Campo 'Appello' non trovato.");
+        Appello app = tabAppelli.getSelectionModel().getSelectedItem();
+        if (app == null) throw new IllegalArgumentException("Seleziona un appello.");
+        int appelloId;
+        try { appelloId = Integer.parseInt(app.getId()); }
+        catch (Exception e) { throw new IllegalArgumentException("ID appello non valido."); }
+
+        // Data iscrizione
+        LocalDate data = ((DatePicker) campi.get(L_DATA_ISCRIZIONE)).getValue();
+        if (data == null) throw new IllegalArgumentException("Seleziona la data di iscrizione.");
+
+        // Ritirato
+        boolean ritirato = ((CheckBox) campi.get(L_RITIRATO)).isSelected();
+
+        if (target == null) {
+            // id null → auto-increment dal repository
+            return new Iscrizione(null, studCf, appelloId, data, ritirato);
+        } else {
+            target.setRidStudenteCf(studCf);
+            target.setRidAppello(appelloId);
+            target.setDataIscrizione(data);
+            target.setRitirato(ritirato);
+            return target;
         }
     }
+
+    private void elimina(Iscrizione i) {
+        iscrizioneService.deleteById(i.getId());
+        refresh();
+    }
+}

@@ -7,7 +7,9 @@ import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
 import it.univaq.unigest.gui.util.CrudPanel;
 import it.univaq.unigest.model.*;
 import it.univaq.unigest.service.EsameService;
+import it.univaq.unigest.service.query.DomainQueryService;
 import it.univaq.unigest.util.LocalDateUtil;
+import it.univaq.unigest.util.loader.DomainRefresher;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -32,15 +34,18 @@ public class EsamiPannello2 implements CrudPanel {
     // Dipendenze
     private final EsameService esameService;
     private final VistaConDettagliBuilder<Esame> builder;
+    private final DomainQueryService domainQueryService;
 
     // Loader esterni
     private final Supplier<List<Iscrizione>> loadIscrizioni;
 
     // Costruttore
     public EsamiPannello2(EsameService esameService,
-                          Supplier<List<Iscrizione>> loadIscrizioni) {
+                          Supplier<List<Iscrizione>> loadIscrizioni,
+                          DomainQueryService domainQueryService) {
         this.esameService = esameService;
         this.loadIscrizioni = loadIscrizioni;
+        this.domainQueryService = domainQueryService;
         this.builder = new VistaConDettagliBuilder<>(esameService.findAll());
     }
 
@@ -49,6 +54,7 @@ public class EsamiPannello2 implements CrudPanel {
         this.esameService = null;
         this.builder = null;
         this.loadIscrizioni = null;
+        this.domainQueryService = null;
     }
 
     // API CrudPanel
@@ -145,7 +151,10 @@ public class EsamiPannello2 implements CrudPanel {
                     Esame target = estraiEsameDaCampi(campi, iniziale);
                     return persister.apply(target);
                 },
-                v -> {refresh(); Dialogs.showInfo(successTitle, successMessage);}
+                v -> {
+                    DomainRefresher.onEsameChanged();
+                    refresh();
+                    Dialogs.showInfo(successTitle, successMessage);}
         );
 
         configuraCampi(dialog, iniziale);
@@ -229,6 +238,7 @@ public class EsamiPannello2 implements CrudPanel {
 
     private void elimina(Esame v) {
         esameService.deleteById(v.getId());
+        DomainRefresher.onEsameChanged();
         refresh();
     }
 

@@ -1,6 +1,7 @@
 package it.univaq.unigest.gui.modelview.pannelli.appelli;
 
 import it.univaq.unigest.gui.Dialogs;
+import it.univaq.unigest.gui.actions.QueryActions;
 import it.univaq.unigest.gui.componenti.DialogBuilder;
 import it.univaq.unigest.gui.componenti.TableMiniFactory;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
@@ -11,6 +12,7 @@ import it.univaq.unigest.model.Aula;
 import it.univaq.unigest.model.Docente;
 import it.univaq.unigest.model.Insegnamento;
 import it.univaq.unigest.service.AppelloService;
+import it.univaq.unigest.service.query.DomainQueryService;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
@@ -37,6 +39,7 @@ public class AppelliPannello2 implements CrudPanel {
     // Dipendenze
     private final VistaConDettagliBuilder<Appello> builder;
     private final AppelloService appelloService;
+    private final DomainQueryService domainQueryService;
 
     // Loader esterni
     private final Supplier<List<Insegnamento>> loadInsegnamenti;
@@ -46,11 +49,13 @@ public class AppelliPannello2 implements CrudPanel {
     public AppelliPannello2(AppelloService appelloService,
                             Supplier<List<Insegnamento>> loadInsegnamenti,
                             Supplier<List<Aula>> loadAule,
-                            Supplier<List<Docente>> loadDocenti) {
+                            Supplier<List<Docente>> loadDocenti,
+                            DomainQueryService domainQueryService) {
         this.appelloService   = appelloService;
         this.loadInsegnamenti = loadInsegnamenti;
         this.loadAule         = loadAule;
         this.loadDocenti      = loadDocenti;
+        this.domainQueryService = domainQueryService;
         this.builder          = new VistaConDettagliBuilder<>(appelloService.findAll());
     }
 
@@ -61,6 +66,7 @@ public class AppelliPannello2 implements CrudPanel {
         this.loadInsegnamenti = null;
         this.loadAule = null;
         this.loadDocenti = null;
+        this.domainQueryService = null;
     }
 
     // ===== CrudPanel API =====
@@ -114,7 +120,13 @@ public class AppelliPannello2 implements CrudPanel {
     }
 
     private LinkedHashMap<String, Function<Appello, String>> dettagli() {
-        return new LinkedHashMap<>(colonne());
+        LinkedHashMap<String, Function<Appello, String>> details = new LinkedHashMap<>(colonne());
+        var actions = new QueryActions(domainQueryService);
+
+        details.put("Iscrizioni", a-> "Visualizza Iscrizioni");
+        builder.setLinkAction("Iscrizioni", appello -> actions.openIscrizioniPerAppello(appello));
+
+        return details;
     }
 
     // ===== Dialoghi CRUD =====

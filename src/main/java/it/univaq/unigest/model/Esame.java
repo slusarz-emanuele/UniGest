@@ -1,7 +1,6 @@
 package it.univaq.unigest.model;
 
 import it.univaq.unigest.common.Identificabile;
-import it.univaq.unigest.gui.util.CrudPanel;
 
 public class Esame implements Identificabile<String> {
     private String id;

@@ -5,6 +5,7 @@ import it.univaq.unigest.model.Aula;
 import it.univaq.unigest.model.Docente;
 import it.univaq.unigest.model.Insegnamento;
 import it.univaq.unigest.service.AppelloService;
+import it.univaq.unigest.service.query.DomainQueryService;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
@@ -15,8 +16,9 @@ public class AppelliModelView extends AbstractModelView<AppelliPannello2> {
     public AppelliModelView(AppelloService appelloService,
                             Supplier<List<Insegnamento>> loadInsegnamenti,
                             Supplier<List<Aula>> loadAula,
-                            Supplier<List<Docente>> loadDocenti) {
-        this.panel = new AppelliPannello2(appelloService, loadInsegnamenti, loadAula, loadDocenti);
+                            Supplier<List<Docente>> loadDocenti,
+                            DomainQueryService domainQueryService) {
+        this.panel = new AppelliPannello2(appelloService, loadInsegnamenti, loadAula, loadDocenti, domainQueryService);
     }
 
     @Override

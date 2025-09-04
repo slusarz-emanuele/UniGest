@@ -12,7 +12,7 @@ public abstract class AbstractModelView<T extends CrudPanel> implements CrudView
 
     protected T panel;
 
-    protected VBox getView(){
+    public VBox getView(){
         VBox root = new VBox(10);
         root.setPadding(new Insets(10));
 

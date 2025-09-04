@@ -4,6 +4,7 @@ import it.univaq.unigest.gui.modelview.pannelli.iscrizioni.IscrizioniPannello2;
 import it.univaq.unigest.model.Appello;
 import it.univaq.unigest.model.Studente;
 import it.univaq.unigest.service.IscrizioneService;
+import it.univaq.unigest.service.query.DomainQueryService;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
@@ -14,8 +15,9 @@ public class IscrizioniView extends AbstractModelView<IscrizioniPannello2> {
 
     public IscrizioniView(IscrizioneService iscrizioneService,
                           Supplier<List<Studente>> loadStudenti,
-                          Supplier<List<Appello>> loadAppelli){
-        this.panel = new IscrizioniPannello2(iscrizioneService, loadStudenti, loadAppelli);
+                          Supplier<List<Appello>> loadAppelli,
+                          DomainQueryService domainQueryService){
+        this.panel = new IscrizioniPannello2(iscrizioneService, loadStudenti, loadAppelli, domainQueryService);
     }
 
     @Override

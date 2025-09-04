@@ -1,6 +1,7 @@
 package it.univaq.unigest.gui.modelview.pannelli.verbali;
 
 import it.univaq.unigest.gui.Dialogs;
+import it.univaq.unigest.gui.actions.QueryActions;
 import it.univaq.unigest.gui.componenti.DialogBuilder;
 import it.univaq.unigest.gui.componenti.TableMiniFactory;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
@@ -8,6 +9,7 @@ import it.univaq.unigest.gui.util.CrudPanel;
 import it.univaq.unigest.model.Appello;
 import it.univaq.unigest.model.Verbale;
 import it.univaq.unigest.service.VerbaleService;
+import it.univaq.unigest.service.query.DomainQueryService;
 import it.univaq.unigest.util.LocalDateUtil;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -33,15 +35,18 @@ public class VerbaliPannello2 implements CrudPanel {
     // Dipendenze
     private final VerbaleService verbaleService;
     private final VistaConDettagliBuilder<Verbale> builder;
+    private final DomainQueryService domainQueryService;
 
     // Loader esterni
     private final Supplier<List<Appello>> loadAppelli;
 
     // Costruttore
     public VerbaliPannello2(VerbaleService verbaleService,
-                            Supplier<List<Appello>> loadAppelli) {
+                            Supplier<List<Appello>> loadAppelli,
+                            DomainQueryService domainQueryService) {
         this.verbaleService = verbaleService;
         this.loadAppelli = loadAppelli;
+        this.domainQueryService = domainQueryService;
         this.builder = new VistaConDettagliBuilder<>(verbaleService.findAll());
     }
 
@@ -50,6 +55,7 @@ public class VerbaliPannello2 implements CrudPanel {
         this.verbaleService = null;
         this.builder = null;
         this.loadAppelli = null;
+        this.domainQueryService = null;
     }
 
     // API CrudPanel

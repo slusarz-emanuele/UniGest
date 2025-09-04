@@ -1,6 +1,7 @@
 package it.univaq.unigest.gui.modelview.pannelli.insegnamenti;
 
 import it.univaq.unigest.gui.Dialogs;
+import it.univaq.unigest.gui.actions.QueryActions;
 import it.univaq.unigest.gui.componenti.DialogBuilder;
 import it.univaq.unigest.gui.componenti.TableMiniFactory;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
@@ -10,6 +11,7 @@ import it.univaq.unigest.model.CorsoDiLaurea;
 import it.univaq.unigest.model.Docente;
 import it.univaq.unigest.model.Insegnamento;
 import it.univaq.unigest.service.InsegnamentoService;
+import it.univaq.unigest.service.query.DomainQueryService;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -32,6 +34,7 @@ public class InsegnamentiPannello2 implements CrudPanel {
 
     // Dipendenze
     private final InsegnamentoService insegnamentoService;
+    private final DomainQueryService domainQueryService;
 
     // Loader esterni
     private final Supplier<List<CorsoDiLaurea>> loadCorsi;
@@ -41,10 +44,12 @@ public class InsegnamentiPannello2 implements CrudPanel {
 
     public InsegnamentiPannello2(InsegnamentoService insegnamentoService,
                                  Supplier<List<CorsoDiLaurea>> loadCorsi,
-                                 Supplier<List<Docente>> loadDocenti) {
+                                 Supplier<List<Docente>> loadDocenti,
+                                 DomainQueryService domainQueryService) {
         this.insegnamentoService = insegnamentoService;
         this.loadCorsi   = loadCorsi;
         this.loadDocenti = loadDocenti;
+        this.domainQueryService = domainQueryService;
         this.builder = new VistaConDettagliBuilder<>(insegnamentoService.findAll());
     }
 
@@ -54,6 +59,7 @@ public class InsegnamentiPannello2 implements CrudPanel {
         this.loadCorsi = null;
         this.loadDocenti = null;
         this.builder = null;
+        this.domainQueryService = null;
     }
 
     // ===== CrudPanel API =====
@@ -107,7 +113,13 @@ public class InsegnamentiPannello2 implements CrudPanel {
     }
 
     private LinkedHashMap<String, Function<Insegnamento, String>> dettagli() {
-        return new LinkedHashMap<>(colonne());
+        LinkedHashMap<String, Function<Insegnamento, String>> map = new LinkedHashMap<>(colonne());
+        var actions = new QueryActions(domainQueryService);
+
+        map.put("Appelli", a-> "Visualizza Appelli");
+        builder.setLinkAction("Appelli", insegnamento -> actions.openAppelliPerInsegnamento(insegnamento));
+
+        return map;
     }
 
     private String nomeCorsoById(String id) {

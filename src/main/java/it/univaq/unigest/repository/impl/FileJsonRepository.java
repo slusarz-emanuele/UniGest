@@ -13,6 +13,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -71,20 +72,40 @@ public class FileJsonRepository<T extends Identificabile<String>> implements Rep
         return String.valueOf(old);
     }
 
-    private void loadByFile (){
-        try (FileReader reader = new FileReader(path)){
-            Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-                    .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
-                    .create();
-            list = gson.fromJson(reader, typeList);
-            if(list == null) list = new ArrayList<>();
+    private void loadByFile() {
+        try {
+            Path p = java.nio.file.Paths.get(path);
+            // assicura l'esistenza della cartella
+            if (p.getParent() != null) {
+                java.nio.file.Files.createDirectories(p.getParent());
+            }
+
+            if (java.nio.file.Files.notExists(p)) {
+                // file assente: inizializza vuoto e crea il file
+                list = new ArrayList<>();
+                saveOnFile(); // scrive "[]"
+                LogHelper.saveLog(LogType.DEBUG, "Data file non trovato: creato vuoto -> " + path);
+                return;
+            }
+
+            try (java.io.Reader reader = java.nio.file.Files.newBufferedReader(p)) {
+                com.google.gson.Gson gson = new com.google.gson.GsonBuilder()
+                        .registerTypeAdapter(java.time.LocalDate.class, new LocalDateAdapter())
+                        .registerTypeAdapter(java.time.LocalTime.class, new LocalTimeAdapter())
+                        .create();
+                List<T> loaded = gson.fromJson(reader, typeList);
+                list = (loaded != null) ? loaded : new ArrayList<>();
+            }
+
             LogHelper.saveLog(LogType.DEBUG, "Load operation from " + path + " successfully");
-        }catch (IOException e){
-            LogHelper.saveLog(LogType.ERROR, "Load operation from " + path + " was not successful");
-            System.exit(1);
+        } catch (Exception e) {
+            // in caso di errore: non termina l'app, inizializza vuoto e prova a salvare
+            LogHelper.saveLog(LogType.ERROR, "Load operation from " + path + " failed: " + e.getMessage());
+            list = new ArrayList<>();
+            try { saveOnFile(); } catch (Exception ignored) {}
         }
     }
+
 
     private void saveOnFile (){
         try (FileWriter writer = new FileWriter(path)){

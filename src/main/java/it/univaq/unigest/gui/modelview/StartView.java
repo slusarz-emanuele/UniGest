@@ -2,6 +2,8 @@ package it.univaq.unigest.gui.modelview;
 
 import it.univaq.unigest.gui.Main;
 import it.univaq.unigest.gui.Reloader;
+import it.univaq.unigest.gui.impostazioni.SettingsWindow;
+import it.univaq.unigest.gui.navigation.ViewDispatcher;
 import it.univaq.unigest.gui.util.CrudPanel;
 import it.univaq.unigest.gui.util.CrudView;
 import javafx.animation.TranslateTransition;
@@ -26,13 +28,14 @@ public class StartView {
     private AbstractModelView vistaCorrente;
     private Stage stagePrimario;
 
-    //private
-
     public void start(Stage stagePrimario) {
 
         this.stagePrimario = stagePrimario;
 
         BorderPane root = new BorderPane();
+
+        // === ViewDispatcher ===
+        ViewDispatcher.init(this.stagePrimario, root);
 
         // --- SINISTRA (menu)
         VBox menu = new VBox(10);
@@ -107,15 +110,28 @@ public class StartView {
         btnExport.getStyleClass().add("top-bar-button");
         btnSettings.getStyleClass().add("top-bar-button");
 
+        btnSettings.setOnAction(e ->
+                SettingsWindow.open(
+                        Main.getSettingsService(),
+                        Main.getMaintenanceService()
+                )
+        );
+
+
+
         Image logo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/logo.png")));
         ImageView logoView = new ImageView(logo); logoView.setFitHeight(32); logoView.setFitWidth(32); logoView.setPreserveRatio(true);
 
         topBar.getChildren().addAll(toggleMenu, spacer, btnExport, btnSettings, titolo, logoView);
         root.setTop(topBar);
 
+        // --- NAVIGAZIONE
         bindNav(
                 docentiBtn,
-                () -> new DocentiView(Main.getDocenteService()),
+                () -> new DocentiView(
+                        Main.getDocenteService(),
+                        Main.getDomainQueryService()
+                ),
                 "Docenti",
                 Reloader::registerDocentiPannello,
                 root
@@ -125,21 +141,21 @@ public class StartView {
                 studentiBtn,
                 () -> new StudentiModelView(
                         Main.getStudenteService(),
-                        () -> Main.getCorsoDiLaureaService().findAll(),             // Supplier<List<CorsoDiLaurea>>
-                        id -> {                                                    // Function<String,String> (nome by id)
-                            //var c = Main.getCorsoDiLaureaManager().getById(id);
-                            //return c != null ? c.getNome() : "";
-                            return null;
-                        }
+                        () -> Main.getCorsoDiLaureaService().findAll(),
+                        id -> null,
+                        Main.getDomainQueryService()
                 ),
                 "Studenti",
-                Reloader::registerStudentiPannello, // se lo usi; altrimenti passa null o usa l'overload senza registrar
+                Reloader::registerStudentiPannello,
                 root
         );
 
         bindNav(
                 corsoDiLaureaBtn,
-                () -> new CorsoDiLaureaView(Main.getCorsoDiLaureaService()),
+                () -> new CorsoDiLaureaView(
+                        Main.getCorsoDiLaureaService(),
+                        Main.getDomainQueryService()
+                ),
                 "Corsi Di Laurea",
                 Reloader::registerCorsiDiLaureaPannello,
                 root
@@ -150,8 +166,9 @@ public class StartView {
                 () -> new InsegnamentiView(
                         Main.getInsegnamentoService(),
                         () -> Main.getCorsoDiLaureaService().findAll(),
-                        () -> Main.getDocenteService().findAll()
-                        ),
+                        () -> Main.getDocenteService().findAll(),
+                        Main.getDomainQueryService()
+                ),
                 "Insegnamenti",
                 Reloader::registerInsegnamentiPannello,
                 root
@@ -163,7 +180,8 @@ public class StartView {
                         Main.getAppelloService(),
                         () -> Main.getInsegnamentoService().findAll(),
                         () -> Main.getAulaService().findAll(),
-                        () -> Main.getDocenteService().findAll()
+                        () -> Main.getDocenteService().findAll(),
+                        Main.getDomainQueryService()
                 ),
                 "Appelli",
                 Reloader::registerAppelliPannello,
@@ -175,7 +193,8 @@ public class StartView {
                 () -> new IscrizioniView(
                         Main.getIscrizioneService(),
                         () -> Main.getStudenteService().findAll(),
-                        () -> Main.getAppelloService().findAll()
+                        () -> Main.getAppelloService().findAll(),
+                        Main.getDomainQueryService()
                 ),
                 "Iscrizioni",
                 Reloader::registerIscrizioniPannello,
@@ -186,7 +205,8 @@ public class StartView {
                 esamiBtn,
                 () -> new EsamiView(
                         Main.getEsameService(),
-                        () -> Main.getIscrizioneService().findAll()
+                        () -> Main.getIscrizioneService().findAll(),
+                        Main.getDomainQueryService()
                 ),
                 "Esami",
                 Reloader::registerEsamiPannello,
@@ -197,19 +217,20 @@ public class StartView {
                 verbaliBtn,
                 () -> new VerbaliView(
                         Main.getVerbaleService(),
-                        () -> Main.getAppelloService().findAll()   // <— supplier degli appelli
+                        () -> Main.getAppelloService().findAll(),
+                        Main.getDomainQueryService()
                 ),
                 "Verbali",
                 Reloader::registerVerbaliPannello,
                 root
         );
 
-
         bindNav(
                 auleliBtn,
                 () -> new AuleModelView(
                         Main.getAulaService(),
-                        () -> Main.getEdificioService().findAll()
+                        () -> Main.getEdificioService().findAll(),
+                        Main.getDomainQueryService()
                 ),
                 "Aule",
                 Reloader::registerAulePannello,
@@ -218,12 +239,14 @@ public class StartView {
 
         bindNav(
                 edificiBtn,
-                () -> new EdificioView(Main.getEdificioService()),
+                () -> new EdificioView(
+                        Main.getEdificioService(),
+                        Main.getDomainQueryService()
+                ),
                 "Edifici",
                 Reloader::registerEdificiPannello,
                 root
         );
-
 
         // --- Scena
         Scene scena = new Scene(root, 1100, 900);
@@ -255,13 +278,11 @@ public class StartView {
         btn.setOnAction(e -> {
             handleButtonClick(btn);
 
-            V view = viewFactory.get();
-            if (registrar != null) registrar.accept(view.getPannello());
+            // routing centralizzato
+            ViewDispatcher.get().show(titolo, viewFactory, registrar);
 
-            this.stagePrimario.setTitle("UniGest — " + titolo);
-
-            vistaCorrente = view;
-            root.setCenter(view.getView());
+            // manteniamo vistaCorrente per le scorciatoie da tastiera
+            this.vistaCorrente = ViewDispatcher.get().getCurrentView();
         });
     }
 

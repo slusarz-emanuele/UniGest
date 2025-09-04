@@ -4,6 +4,7 @@ import it.univaq.unigest.gui.modelview.pannelli.insegnamenti.InsegnamentiPannell
 import it.univaq.unigest.model.CorsoDiLaurea;
 import it.univaq.unigest.model.Docente;
 import it.univaq.unigest.service.InsegnamentoService;
+import it.univaq.unigest.service.query.DomainQueryService;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
@@ -13,8 +14,9 @@ public class InsegnamentiView extends AbstractModelView<InsegnamentiPannello2> {
 
     public InsegnamentiView(InsegnamentoService insegnamentoService,
                             Supplier<List<CorsoDiLaurea>> loadCorsi,
-                            Supplier<List<Docente>> loadDocenti){
-        this.panel = new InsegnamentiPannello2(insegnamentoService, loadCorsi, loadDocenti);
+                            Supplier<List<Docente>> loadDocenti,
+                            DomainQueryService domainQueryService){
+        this.panel = new InsegnamentiPannello2(insegnamentoService, loadCorsi, loadDocenti, domainQueryService);
     }
 
     @Override

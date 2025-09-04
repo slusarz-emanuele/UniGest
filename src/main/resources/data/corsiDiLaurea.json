@@ -1,9 +1,1 @@
-[
-  {
-    "id": "2",
-    "nome": "Informatica",
-    "cfuTotali": 180,
-    "dipartimento": "DISIM",
-    "coordinatoreId": "0"
-  }
-]
+[{"id":"3","nome":"Informatica","cfuTotali":180,"dipartimento":"DISIM","coordinatoreId":"0"},{"id":"4","nome":"Chimica","cfuTotali":180,"dipartimento":"DISIM","coordinatoreId":"0"}]

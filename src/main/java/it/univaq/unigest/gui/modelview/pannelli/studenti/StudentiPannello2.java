@@ -1,6 +1,7 @@
 package it.univaq.unigest.gui.modelview.pannelli.studenti;
 
 import it.univaq.unigest.gui.Dialogs;
+import it.univaq.unigest.gui.actions.QueryActions;
 import it.univaq.unigest.gui.componenti.DialogBuilder;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
 import it.univaq.unigest.gui.util.CrudPanel;
@@ -8,6 +9,7 @@ import it.univaq.unigest.gui.util.DialogsParser;
 import it.univaq.unigest.model.CorsoDiLaurea;
 import it.univaq.unigest.model.Studente;
 import it.univaq.unigest.service.StudenteService;
+import it.univaq.unigest.service.query.DomainQueryService;
 import it.univaq.unigest.util.LocalDateUtil;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
@@ -38,6 +40,7 @@ public class StudentiPannello2 implements CrudPanel {
 
     // Dipendenze
     private final StudenteService studenteService;
+    private final DomainQueryService domainQueryService;
 
     // Loader Esterni
     private final Supplier<List<CorsoDiLaurea>> loadCorsi;
@@ -47,10 +50,12 @@ public class StudentiPannello2 implements CrudPanel {
 
     public StudentiPannello2(StudenteService studenteService,
                              Supplier<List<CorsoDiLaurea>> loadCorsi,
-                             Function<String, String> nomeCdlById) {
+                             Function<String, String> nomeCdlById,
+                             DomainQueryService domainQueryService) {
         this.studenteService = studenteService;
         this.loadCorsi = loadCorsi;
         this.nomeCdlById = nomeCdlById;
+        this.domainQueryService = domainQueryService;
         this.builder = new VistaConDettagliBuilder<>(studenteService.findAll());
     }
 
@@ -114,6 +119,15 @@ public class StudentiPannello2 implements CrudPanel {
         LinkedHashMap<String, Function<Studente, String>> details = new LinkedHashMap<>(colonne());
         details.put(L_DATA_IMMATRICOLAZIONE, s -> s.getDataImmatricolazione() != null ? s.getDataImmatricolazione().toString() : "");
         details.put(L_DATA_NASCITA, Studente::getDataNascita);
+
+        var actions = new QueryActions(domainQueryService);
+
+        details.put("Esami", a-> "Visualizza Esami");
+        builder.setLinkAction("Esami", studente -> actions.openEsamiPerStudente(studente));
+
+        details.put("Iscrizioni", a-> "Visualizza Iscrizioni");
+        builder.setLinkAction("Iscrizioni", studente -> actions.openIscrizioniPerStudente(studente));
+
         return details;
     }
 

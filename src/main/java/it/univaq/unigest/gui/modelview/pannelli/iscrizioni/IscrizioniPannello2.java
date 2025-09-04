@@ -1,6 +1,7 @@
 package it.univaq.unigest.gui.modelview.pannelli.iscrizioni;
 
 import it.univaq.unigest.gui.Dialogs;
+import it.univaq.unigest.gui.actions.QueryActions;
 import it.univaq.unigest.gui.componenti.DialogBuilder;
 import it.univaq.unigest.gui.componenti.TableMiniFactory;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
@@ -9,7 +10,9 @@ import it.univaq.unigest.model.Appello;
 import it.univaq.unigest.model.Iscrizione;
 import it.univaq.unigest.model.Studente;
 import it.univaq.unigest.service.IscrizioneService;
+import it.univaq.unigest.service.query.DomainQueryService;
 import it.univaq.unigest.util.LocalDateUtil;
+import it.univaq.unigest.util.loader.DomainRefresher;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
@@ -30,6 +33,7 @@ public class IscrizioniPannello2 implements CrudPanel {
     // Dipendenze
     private final IscrizioneService iscrizioneService;
     private final VistaConDettagliBuilder<Iscrizione> builder;
+    private final DomainQueryService domainQueryService;
 
     // Loader esterni
     private final Supplier<List<Studente>> loadStudenti;
@@ -37,10 +41,12 @@ public class IscrizioniPannello2 implements CrudPanel {
 
     public IscrizioniPannello2(IscrizioneService iscrizioneService,
                                Supplier<List<Studente>> loadStudenti,
-                               Supplier<List<Appello>> loadAppelli) {
+                               Supplier<List<Appello>> loadAppelli,
+                               DomainQueryService domainQueryService) {
         this.iscrizioneService = iscrizioneService;
         this.loadStudenti = loadStudenti;
         this.loadAppelli  = loadAppelli;
+        this.domainQueryService = domainQueryService;
         this.builder = new VistaConDettagliBuilder<>(iscrizioneService.findAll());
     }
 
@@ -50,6 +56,7 @@ public class IscrizioniPannello2 implements CrudPanel {
         this.loadStudenti = null;
         this.loadAppelli  = null;
         this.builder = null;
+        this.domainQueryService = null;
     }
 
     // ===== CrudPanel API =====
@@ -101,7 +108,9 @@ public class IscrizioniPannello2 implements CrudPanel {
     }
 
     private LinkedHashMap<String, Function<Iscrizione, String>> dettagli() {
-        return new LinkedHashMap<>(colonne());
+        LinkedHashMap<String, Function<Iscrizione, String>> map = new LinkedHashMap<>(colonne());
+
+        return map;
     }
 
     private String studenteLabelByCf(String cf) {
@@ -153,7 +162,10 @@ public class IscrizioniPannello2 implements CrudPanel {
                     Iscrizione target = estraiIscrizioneDaCampi(campi, iniziale);
                     return persister.apply(target);
                 },
-                v -> { refresh(); Dialogs.showInfo(successTitle, successMessage); }
+                v -> {
+                    DomainRefresher.onIscrizioneChanged();
+                    refresh();
+                    Dialogs.showInfo(successTitle, successMessage); }
         );
 
         configuraCampi(dialog, iniziale);
@@ -254,6 +266,7 @@ public class IscrizioniPannello2 implements CrudPanel {
 
     private void elimina(Iscrizione i) {
         iscrizioneService.deleteById(i.getId());
+        DomainRefresher.onIscrizioneChanged();
         refresh();
     }
 }

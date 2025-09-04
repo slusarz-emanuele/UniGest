@@ -8,6 +8,7 @@ import it.univaq.unigest.gui.util.CrudPanel;
 import it.univaq.unigest.model.Aula;
 import it.univaq.unigest.model.Edificio;
 import it.univaq.unigest.service.AulaService;
+import it.univaq.unigest.service.query.DomainQueryService;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
@@ -27,15 +28,18 @@ public class AulePannello2 implements CrudPanel {
     // Dipendenze
     private final VistaConDettagliBuilder<Aula> builder;
     private final AulaService aulaService;
+    private final DomainQueryService domainQueryService;
 
     // Loader Esterni
     private final Supplier<List<Edificio>> loadEdifici;
 
     // Costruttore
     public AulePannello2(AulaService aulaService,
-                         Supplier<List<Edificio>> loadEdifici) {
+                         Supplier<List<Edificio>> loadEdifici,
+                         DomainQueryService domainQueryService) {
         this.aulaService = aulaService;
         this.loadEdifici = loadEdifici;
+        this.domainQueryService = domainQueryService;
         this.builder = new VistaConDettagliBuilder<>(aulaService.findAll());
     }
 
@@ -44,6 +48,7 @@ public class AulePannello2 implements CrudPanel {
         this.aulaService = null;
         this.loadEdifici = null;
         this.builder = null;
+        domainQueryService = null;
     }
 
     // API CrudPanel

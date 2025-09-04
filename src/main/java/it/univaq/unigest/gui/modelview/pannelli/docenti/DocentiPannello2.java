@@ -1,12 +1,15 @@
 package it.univaq.unigest.gui.modelview.pannelli.docenti;
 
 import it.univaq.unigest.gui.Dialogs;
+import it.univaq.unigest.gui.actions.QueryActions;
 import it.univaq.unigest.gui.componenti.DialogBuilder;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
 import it.univaq.unigest.gui.util.CrudPanel;
 import it.univaq.unigest.gui.util.DialogsParser;
 import it.univaq.unigest.model.Docente;
 import it.univaq.unigest.service.DocenteService;
+import it.univaq.unigest.service.query.DomainQueryService;
+import it.univaq.unigest.util.loader.DomainRefresher;
 import javafx.collections.FXCollections;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -37,9 +40,12 @@ public class DocentiPannello2 implements CrudPanel {
     // Dipendenze
     private final DocenteService docenteService;
     private final VistaConDettagliBuilder<Docente> builder;
+    private final DomainQueryService domainQueryService;
 
-    public DocentiPannello2(DocenteService docenteService){
+    public DocentiPannello2(DocenteService docenteService,
+                            DomainQueryService domainQueryService){
         this.docenteService = docenteService;
+        this.domainQueryService = domainQueryService;
         this.builder = new VistaConDettagliBuilder<>(docenteService.findAll());
     }
 
@@ -100,6 +106,18 @@ public class DocentiPannello2 implements CrudPanel {
         details.put(L_DATA_NASCITA, d -> String.valueOf(d.getDataNascita()));
         details.put(L_INGRESSO_DOCENTE, d -> String.valueOf(d.getDataIngressoUniversitaDocente()));
         details.put(L_CODICE_DOCENTE, Docente::getCodiceDocente);
+
+        var actions = new QueryActions(domainQueryService);
+
+        details.put("Insegnamenti", a-> "Visualizza Insegnamenti");
+        builder.setLinkAction("Insegnamenti", docente -> actions.openInsegnamentiPerDocente(docente));
+
+        details.put("Appelli", a-> "Visualizza Appelli");
+        builder.setLinkAction("Appelli", docente -> actions.openAppelliPerDocente(docente));
+
+        details.put("Verbali", a-> "Visualizza Verbali");
+        builder.setLinkAction("Verbali", docente -> actions.openVerbaliPerDocente(docente));
+
         return details;
     }
 
@@ -141,7 +159,10 @@ public class DocentiPannello2 implements CrudPanel {
                     Docente target = estraiDocenteDaCampi(campi, iniziale);
                     return persister.apply(target);
                 },
-                d -> { refresh(); Dialogs.showInfo(successTitle, successMsg); }
+                d -> {
+                    DomainRefresher.onDocenteChanged();
+                    refresh();
+                    Dialogs.showInfo(successTitle, successMsg); }
         );
 
         configuraCampi(dialog, iniziale);
@@ -221,6 +242,7 @@ public class DocentiPannello2 implements CrudPanel {
     private void elimina(Docente d) {
         try {
             docenteService.deleteById(d.getId());
+            DomainRefresher.onDocenteChanged();
             refresh();
         } catch (Exception e) {
             Dialogs.showError("Errore", e.getMessage());

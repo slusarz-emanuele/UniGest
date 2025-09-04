@@ -1,12 +1,14 @@
 package it.univaq.unigest.gui.modelview.pannelli.cdl;
 
 import it.univaq.unigest.gui.Dialogs;
+import it.univaq.unigest.gui.actions.QueryActions;
 import it.univaq.unigest.gui.componenti.DialogBuilder;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
 import it.univaq.unigest.gui.util.CrudPanel;
 import it.univaq.unigest.gui.util.DialogsParser;
 import it.univaq.unigest.model.CorsoDiLaurea;
 import it.univaq.unigest.service.CorsoDiLaureaService;
+import it.univaq.unigest.service.query.DomainQueryService;
 import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -27,9 +29,12 @@ public class CorsiDiLaureaPannello2 implements CrudPanel {
     // Dipendenze
     private final CorsoDiLaureaService corsoDiLaureaService;
     private final VistaConDettagliBuilder<CorsoDiLaurea> builder;
+    private final DomainQueryService domainQueryService;
 
-    public CorsiDiLaureaPannello2(CorsoDiLaureaService corsoDiLaureaService){
+    public CorsiDiLaureaPannello2(CorsoDiLaureaService corsoDiLaureaService,
+                                  DomainQueryService domainQueryService){
         this.corsoDiLaureaService = corsoDiLaureaService;
+        this.domainQueryService = domainQueryService;
         this.builder = new VistaConDettagliBuilder<>(corsoDiLaureaService.findAll());
     }
 
@@ -90,7 +95,15 @@ public class CorsiDiLaureaPannello2 implements CrudPanel {
     }
 
     private LinkedHashMap<String, Function<CorsoDiLaurea, String>> dettagli() {
-        return new LinkedHashMap<>(colonne());
+        LinkedHashMap<String, Function<CorsoDiLaurea, String>> details = new LinkedHashMap<>(colonne());
+        var actions = new QueryActions(domainQueryService);
+
+        details.put("Insegnamenti", a-> "Visualizza Insegnamenti");
+        builder.setLinkAction("Insegnamenti", corso -> actions.openInsegnamentiPerCorso(corso));
+
+        details.put("Studenti", a-> "Visualizza Studenti");
+        builder.setLinkAction("Studenti", corso -> actions.openStudentiPerCorso(corso));
+        return details;
     }
 
     // ===== Dialoghi CRUD =====

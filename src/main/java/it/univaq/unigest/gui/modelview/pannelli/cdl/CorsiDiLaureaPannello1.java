@@ -186,12 +186,44 @@ public class CorsiDiLaureaPannello1 implements CrudPanel {
         }
     }
 
-    private void elimina(CorsoDiLaurea cdl) {
+    private void elimina(CorsoDiLaurea c) {
         try {
-            corsoDiLaureaService.deleteById(cdl.getId());
+            // 1) Conta relazioni
+            int nInsegnamenti = domainQueryService
+                    .insegnamentiByCorso(c.getId())
+                    .size();
+
+            int nStudenti = domainQueryService
+                    .studentiByCorso(c.getId())
+                    .size();
+
+            // 2) Se ci sono relazioni → stop con messaggio
+            if (nInsegnamenti > 0 || nStudenti > 0) {
+                Dialogs.showWarning(
+                        "Relazioni presenti",
+                        "Impossibile eliminare il Corso di Laurea \"" + c.getNome() + "\" perché sono presenti relazioni:\n" +
+                                "- Insegnamenti: " + nInsegnamenti + "\n" +
+                                "- Studenti: " + nStudenti + "\n\n" +
+                                "Elimina prima le entità collegate o spostale su un altro corso."
+                );
+                return;
+            }
+
+            // 3) Conferma
+            if (!Dialogs.confirm(
+                    "Conferma eliminazione",
+                    "Eliminare definitivamente il Corso di Laurea \"" + c.getNome() + "\"?"
+            )) {
+                return;
+            }
+
+            // 4) Elimina
+            corsoDiLaureaService.deleteById(c.getId());
             refresh();
+            Dialogs.showInfo("Eliminato", "Corso di Laurea eliminato con successo.");
         } catch (Exception e) {
-            Dialogs.showError("Errore", e.getMessage());
+            Dialogs.showError("Errore eliminazione", e.getMessage());
         }
     }
+
 }

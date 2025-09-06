@@ -15,10 +15,4 @@ public class EdificioView extends AbstractModelView<EdificiPannello2> {
     @Override
     protected VBox creaGestioneContenuto() { return panel.getView(); }
 
-    @Override
-    protected VBox creaStatisticheContenuto() {
-        // VBox vuota per ora
-        return new VBox();
-    }
-
 }

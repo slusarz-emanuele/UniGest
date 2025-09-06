@@ -9,17 +9,27 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
+
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <javafx.version>21</javafx.version>
+
+        <!-- Versioni parametrizzate delle dipendenze adoperate -->
+        <com.google.code.gson.version>2.10.1</com.google.code.gson.version>
+        <javafx.version>23</javafx.version>
+        <org.apache.commons.version>1.27.1</org.apache.commons.version>
+        <org.apache.commons-lang3.version>3.18.0</org.apache.commons-lang3.version>
+        <log4j.version>2.23.1</log4j.version>
+        <librepdf.version>2.2.4</librepdf.version>
+
     </properties>
 
     <dependencies>
+        <!-- Helper file JSON di google -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.10.1</version>
+            <version>${com.google.code.gson.version}</version>
         </dependency>
 
         <!-- JavaFX con classifier per macOS ARM -->
@@ -30,6 +40,7 @@
             <classifier>mac-aarch64</classifier>
         </dependency>
 
+        <!-- JavaFX con classifier per macOS ARM -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
@@ -37,17 +48,41 @@
             <classifier>mac-aarch64</classifier>
         </dependency>
 
+        <!-- Gestore di archivi (zip, etc) -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.26.1</version>
+            <version>${org.apache.commons.version}</version>
         </dependency>
 
+        <!-- Adoperata come dipendenza transitiva di org.apache.commons in modo da averla aggiornata e sicura, senza warning -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${org.apache.commons-lang3.version}</version>
+        </dependency>
+
+        <!-- Libre PDF per esportazione e generazione di report in PDF -->
         <dependency>
             <groupId>com.github.librepdf</groupId>
             <artifactId>openpdf</artifactId>
-            <version>2.2.4</version>
+            <version>${librepdf.version}</version>
         </dependency>
+
+        <!-- Framework Logging -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>

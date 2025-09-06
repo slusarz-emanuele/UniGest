@@ -28,15 +28,8 @@ public abstract class AbstractModelView<T extends CrudPanel> implements CrudView
 
         VBox.setVgrow(layoutGestione, Priority.ALWAYS);
 
-        // Tab 2
-        Tab tabStatistiche = new Tab("Statistiche");
-        tabStatistiche.setClosable(false);
-
-        VBox layoutStatistiche = creaStatisticheContenuto();
-        tabStatistiche.setContent(layoutStatistiche);
-
         // TabPane
-        tabPane.getTabs().addAll(tabGestione, tabStatistiche);
+        tabPane.getTabs().addAll(tabGestione);
         tabPane.getSelectionModel().select(tabGestione);
         tabPane.setStyle("-fx-background-color: #ffffff;");
 
@@ -53,7 +46,5 @@ public abstract class AbstractModelView<T extends CrudPanel> implements CrudView
     @Override public void onEdit()   { panel.modificaSelezionato(); }
     @Override public void onDelete() { panel.eliminaSelezionato(); }
     protected abstract VBox creaGestioneContenuto();
-
-    protected abstract VBox creaStatisticheContenuto();
 
 }

@@ -4343,3 +4343,103 @@
 [2025-09-04 10:21:26] [DEBUG] [it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaStudentiPannello2] ricaricaInterfacciaGraficaStudentiPannello2()
 [2025-09-04 10:21:26] [DEBUG] [it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGraficaVerbaliPannelli2] ricaricaInterfacciaGraficaVerbaliPannelli2()
 [2025-09-04 10:21:26] [DEBUG] [it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGrafica] it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGrafica() invocato
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/appelli.json successfully
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/appelli_meta.json: 7
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/aule.json successfully
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/aule_meta.json: 4
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/corsiDiLaurea.json successfully
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/corsiDiLaurea_meta.json: 5
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/professori.json successfully
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Meta file was not foud for src/main/resources/data/professori_meta.json, current index set to 1, this may cause some inconsistency
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/edifici.json successfully
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/edifici_meta.json: 5
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/esami.json successfully
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/esami_meta.json: 3
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/insegnamenti.json successfully
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/insegnamenti_meta.json: 7
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/iscrizioni.json successfully
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/iscrizioni_meta.json: 4
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/studenti.json successfully
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Meta file was not foud for src/main/resources/data/studenti_meta.json, current index set to 1, this may cause some inconsistency
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/verbale.json successfully
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/verbale_meta.json: 5
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/settings.json successfully
+[2025-09-06 15:12:29] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Meta file was not foud for src/main/resources/data/settings_meta.json, current index set to 1, this may cause some inconsistency
+[2025-09-06 15:12:29] [INFO] [it.univaq.unigest.gui.Main.init] [Main.init] L'applicazione è stata avviata
+[2025-09-06 15:12:29] [INFO] [it.univaq.unigest.gui.Main.start] [Main.start] L'applicazione ha avviato l'interfaccia grafica e i manager.
+[2025-09-06 15:12:30] [DEBUG] [it.univaq.unigest.gui.Main.lambda$start$0] [Main.start] Caricamento dei dati completato.
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/appelli.json successfully
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/appelli_meta.json: 7
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/aule.json successfully
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/aule_meta.json: 4
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/corsiDiLaurea.json successfully
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/corsiDiLaurea_meta.json: 5
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/professori.json successfully
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Meta file was not foud for src/main/resources/data/professori_meta.json, current index set to 1, this may cause some inconsistency
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/edifici.json successfully
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/edifici_meta.json: 5
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/esami.json successfully
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/esami_meta.json: 3
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/insegnamenti.json successfully
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/insegnamenti_meta.json: 7
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/iscrizioni.json successfully
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/iscrizioni_meta.json: 4
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/studenti.json successfully
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Meta file was not foud for src/main/resources/data/studenti_meta.json, current index set to 1, this may cause some inconsistency
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/verbale.json successfully
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/verbale_meta.json: 5
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/settings.json successfully
+[2025-09-06 15:14:12] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Meta file was not foud for src/main/resources/data/settings_meta.json, current index set to 1, this may cause some inconsistency
+[2025-09-06 15:14:12] [INFO] [it.univaq.unigest.gui.Main.init] [Main.init] L'applicazione è stata avviata
+[2025-09-06 15:14:12] [INFO] [it.univaq.unigest.gui.Main.start] [Main.start] L'applicazione ha avviato l'interfaccia grafica e i manager.
+[2025-09-06 15:14:13] [DEBUG] [it.univaq.unigest.gui.Main.lambda$start$0] [Main.start] Caricamento dei dati completato.
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/appelli.json successfully
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/appelli_meta.json: 7
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/aule.json successfully
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/aule_meta.json: 4
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/corsiDiLaurea.json successfully
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/corsiDiLaurea_meta.json: 5
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/professori.json successfully
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Meta file was not foud for src/main/resources/data/professori_meta.json, current index set to 1, this may cause some inconsistency
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/edifici.json successfully
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/edifici_meta.json: 5
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/esami.json successfully
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/esami_meta.json: 3
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/insegnamenti.json successfully
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/insegnamenti_meta.json: 7
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/iscrizioni.json successfully
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/iscrizioni_meta.json: 4
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/studenti.json successfully
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Meta file was not foud for src/main/resources/data/studenti_meta.json, current index set to 1, this may cause some inconsistency
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/verbale.json successfully
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/verbale_meta.json: 5
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/settings.json successfully
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Meta file was not foud for src/main/resources/data/settings_meta.json, current index set to 1, this may cause some inconsistency
+[2025-09-06 15:18:03] [INFO] [it.univaq.unigest.gui.Main.init] [Main.init] L'applicazione è stata avviata
+[2025-09-06 15:18:03] [INFO] [it.univaq.unigest.gui.Main.start] [Main.start] L'applicazione ha avviato l'interfaccia grafica e i manager.
+[2025-09-06 15:18:03] [DEBUG] [it.univaq.unigest.gui.Main.lambda$start$0] [Main.start] Caricamento dei dati completato.
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/appelli.json successfully
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/appelli_meta.json: 7
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/aule.json successfully
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/aule_meta.json: 4
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/corsiDiLaurea.json successfully
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/corsiDiLaurea_meta.json: 5
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/professori.json successfully
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Meta file was not foud for src/main/resources/data/professori_meta.json, current index set to 1, this may cause some inconsistency
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/edifici.json successfully
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/edifici_meta.json: 5
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/esami.json successfully
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/esami_meta.json: 3
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/insegnamenti.json successfully
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/insegnamenti_meta.json: 7
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/iscrizioni.json successfully
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/iscrizioni_meta.json: 4
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/studenti.json successfully
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Meta file was not foud for src/main/resources/data/studenti_meta.json, current index set to 1, this may cause some inconsistency
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/verbale.json successfully
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Current Index loaded from src/main/resources/data/verbale_meta.json: 5
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadByFile] Load operation from src/main/resources/data/settings.json successfully
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.repository.impl.FileJsonRepository.loadCurrentIndex] Meta file was not foud for src/main/resources/data/settings_meta.json, current index set to 1, this may cause some inconsistency
+[2025-09-06 15:38:07] [INFO] [it.univaq.unigest.gui.Main.init] [Main.init] L'applicazione è stata avviata
+[2025-09-06 15:38:07] [INFO] [it.univaq.unigest.gui.Main.start] [Main.start] L'applicazione ha avviato l'interfaccia grafica e i manager.
+[2025-09-06 15:38:07] [DEBUG] [it.univaq.unigest.gui.Main.lambda$start$0] [Main.start] Caricamento dei dati completato.

@@ -105,9 +105,7 @@ public class StartView {
         Label titolo = new Label("UniGest");
         Region spacer = new Region(); HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Button btnExport   = new Button("Backup");
         Button btnSettings = new Button("Impostazioni");
-        btnExport.getStyleClass().add("top-bar-button");
         btnSettings.getStyleClass().add("top-bar-button");
 
         btnSettings.setOnAction(e ->
@@ -122,7 +120,7 @@ public class StartView {
         Image logo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/logo.png")));
         ImageView logoView = new ImageView(logo); logoView.setFitHeight(32); logoView.setFitWidth(32); logoView.setPreserveRatio(true);
 
-        topBar.getChildren().addAll(toggleMenu, spacer, btnExport, btnSettings, titolo, logoView);
+        topBar.getChildren().addAll(toggleMenu, spacer, btnSettings, titolo, logoView);
         root.setTop(topBar);
 
         // --- NAVIGAZIONE

@@ -21,7 +21,4 @@ public class StudentiModelView extends AbstractModelView<StudentiPannello2> {
 
     @Override
     protected VBox creaGestioneContenuto() { return panel.getView(); }
-
-    @Override
-    protected VBox creaStatisticheContenuto() { return new VBox(); }
 }

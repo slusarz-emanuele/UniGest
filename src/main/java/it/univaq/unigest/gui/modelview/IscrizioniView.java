@@ -22,11 +22,5 @@ public class IscrizioniView extends AbstractModelView<IscrizioniPannello2> {
 
     @Override
     protected VBox creaGestioneContenuto() { return panel.getView(); }
-
-    @Override
-    protected VBox creaStatisticheContenuto() {
-        // VBox vuota per ora
-        return new VBox();
-    }
     
 }

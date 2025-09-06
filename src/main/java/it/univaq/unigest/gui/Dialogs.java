@@ -29,6 +29,10 @@ public class Dialogs {
     public static void showError(String titolo, String messaggio) {
         showAlert(titolo, messaggio, AlertType.ERROR);
     }
+
+    public static void showWarning(String titolo, String messaggio) {
+        showAlert(titolo, messaggio, AlertType.WARNING);
+    }
     
     @SuppressWarnings("DataFlowIssue")
     private static String getCss() {

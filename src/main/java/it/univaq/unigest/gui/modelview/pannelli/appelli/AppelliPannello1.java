@@ -297,7 +297,38 @@ public class AppelliPannello1 implements CrudPanel {
     }
 
     private void elimina(Appello a) {
-        appelloService.deleteById(a.getId());
-        refresh();
+        try {
+            // 1) Conta relazioni collegate
+            int nIscrizioni = domainQueryService
+                    .iscrizioniByAppello(a.getId())
+                    .size();
+
+            // 2) Se esistono relazioni → blocca
+            if (nIscrizioni > 0) {
+                Dialogs.showError(
+                        "Relazioni presenti",
+                        "Impossibile eliminare l'appello \"" + a.getId() + "\" perché sono presenti relazioni:\n" +
+                                "- Iscrizioni: " + nIscrizioni + "\n" +
+                                "Elimina prima le relazioni collegate."
+                );
+                return;
+            }
+
+            // 3) Conferma
+            if (!Dialogs.confirm(
+                    "Conferma eliminazione",
+                    "Eliminare definitivamente l'appello \"" + a.getId() + "\"?"
+            )) {
+                return;
+            }
+
+            // 4) Elimina
+            appelloService.deleteById(a.getId());
+            refresh();
+            Dialogs.showInfo("Eliminato", "Appello eliminato con successo.");
+        } catch (Exception e) {
+            Dialogs.showError("Errore eliminazione", e.getMessage());
+        }
     }
+
 }

@@ -239,13 +239,40 @@ public class DocentiPannello1 implements CrudPanel {
         }
     }
 
+    private boolean canDeleteDocente(Docente d) {
+        int nIns  = domainQueryService.insegnamentiByDocente(d.getCf()).size();
+        int nApp  = domainQueryService.appelliByDocente(d.getCf()).size();
+        int nVerb = domainQueryService.verbaliByDocente(d.getCf()).size();
+
+        if (nIns > 0 || nApp > 0 || nVerb > 0) {
+            Dialogs.showWarning(
+                    "Relazioni presenti",
+                    "Impossibile eliminare il docente perché sono presenti relazioni:\n" +
+                            "- Insegnamenti: " + nIns + "\n" +
+                            "- Appelli: " + nApp + "\n" +
+                            "- Verbali: " + nVerb + "\n\n" +
+                            "Rimuovi o riassegna questi collegamenti prima di procedere."
+            );
+            return false;
+        }
+        return true;
+    }
+
     private void elimina(Docente d) {
         try {
+            if (!canDeleteDocente(d)) return;
+
+            if (!Dialogs.confirm(
+                    "Conferma eliminazione",
+                    "Eliminare definitivamente " + d.getCognome() + " " + d.getNome() + " (" + d.getCf() + ")?"
+            )) return;
+
             docenteService.deleteById(d.getId());
-            DomainRefresher.onDocenteChanged();
             refresh();
+            Dialogs.showInfo("Eliminato", "Docente eliminato correttamente.");
         } catch (Exception e) {
-            Dialogs.showError("Errore", e.getMessage());
+            Dialogs.showError("Errore eliminazione", e.getMessage());
         }
     }
+
 }

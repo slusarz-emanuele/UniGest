@@ -21,6 +21,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Repository generico che gestisce la persistenza di entità {@link Identificabile} su file JSON.
+ * <p>
+ * La persistenza avviene tramite Gson.
+ *
+ * @param <T> il tipo dell'entità da gestire, che deve implementare {@link Identificabile<String>}
+ */
 public class FileJsonRepository<T extends Identificabile<String>> implements Repository<T, String> {
 
     private static final Logger LOGGER = LogManager.getLogger(FileJsonRepository.class);
@@ -30,6 +37,12 @@ public class FileJsonRepository<T extends Identificabile<String>> implements Rep
     private final Type typeList;
     private int currentIndex;
 
+    /**
+     * Crea un nuovo repository JSON per la gestione delle entità.
+     *
+     * @param path il path del file JSON su cui salvare i dati
+     * @param typeList il tipo della lista di entità per la deserializzazione con Gson
+     */
     public FileJsonRepository (String path, Type typeList){
         this.path = path;
         this.typeList = typeList;
@@ -74,6 +87,10 @@ public class FileJsonRepository<T extends Identificabile<String>> implements Rep
         return String.valueOf(old);
     }
 
+    /**
+     * Carica tutte le entità dal file JSON.
+     * Se il file non esiste, crea un file vuoto.
+     */
     private void loadByFile() {
         try {
             Path p = java.nio.file.Paths.get(path);
@@ -108,7 +125,9 @@ public class FileJsonRepository<T extends Identificabile<String>> implements Rep
         }
     }
 
-
+    /**
+     * Salva tutte le entità nel file JSON.
+     */
     private void saveOnFile (){
         try (FileWriter writer = new FileWriter(path)){
             Gson gson = new GsonBuilder()
@@ -122,10 +141,18 @@ public class FileJsonRepository<T extends Identificabile<String>> implements Rep
         }
     }
 
+    /**
+     * Restituisce il percorso del file meta che contiene l'indice corrente.
+     *
+     * @return il percorso del file meta
+     */
     private String getPathCurrentIndex (){
         return path.replace(".json", "_meta.json");
     }
 
+    /**
+     * Carica l'indice corrente dal file meta. 
+     */
     private void loadCurrentIndex (){
         try (FileReader reader = new FileReader(getPathCurrentIndex())){
             char[] buffer = new char[64];
@@ -147,6 +174,9 @@ public class FileJsonRepository<T extends Identificabile<String>> implements Rep
         }
     }
 
+    /**
+     * Salva l'indice corrente nel file meta.
+     */
     private void saveCurrentIndex(){
         try (FileWriter writer = new FileWriter(getPathCurrentIndex())){
             writer.write("{\"indiceCorrente\": " + currentIndex + "}");
@@ -156,6 +186,11 @@ public class FileJsonRepository<T extends Identificabile<String>> implements Rep
         }
     }
 
+    /**
+     * Calcola il prossimo indice disponibile dai dati presenti.
+     *
+     * @return il prossimo indice intero disponibile
+     */
     private int nextIndexFromData() {
         return list.stream()
                 .map(Identificabile::getId)

@@ -18,8 +18,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Main extends Application {
+
+    private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     private static AppelloService appelloService;
     private static AulaService aulaService;
@@ -80,7 +84,7 @@ public class Main extends Application {
                 studenteService, verbaleService
         );
 
-        LogHelper.saveLog(LogType.INFO, "[Main.init] L'applicazione è stata avviata");
+        LOGGER.info("[Main.init] L'applicazione è stata avviata");
     }
 
     @Override
@@ -108,10 +112,10 @@ public class Main extends Application {
             splashStage.close();
             StartView dashboard = new StartView(); // StartView userà Main.getDocenteService()
             dashboard.start(stagePrimario);
-            LogHelper.saveLog(LogType.DEBUG, "[Main.start] Caricamento dei dati completato.");
+            LOGGER.debug("[Main.start] Caricamento dei dati completato.");
         });
 
-        LogHelper.saveLog(LogType.INFO, "[Main.start] L'applicazione ha avviato l'interfaccia grafica e i manager.");
+        LOGGER.info("[Main.start] L'applicazione ha avviato l'interfaccia grafica e i manager.");
         new Thread(loadingTask).start();
     }
 
@@ -169,7 +173,7 @@ public class Main extends Application {
 
         } catch (Exception e) {
             e.printStackTrace();
-            LogHelper.saveLog(LogType.ERROR, "[Main.restartApp] Errore durante il riavvio: " + e.getMessage());
+            LOGGER.error("[Main.restartApp] Errore durante il riavvio: " + e.getMessage());
         }
     }
 

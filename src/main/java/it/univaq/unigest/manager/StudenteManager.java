@@ -1,17 +1,22 @@
 package it.univaq.unigest.manager;
 
 import com.google.gson.reflect.TypeToken;
+import it.univaq.unigest.gui.Dialogs;
 import it.univaq.unigest.model.Studente;
 import it.univaq.unigest.util.DatabaseHelper;
 import it.univaq.unigest.util.LogHelper;
 import it.univaq.unigest.util.LogType;
 import it.univaq.unigest.util.Parser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class StudenteManager extends AbstractManager<Studente> {
+
+    private static final Logger LOGGER = LogManager.getLogger(StudenteManager.class);
 
     public StudenteManager() {
         super(

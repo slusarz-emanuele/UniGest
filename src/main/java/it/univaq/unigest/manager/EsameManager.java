@@ -1,16 +1,21 @@
 package it.univaq.unigest.manager;
 
 import com.google.gson.reflect.TypeToken;
+import it.univaq.unigest.gui.Dialogs;
 import it.univaq.unigest.manager.exceptions.EsameConIdPresente;
 import it.univaq.unigest.model.Esame;
 import it.univaq.unigest.util.DatabaseHelper;
 import it.univaq.unigest.util.LogHelper;
 import it.univaq.unigest.util.LogType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class EsameManager extends AbstractManager<Esame> {
+
+    private static final Logger LOGGER = LogManager.getLogger(EsameManager.class);
 
     public EsameManager() {
         super(
@@ -37,7 +42,7 @@ public class EsameManager extends AbstractManager<Esame> {
         }
 
         if (indice == -1) {
-            LogHelper.saveLog(LogType.WARNING, "Esame non trovato con ID: " + esame.getId());
+            LOGGER.warning("Esame non trovato con ID: " + esame.getId());
             return false;
         }
 
@@ -47,13 +52,13 @@ public class EsameManager extends AbstractManager<Esame> {
 
 
         if(giaPresente){
-            LogHelper.saveLog(LogType.WARNING, "Esame già presente per iscrizioneId: " + esame.getIscrizioneId());
+            LOGGER.warning("Esame già presente per iscrizioneId: " + esame.getIscrizioneId());
             throw new EsameConIdPresente("Un iscrizione può essere associata ad un solo esame!");
         }
 
         this.lista.set(indice, esame);
         salvaSuFile();
-        LogHelper.saveLog(LogType.INFO, "Esame " + esame.getId() + " aggiornato con successo.");
+        LOGGER.info("Esame " + esame.getId() + " aggiornato con successo.");
         return true;
     }
 
@@ -62,13 +67,13 @@ public class EsameManager extends AbstractManager<Esame> {
                 .anyMatch(e -> e.getIscrizioneId().equals(elemento.getIscrizioneId()));
 
         if (giaPresente) {
-            LogHelper.saveLog(LogType.WARNING, "Esame già presente per iscrizioneId: " + elemento.getIscrizioneId());
+            LOGGER.warning("Esame già presente per iscrizioneId: " + elemento.getIscrizioneId());
             throw new EsameConIdPresente("Un iscrizione può essere associata ad un solo esame!");
         }
 
         lista.add(elemento);
         salvaSuFile();
-        LogHelper.saveLog(LogType.INFO, elemento.toString() + " aggiunto");
+        LOGGER.info(elemento.toString() + " aggiunto");
     }
 
     public Esame getEsameDaIscrizione(String idEsame){

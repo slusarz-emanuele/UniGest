@@ -1,17 +1,22 @@
 package it.univaq.unigest.manager;
 
 import com.google.gson.reflect.TypeToken;
+import it.univaq.unigest.gui.Dialogs;
 import it.univaq.unigest.manager.exceptions.EsameConIdPresente;
 import it.univaq.unigest.manager.exceptions.VerbaleConAppelloPresente;
 import it.univaq.unigest.model.Verbale;
 import it.univaq.unigest.util.DatabaseHelper;
 import it.univaq.unigest.util.LogHelper;
 import it.univaq.unigest.util.LogType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class VerbaleManager extends AbstractManager<Verbale> {
+
+    private static final Logger LOGGER = LogManager.getLogger(VerbaleManager.class);
 
     public VerbaleManager(){
         super(
@@ -31,7 +36,7 @@ public class VerbaleManager extends AbstractManager<Verbale> {
         }
 
         if(indice == -1){
-            LogHelper.saveLog(LogType.WARNING, "Verbale non trovato con ID: " + nuovo.getId());
+            LOGGER.warning("Verbale non trovato con ID: " + nuovo.getId());
             return false;
         }
 
@@ -41,7 +46,7 @@ public class VerbaleManager extends AbstractManager<Verbale> {
 
 
         if(giaPresente){
-            LogHelper.saveLog(LogType.WARNING, "Verbale già presente per appelloId: " + nuovo.getAppelloId());
+            LOGGER.warning("Verbale già presente per appelloId: " + nuovo.getAppelloId());
             throw new EsameConIdPresente("Un appello può avere un solo verbale!");
         }
 
@@ -49,7 +54,7 @@ public class VerbaleManager extends AbstractManager<Verbale> {
 
         this.lista.set(indice, nuovo);
         salvaSuFile();
-        LogHelper.saveLog(LogType.INFO, "Verbale " + nuovo.getId() + " aggiornato con successo.");
+        LOGGER.info("Verbale " + nuovo.getId() + " aggiornato con successo.");
         return true;
     }
 
@@ -58,13 +63,13 @@ public class VerbaleManager extends AbstractManager<Verbale> {
                 .anyMatch(v -> v.getAppelloId().equals(elemento.getAppelloId()));
 
         if (giaPresente) {
-            LogHelper.saveLog(LogType.WARNING, "Verbale già presente per appelloId: " + elemento.getAppelloId());
+            LOGGER.warning("Verbale già presente per appelloId: " + elemento.getAppelloId());
             throw new VerbaleConAppelloPresente("Un appello può avere un solo verbale!");
         }
 
         lista.add(elemento);
         salvaSuFile();
-        LogHelper.saveLog(LogType.INFO, elemento.toString() + " aggiunto");
+        LOGGER.info(elemento.toString() + " aggiunto");
     }
 
 

@@ -4,8 +4,13 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+import it.univaq.unigest.gui.Dialogs;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class LocalDateUtil {
 
+    private static final Logger LOGGER = LogManager.getLogger(LocalDateUtil.class);
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public static String toString(LocalDate data) {
@@ -18,7 +23,7 @@ public class LocalDateUtil {
         try {
             return LocalDate.parse(data, FORMATTER);
         } catch (DateTimeParseException e) {
-            LogHelper.saveLog(LogType.ERROR, "Data non valida: " + data);
+            LOGGER.error("Data non valida: " + data);
             return null;
         }
     }

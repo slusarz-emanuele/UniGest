@@ -2,9 +2,12 @@ package it.univaq.unigest.manager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import it.univaq.unigest.gui.Dialogs;
 import it.univaq.unigest.util.LocalDateAdapter;
 import it.univaq.unigest.util.LogHelper;
 import it.univaq.unigest.util.LogType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -19,6 +22,8 @@ import java.time.LocalTime;
 
 
 public abstract class AbstractManager<T> implements CrudManager<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger(AbstractManager.class);
 
     protected List<T> lista;
     protected final String path;
@@ -40,9 +45,9 @@ public abstract class AbstractManager<T> implements CrudManager<T> {
                     .create();
             lista = gson.fromJson(reader, tipoLista);
             if (lista == null) lista = new ArrayList<>();
-            LogHelper.saveLog(LogType.DEBUG, "Caricamento da " + path + " riuscito");
+            LOGGER.debug("Caricamento da " + path + " riuscito");
         } catch (IOException e) {
-            LogHelper.saveLog(LogType.ERROR, "Errore caricamento da " + path + ": " + e.getMessage());
+            LOGGER.error("Errore caricamento da " + path + ": " + e.getMessage());
         }
     }
 
@@ -54,9 +59,9 @@ public abstract class AbstractManager<T> implements CrudManager<T> {
                     .setPrettyPrinting()
                     .create();
             gson.toJson(lista, writer);
-            LogHelper.saveLog(LogType.DEBUG, "Scrittura su " + path + " riuscita");
+            LOGGER.debug("Scrittura su " + path + " riuscita");
         } catch (IOException e) {
-            LogHelper.saveLog(LogType.ERROR, "Errore salvataggio su " + path + ": " + e.getMessage());
+            LOGGER.error("Errore salvataggio su " + path + ": " + e.getMessage());
         }
     }
 
@@ -65,16 +70,16 @@ public abstract class AbstractManager<T> implements CrudManager<T> {
         if (!lista.contains(elemento)) {
             lista.add(elemento);
             salvaSuFile();
-            LogHelper.saveLog(LogType.INFO, elemento.toString() + " aggiunto");
+            LOGGER.info(elemento.toString() + " aggiunto");
         } else {
-            LogHelper.saveLog(LogType.WARNING, "Elemento già presente: " + elemento.toString());
+            LOGGER.warning("Elemento già presente: " + elemento.toString());
         }
     }
 
     public void rimuovi(T elemento) {
         if (lista.remove(elemento)) {
             salvaSuFile();
-            LogHelper.saveLog(LogType.INFO, elemento.toString() + " rimosso");
+            LOGGER.info(elemento.toString() + " rimosso");
         }
     }
 
@@ -111,9 +116,9 @@ public abstract class AbstractManager<T> implements CrudManager<T> {
     public void salvaIndiceCorrente() {
         try (FileWriter writer = new FileWriter(getPathIndiceCorrente())) {
             writer.write("{\"indiceCorrente\": " + indiceCorrente + "}");
-            LogHelper.saveLog(LogType.DEBUG, "Indice corrente salvato su " + getPathIndiceCorrente());
+            LOGGER.debug("Indice corrente salvato su " + getPathIndiceCorrente());
         } catch (IOException e) {
-            LogHelper.saveLog(LogType.ERROR, "Errore salvataggio indiceCorrente: " + e.getMessage());
+            LOGGER.error("Errore salvataggio indiceCorrente: " + e.getMessage());
         }
     }
 
@@ -128,10 +133,10 @@ public abstract class AbstractManager<T> implements CrudManager<T> {
             } else {
                 indiceCorrente = 1;
             }
-            LogHelper.saveLog(LogType.DEBUG, "Indice corrente caricato da " + getPathIndiceCorrente() + ": " + indiceCorrente);
+            LOGGER.debug("Indice corrente caricato da " + getPathIndiceCorrente() + ": " + indiceCorrente);
         } catch (IOException e) {
             indiceCorrente = 1;
-            LogHelper.saveLog(LogType.DEBUG, "File meta non trovato per " + getPathIndiceCorrente() + ", impostato indiceCorrente = 1");
+            LOGGER.debug("File meta non trovato per " + getPathIndiceCorrente() + ", impostato indiceCorrente = 1");
         }
     }
 

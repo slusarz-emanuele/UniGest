@@ -12,8 +12,12 @@ import it.univaq.unigest.gui.modelview.pannelli.studenti.StudentiPannello1;
 import it.univaq.unigest.gui.modelview.pannelli.verbali.VerbaliPannello1;
 import it.univaq.unigest.util.LogHelper;
 import it.univaq.unigest.util.LogType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Reloader {
+
+    private static final Logger LOGGER = LogManager.getLogger(Reloader.class);
 
     public static void ricaricaInterfacciaGrafica(){
         ricaricaInterfacciaGraficaAppelliPannello2();
@@ -26,7 +30,7 @@ public class Reloader {
         ricaricaInterfacciaGraficaIscrizioniPannello2();
         ricaricaInterfacciaGraficaStudentiPannello2();
         ricaricaInterfacciaGraficaVerbaliPannelli2();
-        LogHelper.saveLog(LogType.DEBUG, "it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGrafica() invocato");
+        LOGGER.debug("it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGrafica() invocato");
     }
 
     private static AppelliPannello1 appelliPanel;
@@ -85,69 +89,69 @@ public class Reloader {
         if (docentiPanel != null) {
             docentiPanel.refresh();
         }
-        LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaDocentiPannello2()");
+        LOGGER.debug("ricaricaInterfacciaGraficaDocentiPannello2()");
     }
 
     public static void ricaricaInterfacciaGraficaStudentiPannello2(){
         if (studentiPanel != null) {
             studentiPanel.refresh();
         }
-        LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaStudentiPannello2()");
+        LOGGER.debug("ricaricaInterfacciaGraficaStudentiPannello2()");
     }
 
     public static void ricaricaInterfacciaGraficaCorsiDiLaureaPannello2(){
         if (corsiDiLaureaPanel != null) {
             corsiDiLaureaPanel.refresh();
         }
-        LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaCDLPannello2()");
+        LOGGER.debug("ricaricaInterfacciaGraficaCDLPannello2()");
     }
 
     public static void ricaricaInterfacciaGraficaAppelliPannello2(){
         if(appelliPanel != null){
             appelliPanel.refresh();
         }
-        LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaAppelliPannello2()");
+        LOGGER.debug("ricaricaInterfacciaGraficaAppelliPannello2()");
     }
 
     public static void ricaricaInterfacciaGraficaAulePannello2(){
         if(aulePanel != null){
             aulePanel.refresh();
         }
-        LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaAulePannello2()");
+        LOGGER.debug("ricaricaInterfacciaGraficaAulePannello2()");
     }
 
     public static void ricaricaInterfacciaGraficaEdificiPannello2(){
         if(edificiPanel != null){
             edificiPanel.refresh();
         }
-        LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaEdificiPannello2()");
+        LOGGER.debug("ricaricaInterfacciaGraficaEdificiPannello2()");
     }
 
     public static void ricaricaInterfacciaGraficaEsamiPannello2(){
         if(esamiPanel != null){
             esamiPanel.refresh();
         }
-        LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaEsamiPannello2()");
+        LOGGER.debug("ricaricaInterfacciaGraficaEsamiPannello2()");
     }
 
     public static void ricaricaInterfacciaGraficaInsegnamentiPannello2(){
         if(insegnamentiPanel != null){
             insegnamentiPanel.refresh();
         }
-        LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaInsegnamentiPannello2()");
+        LOGGER.debug("ricaricaInterfacciaGraficaInsegnamentiPannello2()");
     }
 
     public static void ricaricaInterfacciaGraficaIscrizioniPannello2(){
         if(iscrizioniPanel != null){
             iscrizioniPanel.refresh();
         }
-        LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaIscrizioniPannello2()");
+        LOGGER.debug("ricaricaInterfacciaGraficaIscrizioniPannello2()");
     }
 
     public static void ricaricaInterfacciaGraficaVerbaliPannelli2(){
         if(verbaliPanel != null){
             verbaliPanel.refresh();
         }
-        LogHelper.saveLog(LogType.DEBUG, "ricaricaInterfacciaGraficaVerbaliPannelli2()");
+        LOGGER.debug("ricaricaInterfacciaGraficaVerbaliPannelli2()");
     }
 }

@@ -3,11 +3,14 @@ package it.univaq.unigest.repository.impl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import it.univaq.unigest.common.Identificabile;
+import it.univaq.unigest.gui.Dialogs;
 import it.univaq.unigest.repository.Repository;
 import it.univaq.unigest.util.LocalDateAdapter;
 import it.univaq.unigest.util.LocalTimeAdapter;
 import it.univaq.unigest.util.LogHelper;
 import it.univaq.unigest.util.LogType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -22,6 +25,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class FileJsonRepository<T extends Identificabile<String>> implements Repository<T, String> {
+
+    private static final Logger LOGGER = LogManager.getLogger(FileJsonRepository.class);
 
     private List<T> list = new ArrayList<>();
     private final String path;
@@ -84,7 +89,7 @@ public class FileJsonRepository<T extends Identificabile<String>> implements Rep
                 // file assente: inizializza vuoto e crea il file
                 list = new ArrayList<>();
                 saveOnFile(); // scrive "[]"
-                LogHelper.saveLog(LogType.DEBUG, "Data file non trovato: creato vuoto -> " + path);
+                LOGGER.debug("Data file non trovato: creato vuoto -> " + path);
                 return;
             }
 
@@ -97,10 +102,10 @@ public class FileJsonRepository<T extends Identificabile<String>> implements Rep
                 list = (loaded != null) ? loaded : new ArrayList<>();
             }
 
-            LogHelper.saveLog(LogType.DEBUG, "Load operation from " + path + " successfully");
+            LOGGER.debug("Load operation from " + path + " successfully");
         } catch (Exception e) {
             // in caso di errore: non termina l'app, inizializza vuoto e prova a salvare
-            LogHelper.saveLog(LogType.ERROR, "Load operation from " + path + " failed: " + e.getMessage());
+            LOGGER.error("Load operation from " + path + " failed: " + e.getMessage());
             list = new ArrayList<>();
             try { saveOnFile(); } catch (Exception ignored) {}
         }
@@ -114,9 +119,9 @@ public class FileJsonRepository<T extends Identificabile<String>> implements Rep
                     .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
                     .create();
             gson.toJson(list, writer);
-            LogHelper.saveLog(LogType.DEBUG, "Write operation on " + path + " successfully");
+            LOGGER.debug("Write operation on " + path + " successfully");
         }catch (IOException e){
-            LogHelper.saveLog(LogType.ERROR, "Write operation on " + path + " was not successful");
+            LOGGER.error("Write operation on " + path + " was not successful");
         }
     }
 
@@ -135,22 +140,22 @@ public class FileJsonRepository<T extends Identificabile<String>> implements Rep
             } else {
                 currentIndex = 1;
             }
-            LogHelper.saveLog(LogType.DEBUG, "Current Index loaded from " + getPathCurrentIndex() + ": " + currentIndex);
+            LOGGER.debug("Current Index loaded from " + getPathCurrentIndex() + ": " + currentIndex);
         }catch (IOException e){
             currentIndex = 1;
-            LogHelper.saveLog(LogType.DEBUG, "Meta file was not foud for " + getPathCurrentIndex() + ", current index set to 1, this may cause some inconsistency");
+            LOGGER.debug("Meta file was not foud for " + getPathCurrentIndex() + ", current index set to 1, this may cause some inconsistency");
         }catch (Exception e){
             currentIndex = 1;
-            LogHelper.saveLog(LogType.DEBUG, "Generic error for " + getPathCurrentIndex() + ", current index set to 1, this may cause some inconsistency");
+            LOGGER.debug("Generic error for " + getPathCurrentIndex() + ", current index set to 1, this may cause some inconsistency");
         }
     }
 
     private void saveCurrentIndex(){
         try (FileWriter writer = new FileWriter(getPathCurrentIndex())){
             writer.write("{\"indiceCorrente\": " + currentIndex + "}");
-            LogHelper.saveLog(LogType.DEBUG, "Current index saved on " + getPathCurrentIndex());
+            LOGGER.debug("Current index saved on " + getPathCurrentIndex());
         }catch (IOException e){
-            LogHelper.saveLog(LogType.ERROR, "Error during the saving of current index: " + e.getMessage());
+            LOGGER.error("Error during the saving of current index: " + e.getMessage());
         }
     }
 

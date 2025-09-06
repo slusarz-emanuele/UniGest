@@ -42,7 +42,7 @@ public class EsameManager extends AbstractManager<Esame> {
         }
 
         if (indice == -1) {
-            LOGGER.warning("Esame non trovato con ID: " + esame.getId());
+            LOGGER.warn("Esame non trovato con ID: " + esame.getId());
             return false;
         }
 
@@ -52,7 +52,7 @@ public class EsameManager extends AbstractManager<Esame> {
 
 
         if(giaPresente){
-            LOGGER.warning("Esame già presente per iscrizioneId: " + esame.getIscrizioneId());
+            LOGGER.warn("Esame già presente per iscrizioneId: " + esame.getIscrizioneId());
             throw new EsameConIdPresente("Un iscrizione può essere associata ad un solo esame!");
         }
 
@@ -67,7 +67,7 @@ public class EsameManager extends AbstractManager<Esame> {
                 .anyMatch(e -> e.getIscrizioneId().equals(elemento.getIscrizioneId()));
 
         if (giaPresente) {
-            LOGGER.warning("Esame già presente per iscrizioneId: " + elemento.getIscrizioneId());
+            LOGGER.warn("Esame già presente per iscrizioneId: " + elemento.getIscrizioneId());
             throw new EsameConIdPresente("Un iscrizione può essere associata ad un solo esame!");
         }
 

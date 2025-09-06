@@ -72,7 +72,7 @@ public abstract class AbstractManager<T> implements CrudManager<T> {
             salvaSuFile();
             LOGGER.info(elemento.toString() + " aggiunto");
         } else {
-            LOGGER.warning("Elemento già presente: " + elemento.toString());
+            LOGGER.warn("Elemento già presente: " + elemento.toString());
         }
     }
 

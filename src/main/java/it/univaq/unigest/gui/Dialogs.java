@@ -40,5 +40,11 @@ public class Dialogs {
         }
     }
 
+    public static boolean confirm(String title, String content) {
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION, content, ButtonType.OK, ButtonType.CANCEL);
+        a.setTitle(title);
+        a.setHeaderText(null);
+        return a.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK;
+    }
 
 }

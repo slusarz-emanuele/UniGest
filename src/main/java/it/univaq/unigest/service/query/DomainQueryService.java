@@ -31,4 +31,7 @@ public interface DomainQueryService {
 
     // verbali -> visualizza appello
     Optional<Appello> appelloByVerbale(String verbaleId);
+
+    default long countIscrizioniByStudente(String cf) { return iscrizioniByStudente(cf).size(); }
+    default long countEsamiByStudente(String cf)      { return esamiByStudente(cf).size(); }
 }

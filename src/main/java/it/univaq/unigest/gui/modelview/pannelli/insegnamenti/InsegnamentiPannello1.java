@@ -21,7 +21,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class InsegnamentiPannello2 implements CrudPanel {
+public class InsegnamentiPannello1 implements CrudPanel {
 
     // Etichette
     private static final String L_ID       = "ID";
@@ -42,7 +42,7 @@ public class InsegnamentiPannello2 implements CrudPanel {
 
     private final VistaConDettagliBuilder<Insegnamento> builder;
 
-    public InsegnamentiPannello2(InsegnamentoService insegnamentoService,
+    public InsegnamentiPannello1(InsegnamentoService insegnamentoService,
                                  Supplier<List<CorsoDiLaurea>> loadCorsi,
                                  Supplier<List<Docente>> loadDocenti,
                                  DomainQueryService domainQueryService) {
@@ -54,7 +54,7 @@ public class InsegnamentiPannello2 implements CrudPanel {
     }
 
     // Blocchiamo il costruttore di default
-    private InsegnamentiPannello2() {
+    private InsegnamentiPannello1() {
         this.insegnamentoService = null;
         this.loadCorsi = null;
         this.loadDocenti = null;

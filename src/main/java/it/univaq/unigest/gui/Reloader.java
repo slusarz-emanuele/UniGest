@@ -1,15 +1,15 @@
 package it.univaq.unigest.gui;
 
-import it.univaq.unigest.gui.modelview.pannelli.appelli.AppelliPannello2;
-import it.univaq.unigest.gui.modelview.pannelli.aule.AulePannello2;
-import it.univaq.unigest.gui.modelview.pannelli.cdl.CorsiDiLaureaPannello2;
-import it.univaq.unigest.gui.modelview.pannelli.docenti.DocentiPannello2;
-import it.univaq.unigest.gui.modelview.pannelli.edifici.EdificiPannello2;
-import it.univaq.unigest.gui.modelview.pannelli.esami.EsamiPannello2;
-import it.univaq.unigest.gui.modelview.pannelli.insegnamenti.InsegnamentiPannello2;
-import it.univaq.unigest.gui.modelview.pannelli.iscrizioni.IscrizioniPannello2;
-import it.univaq.unigest.gui.modelview.pannelli.studenti.StudentiPannello2;
-import it.univaq.unigest.gui.modelview.pannelli.verbali.VerbaliPannello2;
+import it.univaq.unigest.gui.modelview.pannelli.appelli.AppelliPannello1;
+import it.univaq.unigest.gui.modelview.pannelli.aule.AulePannello1;
+import it.univaq.unigest.gui.modelview.pannelli.cdl.CorsiDiLaureaPannello1;
+import it.univaq.unigest.gui.modelview.pannelli.docenti.DocentiPannello1;
+import it.univaq.unigest.gui.modelview.pannelli.edifici.EdificiPannello1;
+import it.univaq.unigest.gui.modelview.pannelli.esami.EsamiPannello1;
+import it.univaq.unigest.gui.modelview.pannelli.insegnamenti.InsegnamentiPannello1;
+import it.univaq.unigest.gui.modelview.pannelli.iscrizioni.IscrizioniPannello1;
+import it.univaq.unigest.gui.modelview.pannelli.studenti.StudentiPannello1;
+import it.univaq.unigest.gui.modelview.pannelli.verbali.VerbaliPannello1;
 import it.univaq.unigest.util.LogHelper;
 import it.univaq.unigest.util.LogType;
 
@@ -29,54 +29,54 @@ public class Reloader {
         LogHelper.saveLog(LogType.DEBUG, "it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGrafica() invocato");
     }
 
-    private static AppelliPannello2 appelliPanel;
-    private static AulePannello2 aulePanel;
-    private static CorsiDiLaureaPannello2 corsiDiLaureaPanel;
-    private static EdificiPannello2 edificiPanel;
-    private static EsamiPannello2 esamiPanel;
-    private static InsegnamentiPannello2 insegnamentiPanel;
-    private static IscrizioniPannello2 iscrizioniPanel;
-    private static VerbaliPannello2 verbaliPanel;
-    private static DocentiPannello2 docentiPanel;
-    private static StudentiPannello2 studentiPanel;
+    private static AppelliPannello1 appelliPanel;
+    private static AulePannello1 aulePanel;
+    private static CorsiDiLaureaPannello1 corsiDiLaureaPanel;
+    private static EdificiPannello1 edificiPanel;
+    private static EsamiPannello1 esamiPanel;
+    private static InsegnamentiPannello1 insegnamentiPanel;
+    private static IscrizioniPannello1 iscrizioniPanel;
+    private static VerbaliPannello1 verbaliPanel;
+    private static DocentiPannello1 docentiPanel;
+    private static StudentiPannello1 studentiPanel;
 
-    public static void registerAppelliPannello(AppelliPannello2 p){
+    public static void registerAppelliPannello(AppelliPannello1 p){
         appelliPanel = p;
     }
 
-    public static void registerAulePannello(AulePannello2 p){
+    public static void registerAulePannello(AulePannello1 p){
         aulePanel = p;
     }
 
-    public static void registerEdificiPannello(EdificiPannello2 p){
+    public static void registerEdificiPannello(EdificiPannello1 p){
         edificiPanel = p;
     }
 
-    public static void registerEsamiPannello(EsamiPannello2 p){
+    public static void registerEsamiPannello(EsamiPannello1 p){
         esamiPanel = p;
     }
 
-    public static void registerInsegnamentiPannello(InsegnamentiPannello2 p){
+    public static void registerInsegnamentiPannello(InsegnamentiPannello1 p){
         insegnamentiPanel = p;
     }
 
-    public static void registerIscrizioniPannello(IscrizioniPannello2 p){
+    public static void registerIscrizioniPannello(IscrizioniPannello1 p){
         iscrizioniPanel = p;
     }
 
-    public static void registerVerbaliPannello(VerbaliPannello2 p){
+    public static void registerVerbaliPannello(VerbaliPannello1 p){
         verbaliPanel = p;
     }
 
-    public static void registerDocentiPannello(DocentiPannello2 p) {
+    public static void registerDocentiPannello(DocentiPannello1 p) {
         docentiPanel = p;
     }
 
-    public static void registerStudentiPannello(StudentiPannello2 p) {
+    public static void registerStudentiPannello(StudentiPannello1 p) {
         studentiPanel = p;
     }
 
-    public static void registerCorsiDiLaureaPannello(CorsiDiLaureaPannello2 p) {
+    public static void registerCorsiDiLaureaPannello(CorsiDiLaureaPannello1 p) {
         corsiDiLaureaPanel = p;
     }
 

@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class StudentiPannello2 implements CrudPanel {
+public class StudentiPannello1 implements CrudPanel {
 
     // Etichette
     private static final String L_CF = "CF";
@@ -48,7 +48,7 @@ public class StudentiPannello2 implements CrudPanel {
 
     private final VistaConDettagliBuilder<Studente> builder;
 
-    public StudentiPannello2(StudenteService studenteService,
+    public StudentiPannello1(StudenteService studenteService,
                              Supplier<List<CorsoDiLaurea>> loadCorsi,
                              Function<String, String> nomeCdlById,
                              DomainQueryService domainQueryService) {

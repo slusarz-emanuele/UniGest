@@ -103,6 +103,14 @@ public class StartView {
         });
 
         Label titolo = new Label("UniGest");
+        titolo.setStyle(
+                "-fx-text-fill: #FFFFFF;" +
+                        "-fx-font-size: 32px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-padding: 10px;" +           // spazio interno
+                        "-fx-background-color: transparent;"
+        );
+
         Region spacer = new Region(); HBox.setHgrow(spacer, Priority.ALWAYS);
 
         Button btnSettings = new Button("Impostazioni");
@@ -114,7 +122,6 @@ public class StartView {
                         Main.getMaintenanceService()
                 )
         );
-
 
 
         Image logo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/logo.png")));

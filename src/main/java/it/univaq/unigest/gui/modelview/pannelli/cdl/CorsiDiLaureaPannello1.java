@@ -17,7 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class CorsiDiLaureaPannello2 implements CrudPanel {
+public class CorsiDiLaureaPannello1 implements CrudPanel {
 
     // Etichette
     private static final String L_ID              = "ID";
@@ -31,7 +31,7 @@ public class CorsiDiLaureaPannello2 implements CrudPanel {
     private final VistaConDettagliBuilder<CorsoDiLaurea> builder;
     private final DomainQueryService domainQueryService;
 
-    public CorsiDiLaureaPannello2(CorsoDiLaureaService corsoDiLaureaService,
+    public CorsiDiLaureaPannello1(CorsoDiLaureaService corsoDiLaureaService,
                                   DomainQueryService domainQueryService){
         this.corsoDiLaureaService = corsoDiLaureaService;
         this.domainQueryService = domainQueryService;

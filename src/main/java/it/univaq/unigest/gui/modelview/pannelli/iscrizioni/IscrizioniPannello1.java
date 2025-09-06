@@ -1,7 +1,6 @@
 package it.univaq.unigest.gui.modelview.pannelli.iscrizioni;
 
 import it.univaq.unigest.gui.Dialogs;
-import it.univaq.unigest.gui.actions.QueryActions;
 import it.univaq.unigest.gui.componenti.DialogBuilder;
 import it.univaq.unigest.gui.componenti.TableMiniFactory;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
@@ -21,7 +20,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class IscrizioniPannello2 implements CrudPanel {
+public class IscrizioniPannello1 implements CrudPanel {
 
     // Etichette
     private static final String L_ID              = "ID Iscrizione";
@@ -39,7 +38,7 @@ public class IscrizioniPannello2 implements CrudPanel {
     private final Supplier<List<Studente>> loadStudenti;
     private final Supplier<List<Appello>>  loadAppelli;
 
-    public IscrizioniPannello2(IscrizioneService iscrizioneService,
+    public IscrizioniPannello1(IscrizioneService iscrizioneService,
                                Supplier<List<Studente>> loadStudenti,
                                Supplier<List<Appello>> loadAppelli,
                                DomainQueryService domainQueryService) {
@@ -51,7 +50,7 @@ public class IscrizioniPannello2 implements CrudPanel {
     }
 
     // Blocchiamo il costruttore di default
-    private IscrizioniPannello2() {
+    private IscrizioniPannello1() {
         this.iscrizioneService = null;
         this.loadStudenti = null;
         this.loadAppelli  = null;

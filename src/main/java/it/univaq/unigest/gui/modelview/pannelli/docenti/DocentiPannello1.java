@@ -23,7 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class DocentiPannello2 implements CrudPanel {
+public class DocentiPannello1 implements CrudPanel {
 
     // Etichette
     private static final String L_CF = "CF";
@@ -42,7 +42,7 @@ public class DocentiPannello2 implements CrudPanel {
     private final VistaConDettagliBuilder<Docente> builder;
     private final DomainQueryService domainQueryService;
 
-    public DocentiPannello2(DocenteService docenteService,
+    public DocentiPannello1(DocenteService docenteService,
                             DomainQueryService domainQueryService){
         this.docenteService = docenteService;
         this.domainQueryService = domainQueryService;

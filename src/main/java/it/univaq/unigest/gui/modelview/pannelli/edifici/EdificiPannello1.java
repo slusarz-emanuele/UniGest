@@ -16,7 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class EdificiPannello2 implements CrudPanel {
+public class EdificiPannello1 implements CrudPanel {
 
     // Etichette
     private static final String L_ID   = "ID";
@@ -27,7 +27,7 @@ public class EdificiPannello2 implements CrudPanel {
     private final EdificioService edificioService;
     private final DomainQueryService domainQueryService;
 
-    public EdificiPannello2(EdificioService edificioService,
+    public EdificiPannello1(EdificioService edificioService,
                             DomainQueryService domainQueryService) {
         this.edificioService = edificioService;
         this.domainQueryService = domainQueryService;
@@ -35,7 +35,7 @@ public class EdificiPannello2 implements CrudPanel {
     }
 
     // Blocchiamo il costruttore di default
-    private EdificiPannello2() {
+    private EdificiPannello1() {
         this.edificioService = null;
         this.builder = null;
         this.domainQueryService = null;

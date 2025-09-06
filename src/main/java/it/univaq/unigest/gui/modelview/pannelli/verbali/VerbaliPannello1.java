@@ -1,7 +1,6 @@
 package it.univaq.unigest.gui.modelview.pannelli.verbali;
 
 import it.univaq.unigest.gui.Dialogs;
-import it.univaq.unigest.gui.actions.QueryActions;
 import it.univaq.unigest.gui.componenti.DialogBuilder;
 import it.univaq.unigest.gui.componenti.TableMiniFactory;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
@@ -21,7 +20,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class VerbaliPannello2 implements CrudPanel {
+public class VerbaliPannello1 implements CrudPanel {
 
     // Etichette
     private static final String L_ID            = "ID Verbale";
@@ -41,7 +40,7 @@ public class VerbaliPannello2 implements CrudPanel {
     private final Supplier<List<Appello>> loadAppelli;
 
     // Costruttore
-    public VerbaliPannello2(VerbaleService verbaleService,
+    public VerbaliPannello1(VerbaleService verbaleService,
                             Supplier<List<Appello>> loadAppelli,
                             DomainQueryService domainQueryService) {
         this.verbaleService = verbaleService;
@@ -51,7 +50,7 @@ public class VerbaliPannello2 implements CrudPanel {
     }
 
     // Blocchiamo il costruttore di default
-    private VerbaliPannello2(){
+    private VerbaliPannello1(){
         this.verbaleService = null;
         this.builder = null;
         this.loadAppelli = null;

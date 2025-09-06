@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class EsamiPannello2 implements CrudPanel {
+public class EsamiPannello1 implements CrudPanel {
 
     // Etichette
     private static final String L_ID          = "ID";
@@ -40,7 +40,7 @@ public class EsamiPannello2 implements CrudPanel {
     private final Supplier<List<Iscrizione>> loadIscrizioni;
 
     // Costruttore
-    public EsamiPannello2(EsameService esameService,
+    public EsamiPannello1(EsameService esameService,
                           Supplier<List<Iscrizione>> loadIscrizioni,
                           DomainQueryService domainQueryService) {
         this.esameService = esameService;
@@ -50,7 +50,7 @@ public class EsamiPannello2 implements CrudPanel {
     }
 
     // Blocchiamo il costruttore di default
-    private EsamiPannello2(){
+    private EsamiPannello1(){
         this.esameService = null;
         this.builder = null;
         this.loadIscrizioni = null;

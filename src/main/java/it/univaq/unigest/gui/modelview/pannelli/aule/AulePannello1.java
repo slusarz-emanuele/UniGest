@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class AulePannello2 implements CrudPanel {
+public class AulePannello1 implements CrudPanel {
 
     // Etichette
     private static final String L_ID       = "ID";
@@ -34,7 +34,7 @@ public class AulePannello2 implements CrudPanel {
     private final Supplier<List<Edificio>> loadEdifici;
 
     // Costruttore
-    public AulePannello2(AulaService aulaService,
+    public AulePannello1(AulaService aulaService,
                          Supplier<List<Edificio>> loadEdifici,
                          DomainQueryService domainQueryService) {
         this.aulaService = aulaService;
@@ -44,7 +44,7 @@ public class AulePannello2 implements CrudPanel {
     }
 
     // Blocchiamo il costruttore di default
-    private AulePannello2() {
+    private AulePannello1() {
         this.aulaService = null;
         this.loadEdifici = null;
         this.builder = null;

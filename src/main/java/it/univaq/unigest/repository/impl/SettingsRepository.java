@@ -6,9 +6,22 @@ import it.univaq.unigest.util.DatabaseHelper;
 
 import java.util.List;
 
+/**
+ * Implementazione del repository che si occupa
+ * della gestione delle {@link Settings}.
+ * <p>
+ * Estende {@link FileJsonRepository} e si serve di un file JSON
+ * per attuare la persistenza delle impostazioni dell'applicazione.
+ */
 public class SettingsRepository extends FileJsonRepository<Settings> {
     public SettingsRepository() {
+
+        /**
+         * Genera un nuovo {@code SettingsRepository} inizializzandolo
+         * grazie al path del file JSON riservato alle impostazioni.
+         */
         super(DatabaseHelper.PERCORSO_CARTELLA_DATI + "/settings.json",
-                new TypeToken<List<Settings>>(){}.getType());
+                new TypeToken<List<Settings>>() {
+                }.getType());
     }
 }

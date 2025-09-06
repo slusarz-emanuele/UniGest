@@ -7,6 +7,16 @@ import it.univaq.unigest.service.query.DomainQueryService;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Implementazione di {@link DomainQueryService} che compone i dati
+ * provenienti dai servizi CRUD di dominio (AppelloService, StudenteService, ecc.)
+ * per offrire query “trasversali” usate dalla GUI.
+ *
+ * <p><b>Caratteristiche:</b>
+ * <ul>
+ *   <li>Restituisce liste non {@code null} (vuote) e usa {@link Optional} per i singoli risultati.</li>
+ * </ul>
+ */
 public class DomainQueryServiceImpl implements DomainQueryService {
 
     private final AppelloService appelloService;
@@ -20,6 +30,9 @@ public class DomainQueryServiceImpl implements DomainQueryService {
     private final StudenteService studenteService;
     private final VerbaleService verbaleService;
 
+    /**
+     * Crea il servizio di query con tutte le dipendenze CRUD necessarie.
+     */
     public DomainQueryServiceImpl(AppelloService appelloService,
                                   AulaService aulaService,
                                   CorsoDiLaureaService corsoService,
@@ -43,6 +56,8 @@ public class DomainQueryServiceImpl implements DomainQueryService {
     }
 
     // ===== Studente =====
+
+    /** {@inheritDoc} */
     @Override
     public List<Esame> esamiByStudente(String studenteCf) {
         Set<String> iscrIds = iscrizioneService.findAll().stream()
@@ -54,6 +69,7 @@ public class DomainQueryServiceImpl implements DomainQueryService {
                 .toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Iscrizione> iscrizioniByStudente(String studenteCf) {
         return iscrizioneService.findAll().stream()
@@ -62,6 +78,8 @@ public class DomainQueryServiceImpl implements DomainQueryService {
     }
 
     // ===== Docente =====
+
+    /** {@inheritDoc} */
     @Override
     public List<Insegnamento> insegnamentiByDocente(String docenteId) {
         return insegnamentoService.findAll().stream()
@@ -69,6 +87,7 @@ public class DomainQueryServiceImpl implements DomainQueryService {
                 .toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Appello> appelliByDocente(String docenteId) {
         return appelloService.findAll().stream()
@@ -76,6 +95,7 @@ public class DomainQueryServiceImpl implements DomainQueryService {
                 .toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Verbale> verbaliByDocente(String docenteId) {
         Set<String> appelliDocenteIds = appelliByDocente(docenteId).stream()
@@ -87,6 +107,8 @@ public class DomainQueryServiceImpl implements DomainQueryService {
     }
 
     // ===== Corso di Laurea =====
+
+    /** {@inheritDoc} */
     @Override
     public List<Insegnamento> insegnamentiByCorso(String corsoId) {
         return insegnamentoService.findAll().stream()
@@ -94,6 +116,7 @@ public class DomainQueryServiceImpl implements DomainQueryService {
                 .toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Studente> studentiByCorso(String corsoId) {
         return studenteService.findAll().stream()
@@ -102,6 +125,8 @@ public class DomainQueryServiceImpl implements DomainQueryService {
     }
 
     // ===== Insegnamento =====
+
+    /** {@inheritDoc} */
     @Override
     public List<Appello> appelliByInsegnamento(String insegnamentoId) {
         return appelloService.findAll().stream()
@@ -110,6 +135,8 @@ public class DomainQueryServiceImpl implements DomainQueryService {
     }
 
     // ===== Appello =====
+
+    /** {@inheritDoc} */
     @Override
     public List<Iscrizione> iscrizioniByAppello(String appelloId) {
         // Iscrizione.ridAppello è int; Appello.getId() è String
@@ -118,6 +145,7 @@ public class DomainQueryServiceImpl implements DomainQueryService {
                 .toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Verbale> verbaleByAppello(String appelloId) {
         return verbaleService.findAll().stream()
@@ -126,6 +154,8 @@ public class DomainQueryServiceImpl implements DomainQueryService {
     }
 
     // ===== Iscrizione =====
+
+    /** {@inheritDoc} */
     @Override
     public Optional<Esame> esameByIscrizione(String iscrizioneId) {
         return esameService.findAll().stream()
@@ -134,6 +164,8 @@ public class DomainQueryServiceImpl implements DomainQueryService {
     }
 
     // ===== Verbale =====
+
+    /** {@inheritDoc} */
     @Override
     public Optional<Appello> appelloByVerbale(String verbaleId) {
         return appelloService.findAll().stream()

@@ -11,10 +11,48 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.regex.Pattern;
 
+/**
+ * Utility per normalizzare la lista dei docenti associati ad ogni {@link Insegnamento}.
+ *
+ * <p><b>Scopo</b>:
+ * <ul>
+ *   <li>Ripulire valori null/vuoti e spazi superflui</li>
+ *   <li>Supportare sia il formato "CF" sia "Nome Cognome (CF)" → estraendo il solo CF</li>
+ *   <li>Tenere solo CF presenti realmente nell'anagrafica docenti</li>
+ *   <li>Rimuovere duplicati preservando l'ordine di apparizione</li>
+ * </ul>
+ *
+ * <p><b>Uso tipico</b>: invocare questo loader all’avvio/appena dopo aver caricato i dati
+ * (es. in una fase di boot o di “data refresh”) per riallineare le referenze tra Insegnamenti e Docenti.
+ *
+ */
 public final class InsegnamentoLoader {
 
+    // utility class: nessuna istanza
     private InsegnamentoLoader() {}
 
+    /**
+     * Normalizza la lista dei docenti (CF) per ogni insegnamento.
+     *
+     * <p>Pipeline applicata a ciascun elemento della lista {@code ins.getDocenti()}:
+     * <ol>
+     *   <li>Filtra {@code null} e stringhe vuote (dopo {@code trim()})</li>
+     *   <li>Se il valore è nel formato "Qualcosa (CF)", estrae il CF tra parentesi</li>
+     *   <li>Conserva solo i CF effettivamente presenti in {@link DocenteService#findAll()}</li>
+     *   <li>Rimuove duplicati mantenendo il primo incontro (via {@code distinct()})</li>
+     * </ol>
+     *
+     * @param insegnamentoService service per accedere/modificare gli insegnamenti
+     * @param docenteService      service per validare l’esistenza dei CF docenti
+     *
+     * @throws NullPointerException se uno dei parametri è {@code null}
+     *
+     * @implNote La regex {@code .*\\(([^)]+)\\).*} cattura il contenuto tra l’ultima parentesi aperta
+     *           e la prima parentesi chiusa successiva. Esempi validi: {@code "Mario Rossi (RSSMRA...)" → "RSSMRA..."}.
+     *           Se il testo non contiene parentesi, il valore è lasciato così com’è (es. già CF).
+     *
+     * @apiNote Metodo idempotente: chiamarlo più volte non cambia il risultato dopo la prima normalizzazione.
+     */
     public static void sanitizeDocenti(InsegnamentoService insegnamentoService,
                                        DocenteService docenteService) {
 

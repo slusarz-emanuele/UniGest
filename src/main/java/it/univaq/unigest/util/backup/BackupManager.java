@@ -13,12 +13,45 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Stream;
 
+/**
+ * Implementazione di {@link BackupService} che crea e ripristina backup dei dati applicativi.
+ *
+ * <p><b>Cosa salva:</b> tutti i file <code>.txt</code> e <code>.json</code> presenti nella cartella dati
+ * {@link DatabaseHelper#PERCORSO_CARTELLA_DATI}. I backup vengono salvati in
+ * <code>{PERCORSO_CARTELLA_DATI}/backup</code> con nome basato su timestamp (pattern
+ * {@code yyyyMMdd_HHmmss}.zip).</p>
+ *
+ * <p><b>Cosa fa il ripristino:</b> elimina prima i file <code>.txt</code> e <code>.json</code> correnti nella
+ * cartella dati, poi estrae i file contenuti nell'archivio ZIP indicato.</p>
+ *
+ * <p><b>Note d’uso:</b>
+ * <ul>
+ *   <li>Gestire a livello superiore la UI/UX (conferme, progress, logging utente).</li>
+ * </ul>
+ * </p>
+ */
 public class BackupManager implements BackupService{
 
-    // Attributi di classe
+    /** Percorso cartella dati (origine dei file da salvare / destinazione del ripristino). */
     private static final String DATA_PATH = DatabaseHelper.PERCORSO_CARTELLA_DATI;
+
+    /** Percorso cartella di destinazione dei file ZIP di backup. */
     public static final String BACKUP_PATH = DatabaseHelper.PERCORSO_CARTELLA_DATI + "/backup";
 
+    /**
+     * Crea un archivio ZIP contenente tutti i file <code>.txt</code> e <code>.json</code> nella cartella dati.
+     *
+     * <p>Passi eseguiti:
+     * <ol>
+     *   <li>Crea la cartella di backup se non esiste.</li>
+     *   <li>Genera un nome file basato su timestamp (formato {@code yyyyMMdd_HHmmss}.zip).</li>
+     *   <li>Scansiona la cartella dati e aggiunge al ZIP tutti i file regolari con estensione .txt/.json.</li>
+     * </ol>
+     * </p>
+     *
+     * @return {@code true} se l’archivio viene creato correttamente
+     * @throws IOException se avviene un errore di I/O durante la creazione dell’archivio
+     */
     @Override
     public boolean creaBackup() throws IOException {
         Files.createDirectories(Paths.get(BACKUP_PATH));
@@ -49,7 +82,13 @@ public class BackupManager implements BackupService{
         return true;
     }
 
-
+    /**
+     * Ripristina i dati a partire da un file ZIP di backup: prima elimina i file correnti
+     * <code>.txt</code>/<code>.json</code> nella cartella dati e poi estrae i contenuti dall'archivio.
+     *
+     * @param backup file ZIP di backup da cui ripristinare
+     * @return {@code true} se il ripristino va a buon fine, {@code false} altrimenti
+     */
     @Override
     public boolean ripristinaBackup(File backup) {
         if (backup == null || !backup.exists()) {
@@ -92,12 +131,6 @@ public class BackupManager implements BackupService{
             e.printStackTrace();
             return false;
         }
-    }
-
-
-    @Override
-    public boolean verificaCadenzaBackup() {
-        return true;
     }
 
 }

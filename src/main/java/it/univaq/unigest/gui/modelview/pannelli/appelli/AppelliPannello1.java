@@ -305,7 +305,7 @@ public class AppelliPannello1 implements CrudPanel {
 
             // 2) Se esistono relazioni → blocca
             if (nIscrizioni > 0) {
-                Dialogs.showError(
+                Dialogs.showWarning(
                         "Relazioni presenti",
                         "Impossibile eliminare l'appello \"" + a.getId() + "\" perché sono presenti relazioni:\n" +
                                 "- Iscrizioni: " + nIscrizioni + "\n" +

@@ -199,7 +199,7 @@ public class CorsiDiLaureaPannello1 implements CrudPanel {
 
             // 2) Se ci sono relazioni → stop con messaggio
             if (nInsegnamenti > 0 || nStudenti > 0) {
-                Dialogs.showError(
+                Dialogs.showWarning(
                         "Relazioni presenti",
                         "Impossibile eliminare il Corso di Laurea \"" + c.getNome() + "\" perché sono presenti relazioni:\n" +
                                 "- Insegnamenti: " + nInsegnamenti + "\n" +

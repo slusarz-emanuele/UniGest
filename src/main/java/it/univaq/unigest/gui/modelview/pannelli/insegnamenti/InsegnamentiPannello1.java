@@ -306,7 +306,7 @@ public class InsegnamentiPannello1 implements CrudPanel {
 
             // 2) Se ci sono relazioni → stop con messaggio
             if (nAppelli > 0) {
-                Dialogs.showError(
+                Dialogs.showWarning(
                         "Relazioni presenti",
                         "Impossibile eliminare l'insegnamento \"" + ins.getNome() + "\" perché sono presenti:\n" +
                                 "- Appelli: " + nAppelli + "\n\n" +

@@ -36,7 +36,7 @@ public class VerbaleManager extends AbstractManager<Verbale> {
         }
 
         if(indice == -1){
-            LOGGER.warning("Verbale non trovato con ID: " + nuovo.getId());
+            LOGGER.warn("Verbale non trovato con ID: " + nuovo.getId());
             return false;
         }
 
@@ -46,7 +46,7 @@ public class VerbaleManager extends AbstractManager<Verbale> {
 
 
         if(giaPresente){
-            LOGGER.warning("Verbale già presente per appelloId: " + nuovo.getAppelloId());
+            LOGGER.warn("Verbale già presente per appelloId: " + nuovo.getAppelloId());
             throw new EsameConIdPresente("Un appello può avere un solo verbale!");
         }
 
@@ -63,7 +63,7 @@ public class VerbaleManager extends AbstractManager<Verbale> {
                 .anyMatch(v -> v.getAppelloId().equals(elemento.getAppelloId()));
 
         if (giaPresente) {
-            LOGGER.warning("Verbale già presente per appelloId: " + elemento.getAppelloId());
+            LOGGER.warn("Verbale già presente per appelloId: " + elemento.getAppelloId());
             throw new VerbaleConAppelloPresente("Un appello può avere un solo verbale!");
         }
 

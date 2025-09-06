@@ -1,11 +1,8 @@
 package it.univaq.unigest.manager;
 
 import com.google.gson.reflect.TypeToken;
-import it.univaq.unigest.gui.Dialogs;
 import it.univaq.unigest.model.Studente;
 import it.univaq.unigest.util.DatabaseHelper;
-import it.univaq.unigest.util.LogHelper;
-import it.univaq.unigest.util.LogType;
 import it.univaq.unigest.util.Parser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

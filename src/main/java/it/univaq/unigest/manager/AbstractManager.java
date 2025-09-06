@@ -2,10 +2,7 @@ package it.univaq.unigest.manager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import it.univaq.unigest.gui.Dialogs;
 import it.univaq.unigest.util.LocalDateAdapter;
-import it.univaq.unigest.util.LogHelper;
-import it.univaq.unigest.util.LogType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

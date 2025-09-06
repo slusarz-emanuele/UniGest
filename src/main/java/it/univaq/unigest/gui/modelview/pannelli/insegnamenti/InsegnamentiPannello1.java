@@ -297,9 +297,39 @@ public class InsegnamentiPannello1 implements CrudPanel {
         }
     }
 
-    private void elimina(Insegnamento i) {
-        insegnamentoService.deleteById(i.getId());
-        refresh();
+    private void elimina(Insegnamento ins) {
+        try {
+            // 1) Conta relazioni: appelli collegati all'insegnamento
+            int nAppelli = domainQueryService
+                    .appelliByInsegnamento(ins.getId())
+                    .size();
+
+            // 2) Se ci sono relazioni → stop con messaggio
+            if (nAppelli > 0) {
+                Dialogs.showError(
+                        "Relazioni presenti",
+                        "Impossibile eliminare l'insegnamento \"" + ins.getNome() + "\" perché sono presenti:\n" +
+                                "- Appelli: " + nAppelli + "\n\n" +
+                                "Elimina o riassegna prima gli appelli collegati."
+                );
+                return;
+            }
+
+            // 3) Conferma
+            if (!Dialogs.confirm(
+                    "Conferma eliminazione",
+                    "Eliminare definitivamente l'insegnamento \"" + ins.getNome() + "\" (" + ins.getId() + ")?"
+            )) {
+                return;
+            }
+
+            // 4) Elimina
+            insegnamentoService.deleteById(ins.getId());
+            refresh();
+            Dialogs.showInfo("Eliminato", "Insegnamento eliminato con successo.");
+        } catch (Exception e) {
+            Dialogs.showError("Errore eliminazione", e.getMessage());
+        }
     }
 
     private static String coalesce(String s) { return s == null ? "" : s; }

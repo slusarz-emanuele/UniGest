@@ -131,6 +131,46 @@ public class StartView {
         root.setTop(topBar);
 
         // --- NAVIGAZIONE
+
+        dashboardBtn.setOnAction(e -> {
+            handleButtonClick(dashboardBtn);
+            ViewDispatcher.get().showNode(
+                    "Dashboard",
+                    new DashboardScreen(
+                            Main.getStudenteService(),
+                            Main.getDocenteService(),
+                            Main.getInsegnamentoService(),
+                            Main.getAppelloService(),
+                            Main.getAulaService(),
+                            Main.getCorsoDiLaureaService(),
+                            Main.getVerbaleService(),
+                            Main.getSettingsService(),
+                            Main.getMaintenanceService(),
+                            Main.getDomainQueryService()
+                    ).build()
+            );
+            this.vistaCorrente = null; // niente scorciatoie CRUD sulla dashboard
+        });
+
+// Mostra la dashboard all'avvio
+        handleButtonClick(dashboardBtn);
+        ViewDispatcher.get().showNode(
+                "Dashboard",
+                new DashboardScreen(
+                        Main.getStudenteService(),
+                        Main.getDocenteService(),
+                        Main.getInsegnamentoService(),
+                        Main.getAppelloService(),
+                        Main.getAulaService(),
+                        Main.getCorsoDiLaureaService(),
+                        Main.getVerbaleService(),
+                        Main.getSettingsService(),
+                        Main.getMaintenanceService(),
+                        Main.getDomainQueryService()
+                ).build()
+        );
+        this.vistaCorrente = null;
+
         bindNav(
                 docentiBtn,
                 () -> new DocentiView(

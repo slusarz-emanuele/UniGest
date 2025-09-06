@@ -3,12 +3,9 @@ package it.univaq.unigest.repository.impl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import it.univaq.unigest.common.Identificabile;
-import it.univaq.unigest.gui.Dialogs;
 import it.univaq.unigest.repository.Repository;
 import it.univaq.unigest.util.LocalDateAdapter;
 import it.univaq.unigest.util.LocalTimeAdapter;
-import it.univaq.unigest.util.LogHelper;
-import it.univaq.unigest.util.LogType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

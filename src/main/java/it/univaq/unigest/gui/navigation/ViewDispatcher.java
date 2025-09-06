@@ -2,6 +2,7 @@ package it.univaq.unigest.gui.navigation;
 
 import it.univaq.unigest.gui.modelview.AbstractModelView;
 import it.univaq.unigest.gui.util.CrudPanel;
+import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -41,6 +42,12 @@ public final class ViewDispatcher {
         stage.setTitle("UniGest — " + titolo);
         root.setCenter(view.getView());
         currentView = view;
+    }
+
+    public void showNode(String titolo, Node content) {
+        stage.setTitle("UniGest — " + titolo);
+        root.setCenter(content);
+        currentView = null; // non è un AbstractModelView ma è SEMPLICEMENTE un pannello PURO, in fatti mi servve per Dashboardviw!!!!
     }
 
     public AbstractModelView<?> getCurrentView() {

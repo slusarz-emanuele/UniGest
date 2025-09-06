@@ -1,13 +1,10 @@
 package it.univaq.unigest.manager;
 
 import com.google.gson.reflect.TypeToken;
-import it.univaq.unigest.gui.Dialogs;
 import it.univaq.unigest.manager.exceptions.EsameConIdPresente;
 import it.univaq.unigest.manager.exceptions.VerbaleConAppelloPresente;
 import it.univaq.unigest.model.Verbale;
 import it.univaq.unigest.util.DatabaseHelper;
-import it.univaq.unigest.util.LogHelper;
-import it.univaq.unigest.util.LogType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

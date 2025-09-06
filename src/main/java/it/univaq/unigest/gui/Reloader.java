@@ -10,8 +10,6 @@ import it.univaq.unigest.gui.modelview.pannelli.insegnamenti.InsegnamentiPannell
 import it.univaq.unigest.gui.modelview.pannelli.iscrizioni.IscrizioniPannello1;
 import it.univaq.unigest.gui.modelview.pannelli.studenti.StudentiPannello1;
 import it.univaq.unigest.gui.modelview.pannelli.verbali.VerbaliPannello1;
-import it.univaq.unigest.util.LogHelper;
-import it.univaq.unigest.util.LogType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

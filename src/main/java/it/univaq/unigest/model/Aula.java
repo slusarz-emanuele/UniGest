@@ -8,14 +8,16 @@ public class Aula implements Identificabile<String> {
     private String edificio;
 
     public Aula(String id,
-    int capienza,
-    String edificio){
+                int capienza,
+                String edificio){
         this.id=id;
         this.capienza=capienza;
         this.edificio=edificio;
-    
+
     }
-      public String getId(){
+
+    @Override
+    public String getId(){
         return this.id;
     }
 
@@ -25,7 +27,8 @@ public class Aula implements Identificabile<String> {
 
     public String getEdificio(){return this.edificio;}
 
-    
+
+    @Override
     public void setId(String id){
         this.id = id;
     }
@@ -38,7 +41,7 @@ public class Aula implements Identificabile<String> {
         this.edificio = edificio;
     }
 
-
+    @Override
     public String toString(){
         return "id: " + this.id + " " +
                 "capienza: " + this.capienza + " " +

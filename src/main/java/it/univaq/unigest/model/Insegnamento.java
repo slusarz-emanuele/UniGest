@@ -15,12 +15,12 @@ public class Insegnamento implements Identificabile<String> {
     private Integer semestre;
 
     public Insegnamento(String id,
-    String nome,
-    Integer cfu,
-    String corsodiLaureaId,
-    List<String> docenti,
-    Integer anno,
-    Integer semestre){
+                        String nome,
+                        Integer cfu,
+                        String corsodiLaureaId,
+                        List<String> docenti,
+                        Integer anno,
+                        Integer semestre){
         this.id=id;
         this.nome=nome;
         this.cfu=cfu;
@@ -29,6 +29,8 @@ public class Insegnamento implements Identificabile<String> {
         this.anno=anno;
         this.semestre=semestre;
     }
+
+    @Override
     public String getId() { return id; }
 
     public String getNome() { return nome; }
@@ -43,7 +45,8 @@ public class Insegnamento implements Identificabile<String> {
 
     public Integer getSemestre() { return semestre; }
 
-    
+
+    @Override
     public void setId(String id) { this.id = id; }
 
     public void setNome(String nome) { this.nome = nome; }
@@ -58,16 +61,18 @@ public class Insegnamento implements Identificabile<String> {
 
     public void setSemestre(Integer semestre) { this.semestre = semestre; }
 
+
     public void stampaDocenti(){
         System.out.println("Docenti assegnati all'insegnamento \""+this.nome+"\":");
         if(docenti==null || docenti.isEmpty()){
             System.out.println("Nessun docente assegnato");
-             }else{ 
-                for (String docenteId : docenti) {
+        }else{
+            for (String docenteId : docenti) {
                 System.out.println("• " + docenteId);
             }
-             }
+        }
     }
+
     public void aggiungiDocente(String docenteId){
         if(!this.docenti.contains(docenteId)){
             this.docenti.add(docenteId);
@@ -77,10 +82,13 @@ public class Insegnamento implements Identificabile<String> {
     public void rimuoviDocente(String docenteId){
         this.docenti.remove(docenteId);
     }
+
     public void caricaDocentiDinamicamente(){
         if(this.getId()==null) return ;
     }
-        public String toString() {
+
+    @Override
+    public String toString() {
         return "ID: " + id +
                 ", Nome: " + nome +
                 ", CFU: " + cfu +

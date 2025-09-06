@@ -11,11 +11,11 @@ public class Esame implements Identificabile<String> {
     private boolean verbalizzato;
 
     public Esame(String id,
-    String iscrizione,
-    Double voto,
-    boolean lode,
-    boolean rifiutato,
-    boolean verbalizzato){
+                 String iscrizione,
+                 Double voto,
+                 boolean lode,
+                 boolean rifiutato,
+                 boolean verbalizzato){
         this.id=id;
         this.iscrizioneId=iscrizione;
         this.voto=voto;
@@ -23,7 +23,9 @@ public class Esame implements Identificabile<String> {
         this.rifiutato=rifiutato;
         this.verbalizzato=verbalizzato;
     }
-      public String getId(){
+
+    @Override
+    public String getId(){
         return this.id;
     }
 
@@ -46,10 +48,14 @@ public class Esame implements Identificabile<String> {
     public boolean isVerbalizzato(){
         return this.verbalizzato;
     }
+
     public Integer getCfu(){
         return 1;
     }
-     public void setId(String id){
+
+
+    @Override
+    public void setId(String id){
         this.id = id;
     }
 
@@ -73,7 +79,8 @@ public class Esame implements Identificabile<String> {
         this.verbalizzato = verbalizzato;
     }
 
-   
+
+    @Override
     public String toString(){
         return "id: " + this.id + " " +
                 "iscrizioneId: " + this.iscrizioneId + " " +

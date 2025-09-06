@@ -15,8 +15,11 @@ public class Settings implements Identificabile<String> {
         return s;
     }
 
-    @Override public String getId() { return id; }
-    @Override public void setId(String id) { this.id = id; }
+    @Override
+    public String getId() { return id; }
+
+    @Override
+    public void setId(String id) { this.id = id; }
 
     public String getCartellaBackup() { return cartellaBackup; }
     public void setCartellaBackup(String cartellaBackup) { this.cartellaBackup = cartellaBackup; }

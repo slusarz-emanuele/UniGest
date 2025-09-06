@@ -258,10 +258,32 @@ public class StudentiPannello1 implements CrudPanel {
 
     private void elimina(Studente s) {
         try {
+            long nIscrizioni = domainQueryService.countIscrizioniByStudente(s.getCf());
+            long nEsami      = domainQueryService.countEsamiByStudente(s.getCf());
+
+            if (nIscrizioni > 0 || nEsami > 0) {
+                Dialogs.showError(
+                        "Relazioni presenti",
+                        "Impossibile eliminare lo studente perché sono presenti relazioni:\n" +
+                                "- Iscrizioni: " + nIscrizioni + "\n" +
+                                "- Esami: " + nEsami + "\n\n" +
+                                "Elimina prima le relazioni collegate."
+                );
+                return;
+            }
+
+            if (!Dialogs.confirm(
+                    "Conferma eliminazione",
+                    "Eliminare definitivamente " + s.getNome() + " " + s.getCognome() + " (" + s.getCf() + ")?"
+            )) {
+                return;
+            }
+
             studenteService.deleteById(s.getId());
             refresh();
+            Dialogs.showInfo("Eliminato", "Studente eliminato con successo.");
         } catch (Exception e) {
-            Dialogs.showError("Errore", e.getMessage());
+            Dialogs.showError("Errore eliminazione", e.getMessage());
         }
     }
 }

@@ -11,7 +11,9 @@ public class Edificio implements Identificabile<String> {
         this.id=id;
         this.nome=nome;
     }
-      public void setId(String id) {
+
+    @Override
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -19,6 +21,7 @@ public class Edificio implements Identificabile<String> {
         this.nome = nome;
     }
 
+    @Override
     public String getId() {
         return id;
     }

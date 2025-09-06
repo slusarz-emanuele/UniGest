@@ -13,15 +13,15 @@ public class Docente extends Persona implements Identificabile<String> {
     private String qualifica;
 
     public Docente(String cf,
-    String nome,
-    String cognome,
-    LocalDate dataNascita,
-    String dataIngressoUniversita,
-    String codiceDocente,
-    boolean isRuolo,
-    LocalDate dataIngressoUniversitaDocente,
-    String dipartimento,
-    String qualifica){
+                   String nome,
+                   String cognome,
+                   LocalDate dataNascita,
+                   String dataIngressoUniversita,
+                   String codiceDocente,
+                   boolean isRuolo,
+                   LocalDate dataIngressoUniversitaDocente,
+                   String dipartimento,
+                   String qualifica){
         super(cf,nome,cognome,dataNascita,dataIngressoUniversita);
         this.codiceDocente=codiceDocente;
         this.isRuolo=isRuolo;
@@ -30,23 +30,34 @@ public class Docente extends Persona implements Identificabile<String> {
         this.qualifica=qualifica;
     }
 
+
+    @Override
+    public String getId() { return getCodiceDocente(); }
+
     public String getCodiceDocente(){
         return this.codiceDocente;
     }
+
     public boolean isRuolo(){
         return this.isRuolo;
     }
+
     public LocalDate getDataIngressoUniversitaDocente(){
         return this.dataIngressoUniversitaDocente;
     }
+
     public String getDipartimento(){
         return this.dipartimento;
     }
-     public String getQualifica() {
+
+    public String getQualifica() {
         return this.qualifica;
     }
 
-    
+
+    @Override
+    public void setId(String id) { setCodiceDocente(id); }
+
     public void setCodiceDocente(String codiceDocente) {
         this.codiceDocente = codiceDocente;
     }
@@ -64,9 +75,13 @@ public class Docente extends Persona implements Identificabile<String> {
     public void setQualifica(String qualifica) {
         this.qualifica = qualifica;
     }
+
+    @Override
     protected String generaEmail(){
         return this.getNome().toLowerCase()+"."+this.getCognome().toLowerCase()+ "@univaq.it";
     }
+
+    @Override
     public String toString() {
         return super.toString() +
                 "CodiceDocente: " + codiceDocente + ", " +
@@ -76,6 +91,4 @@ public class Docente extends Persona implements Identificabile<String> {
                 "Qualifica: " + qualifica;
     }
 
-    @Override public String getId() { return getCodiceDocente(); }
-    @Override public void setId(String id) { setCodiceDocente(id); }
 }

@@ -15,12 +15,12 @@ public class Appello implements Identificabile<String> {
     private String ridVerbale;
 
     public Appello(int id,
-    String ridInsegnamento,
-    LocalDate data,
-    LocalTime ora,
-    String ridAula,
-    String ridDocente,
-    String ridVerbale){
+                   String ridInsegnamento,
+                   LocalDate data,
+                   LocalTime ora,
+                   String ridAula,
+                   String ridDocente,
+                   String ridVerbale){
         this.id=id;
         this.ridInsegnamento=ridInsegnamento;
         this.data=data;
@@ -61,7 +61,7 @@ public class Appello implements Identificabile<String> {
         return this.ridVerbale;
     }
 
-    
+
     public void setId(int id){
         this.id = id;
     }
@@ -89,6 +89,7 @@ public class Appello implements Identificabile<String> {
     public void setRidVerbale(String ridVerbale){
         this.ridVerbale = ridVerbale;
     }
+
     public String getGeneralita(){
         return "ridInsegnamento: " + this.ridInsegnamento + " " +
                 "data: " + this.data + " " +
@@ -98,7 +99,7 @@ public class Appello implements Identificabile<String> {
                 "ridVerbale: " + this.ridVerbale;
     }
 
-    
+    @Override
     public String toString(){
         return "id: " + this.id + " " +
                 "ridInsegnamento: " + this.ridInsegnamento + " " +
@@ -109,6 +110,6 @@ public class Appello implements Identificabile<String> {
                 "ridVerbale: " + this.ridVerbale;
     }
 
-    
+
 }
 

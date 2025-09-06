@@ -10,16 +10,18 @@ public class CorsoDiLaurea implements Identificabile<String> {
     private String coordinatoreId;
 
     public CorsoDiLaurea(String id,
-    String nome,
-    int cfuTotali,
-    String dipartimento,
-    String coordinatoreId){
+                         String nome,
+                         int cfuTotali,
+                         String dipartimento,
+                         String coordinatoreId){
         this.id=id;
         this.nome=nome;
         this.cfuTotali=cfuTotali;
         this.dipartimento=dipartimento;
         this.coordinatoreId=coordinatoreId;
     }
+
+    @Override
     public String getId(){
         return this.id;
     }
@@ -41,6 +43,7 @@ public class CorsoDiLaurea implements Identificabile<String> {
     }
 
 
+    @Override
     public void setId(String id){
         this.id = id;
     }
@@ -61,7 +64,8 @@ public class CorsoDiLaurea implements Identificabile<String> {
         this.coordinatoreId = coordinatoreId;
     }
 
-    
+
+    @Override
     public String toString(){
         return "id: " + this.id + " " +
                 "nome: " + this.nome + " " +

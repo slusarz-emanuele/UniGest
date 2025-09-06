@@ -13,10 +13,10 @@ public class Iscrizione implements Identificabile<String> {
     private boolean ritirato;
 
     public Iscrizione(Integer id,
-    String ridStudenteCf,
-    Integer ridAppello,
-    LocalDate dataIscrizione,
-    boolean ritirato
+                      String ridStudenteCf,
+                      Integer ridAppello,
+                      LocalDate dataIscrizione,
+                      boolean ritirato
     ){
         this.id=id;
         this.ridStudenteCf=ridStudenteCf;
@@ -28,6 +28,7 @@ public class Iscrizione implements Identificabile<String> {
 
     @Override
     public String getId() {return String.valueOf(this.id);}
+
     @Override
     public void setId(String id){
         this.id = Integer.parseInt(id);
@@ -47,7 +48,7 @@ public class Iscrizione implements Identificabile<String> {
         return this.ritirato;
     }
 
-   
+
     public void setId(Integer id){
         this.id = id;
     }
@@ -64,16 +65,19 @@ public class Iscrizione implements Identificabile<String> {
         this.dataIscrizione = dataIscrizione;
     }
 
+
     public void setRitirato(boolean ritirato){
         this.ritirato = ritirato;
     }
     public String getGeneralita(){
-         return "Studente: " + this.ridStudenteCf + " " +
+        return "Studente: " + this.ridStudenteCf + " " +
                 "Appello: " + this.ridAppello + " " +
                 "Data Iscizione: " + this.dataIscrizione + " " +
                 "Ritirato: " + this.ritirato;
     }
-     public String toString (){
+
+    @Override
+    public String toString (){
         return "id: " + this.id + " " +
                 "ridStudenteCf: " + this.ridStudenteCf + " " +
                 "ridAppello: " + this.ridAppello + " " +

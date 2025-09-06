@@ -1,11 +1,13 @@
 package it.univaq.unigest.gui;
 
-import it.univaq.unigest.util.LogHelper;
-import it.univaq.unigest.util.LogType;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Dialogs {
+
+    private static final Logger LOGGER = LogManager.getLogger(Dialogs.class);
 
     private static void showAlert(String titolo, String messaggio, AlertType alertType){
         Alert alert = new Alert(alertType);
@@ -33,7 +35,7 @@ public class Dialogs {
         try {
             return Dialogs.class.getResource("/css/dialogs.css").toExternalForm();
         } catch (NullPointerException e) {
-            LogHelper.saveLog(LogType.ERROR, "File CSS non trovato: /css/dialogs.css");
+            LOGGER.error("File CSS non trovato: /css/dialogs.css");
             return "";
         }
     }

@@ -5,6 +5,22 @@ import it.univaq.unigest.model.common.Identificabile;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * La classe {@code Studente} rappresenta uno studente.
+ *
+ * <p>Contiene informazioni quali:
+ * <ul>
+ *   <li>Matricola dello studente</li>
+ *   <li>Corso di laurea di appartenenza</li>
+ *   <li>Data di immatricolazione</li>
+ *   <li>Lista degli esami sostenuti</li>
+ *   <li>CFU accumulati</li>
+ *   <li>Media ponderata dei voti</li>
+ *   <li>Media aritmetica dei voti</li>
+ * </ul>
+ *
+ * <p>Questa classe estende {@link Persona} e implementa {@link Identificabile}.
+ */
 public class Studente extends Persona implements Identificabile<String> {
 
     // Attributi di istanza

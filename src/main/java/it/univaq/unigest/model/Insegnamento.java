@@ -4,6 +4,23 @@ import it.univaq.unigest.model.common.Identificabile;
 
 import java.util.List;
 
+/**
+ * La classe {@code Insegnamento} rappresenta
+ * l'entità Insegnamento universitario.
+ *
+ * <p>Contiene informazioni quali:
+ * <ul>
+ *   <li>ID dell'insegnamento</li>
+ *   <li>Nome dell'insegnamento</li>
+ *   <li>Numero di CFU attribuiti</li>
+ *   <li>ID del corso di laurea a cui appartiene</li>
+ *   <li>Lista degli ID dei docenti assegnati</li>
+ *   <li>Anno di erogazione</li>
+ *   <li>Semestre di erogazione</li>
+ * </ul> e i metodi di getter e setter relativi a tali informazioni.
+ *
+ * <p>Questa classe implementa l'interfaccia {@link Identificabile}.
+ */
 public class Insegnamento implements Identificabile<String> {
 
     private String id;

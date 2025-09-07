@@ -4,6 +4,21 @@ import it.univaq.unigest.model.common.Identificabile;
 
 import java.time.LocalDate;
 
+/**
+ * La classe {@code Docente} rappresenta
+ * l'entità Docente dell'università.
+ *
+ * <p>Contiene informazioni quali:
+ * <ul>
+ *   <li>Codice identificativo del docente</li>
+ *   <li>Ruolo del docente (interno/esterno)</li>
+ *   <li>Data di ingresso all'università</li>
+ *   <li>Dipartimento di appartenenza</li>
+ *   <li>Qualifica del docente</li>
+ * </ul> e i metodi di getter e setter relativi a tali informazioni.
+ *
+ * <p>Questa classe estende {@link Persona} e implementa l'interfaccia {@link Identificabile}.
+ */
 public class Docente extends Persona implements Identificabile<String> {
 
     private String codiceDocente;

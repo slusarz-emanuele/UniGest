@@ -2,6 +2,18 @@ package it.univaq.unigest.model;
 
 import it.univaq.unigest.model.common.Identificabile;
 
+/**
+ * La classe {@code Edificio} rappresenta
+ * l'entità Edificio dell'università.
+ *
+ * <p>Contiene informazioni quali:
+ * <ul>
+ *   <li>ID dell'edificio</li>
+ *   <li>Nome dell'edificio</li>
+ * </ul> e i metodi di getter e setter relativi a tali informazioni.
+ *
+ * <p>Questa classe implementa l'interfaccia {@link Identificabile}.
+ */
 public class Edificio implements Identificabile<String> {
 
     private String id;

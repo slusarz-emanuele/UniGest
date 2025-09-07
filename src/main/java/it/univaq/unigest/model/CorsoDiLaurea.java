@@ -2,6 +2,21 @@ package it.univaq.unigest.model;
 
 import it.univaq.unigest.model.common.Identificabile;
 
+/**
+ * La classe {@code CorsoDiLaurea} rappresenta
+ * l'entità Corso di Laurea
+ * 
+ * <p>Contiene informazioni quali:
+ * <ul>
+ *   <li>ID del corso</li>
+ *   <li>Nome del corso</li>
+ *   <li>Numero totale di CFU asssegnati a quel corso</li>
+ *   <li>Dipartimento di appartenenza</li>
+ *   <li>ID del coordinatore del corso</li>
+ * </ul> e i metodi di getter e setter relativi a tali informazioni.
+ *
+ * <p>Questa classe implementa l'interfaccia {@link Identificabile}
+ */
 public class CorsoDiLaurea implements Identificabile<String> {
     private String id;
     private String nome;

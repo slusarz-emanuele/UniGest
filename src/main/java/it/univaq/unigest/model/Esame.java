@@ -2,6 +2,22 @@ package it.univaq.unigest.model;
 
 import it.univaq.unigest.model.common.Identificabile;
 
+/**
+ * La classe {@code Esame} rappresenta
+ * l'entità Esame di uno studente.
+ *
+ * <p>Contiene informazioni quali:
+ * <ul>
+ *   <li>ID dell'esame</li>
+ *   <li>ID dell'iscrizione associata</li>
+ *   <li>Voto conseguito</li>
+ *   <li>Eventuale lode</li>
+ *   <li>Esame rifiutato</li>
+ *   <li>Esame verbalizzato</li>
+ * </ul> e i metodi di getter e setter relativi a tali informazioni.
+ *
+ * <p>Questa classe implementa l'interfaccia {@link Identificabile}.
+ */
 public class Esame implements Identificabile<String> {
     private String id;
     private String iscrizioneId;

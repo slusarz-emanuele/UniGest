@@ -4,6 +4,21 @@ import it.univaq.unigest.model.common.Identificabile;
 
 import java.time.LocalDate;
 
+/**
+ * La classe {@code Iscrizione} rappresenta
+ * l'entità Iscrizione a un appello d'esame per uno studente.
+ *
+ * <p>Contiene informazioni quali:
+ * <ul>
+ *   <li>ID dell'iscrizione</li>
+ *   <li>Codice fiscale dello studente</li>
+ *   <li>ID dell'appello associato</li>
+ *   <li>Data di iscrizione</li>
+ *   <li>Flag per indicare se l'iscrizione è stata ritirata</li>
+ * </ul> e i metodi di getter e setter relativi a tali informazioni.
+ *
+ * <p>Questa classe implementa l'interfaccia {@link Identificabile}.
+ */
 public class Iscrizione implements Identificabile<String> {
 
     private Integer id;

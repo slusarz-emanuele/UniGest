@@ -6,7 +6,22 @@ import it.univaq.unigest.model.common.Identificabile;
 import java.time.LocalDate;
 import java.util.List;
 
-
+/**
+ * La classe {@code Verbale} rappresenta il verbale relativo ad un appello d'esame.
+ *
+ * <p>Contiene informazioni quali:
+ * <ul>
+ *   <li>ID del verbale</li>
+ *   <li>ID dell'appello associato</li>
+ *   <li>Data di chiusura del verbale</li>
+ *   <li>Flag per indicare se il verbale è chiuso</li>
+ *   <li>Flag per indicare se il verbale è firmato</li>
+ *   <li>Eventuali note aggiuntive</li>
+ *   <li>Lista degli esami collegati al verbale</li>
+ * </ul>
+ *
+ * <p>Questa classe implementa l'interfaccia {@link Identificabile}.
+ */
 public class Verbale implements Identificabile<String> {
 
     private Integer id;

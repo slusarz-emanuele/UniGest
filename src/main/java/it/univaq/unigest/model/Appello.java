@@ -5,6 +5,23 @@ import it.univaq.unigest.model.common.Identificabile;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+/**
+ * La classe {@code Appello} rappresenta
+ * l'entità Appello d'esame.
+ *
+ * <p>Contiene informazioni quali:
+ * <ul>
+ *   <li>ID dell'appello</li>
+ *   <li>Riferimento all'insegnamento</li>
+ *   <li>Data dell'appello</li>
+ *   <li>Ora dell'appello</li>
+ *   <li>Riferimento all'aula</li>
+ *   <li>Riferimento al docente</li>
+ *   <li>Riferimento al verbale</li>
+ * </ul> e i metodi di getter e setter relativi a tali informazioni.
+ *
+ * <p>Questa classe implementa l'interfaccia {@link Identificabile}
+ */
 public class Appello implements Identificabile<String> {
     private int id;
     private String ridInsegnamento;

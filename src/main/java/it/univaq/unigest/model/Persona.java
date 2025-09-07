@@ -5,6 +5,23 @@ import it.univaq.unigest.util.LocalDateUtil;
 import java.time.LocalDate;
 import java.time.Period;
 
+/**
+ * La classe astratta {@code Persona} rappresenta
+ * un'entità generica di persona.
+ *
+ * <p>Contiene informazioni comuni quali:
+ * <ul>
+ *   <li>Codice fiscale (cf)</li>
+ *   <li>Nome</li>
+ *   <li>Cognome</li>
+ *   <li>Email</li>
+ *   <li>Data di nascita</li>
+ *   <li>Data di ingresso nell'università</li>
+ * </ul> 
+ *
+ * <p>Questa classe serve come superclasse per entità specifiche quali {@link Docente} 
+ * e {@link Studente} fornendo getter/setter.
+ */
 public abstract class Persona{
 
     //attributi

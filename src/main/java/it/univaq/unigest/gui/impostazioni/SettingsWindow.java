@@ -20,6 +20,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * Finestra per la gestione delle impostazioni
+ * relative a:
+ * <ul>
+ * <li>Backup manuali e gestione della cartella di backup</li>
+ * <li>Ripristino dei dati da un file ZIP e reset dei dati locali</li>
+ * <li>Informazioni generali e accesso rapido alla cartella dati</li>
+ * </ul>
+ */
 public final class SettingsWindow {
 
     private final Stage stage;
@@ -27,6 +36,12 @@ public final class SettingsWindow {
     private final SettingsService settingsService;
     private final MaintenanceService maintenanceService;
 
+    /**
+     * Crea il pannello relativo alle impostazioni
+     *
+     * @param settingsService    servizio per la gestione delle impostazioni utente
+     * @param maintenanceService servizio per operazioni di manutenzione
+     */
     private SettingsWindow(SettingsService settingsService, MaintenanceService maintenanceService) {
         this.settingsService = Objects.requireNonNull(settingsService);
         this.maintenanceService = Objects.requireNonNull(maintenanceService);
@@ -41,11 +56,25 @@ public final class SettingsWindow {
         buildUI();
     }
 
+    /**
+     * Apre il pannello delle impostazioni.
+     *
+     * @param settingsService    servizio per la gestione delle impostazioni
+     * @param maintenanceService servizio di manutenzione
+     */
     public static void open(SettingsService settingsService, MaintenanceService maintenanceService) {
         new SettingsWindow(settingsService, maintenanceService).stage.show();
     }
 
     // ===================== UI =====================
+
+    /**
+     * Costruisce la UI del pannello avente come componenti:
+     * <ul>
+     * <li>Barra laterale con i pulsanti di navigazione</li>
+     * <li>StackPane centrale per visualizzare i vari pannelli</li>
+     * </ul>
+     */
     private void buildUI() {
         // sidebar (sinistra)
         VBox side = new VBox(8);
@@ -54,9 +83,9 @@ public final class SettingsWindow {
         side.setStyle("-fx-background-color: #f2f4f8;");
 
         ToggleGroup group = new ToggleGroup();
-        ToggleButton btnBackup     = makeNavButton("Backup", group);
+        ToggleButton btnBackup = makeNavButton("Backup", group);
         ToggleButton btnRipristino = makeNavButton("Ripristina / Reset", group);
-        ToggleButton btnInfo       = makeNavButton("Informazioni", group);
+        ToggleButton btnInfo = makeNavButton("Informazioni", group);
 
         side.getChildren().addAll(btnBackup, btnRipristino, btnInfo);
         root.setLeft(side);
@@ -67,9 +96,9 @@ public final class SettingsWindow {
         root.setCenter(content);
 
         // pannelli
-        VBox backupPane     = buildBackupPane();
+        VBox backupPane = buildBackupPane();
         VBox ripristinoPane = buildRipristinoPane();
-        VBox infoPane       = buildInfoPane();
+        VBox infoPane = buildInfoPane();
 
         content.getChildren().setAll(backupPane); // default
         btnBackup.setSelected(true);
@@ -79,6 +108,13 @@ public final class SettingsWindow {
         btnInfo.setOnAction(e -> content.getChildren().setAll(infoPane));
     }
 
+    /**
+     * Crea un pulsante di navigazione da aggiungere alla sidebar.
+     *
+     * @param text  testo da mostrare
+     * @param group gruppo di toggle per la selezione
+     * @return toggle configurato
+     */
     private ToggleButton makeNavButton(String text, ToggleGroup group) {
         ToggleButton tb = new ToggleButton(text);
         tb.setMaxWidth(Double.MAX_VALUE);
@@ -93,29 +129,35 @@ public final class SettingsWindow {
                 -fx-font-size: 13px;
                 """);
         tb.selectedProperty().addListener((obs, oldV, sel) -> {
-            if (sel) tb.setStyle("""
-                    -fx-background-color: #e8eefc;
-                    -fx-border-color: #5b8def;
-                    -fx-border-radius: 8;
-                    -fx-background-radius: 8;
-                    -fx-padding: 10 12;
-                    -fx-font-size: 13px;
-                    """);
-            else tb.setStyle("""
-                    -fx-background-color: white;
-                    -fx-border-color: #d9dfe8;
-                    -fx-border-radius: 8;
-                    -fx-background-radius: 8;
-                    -fx-padding: 10 12;
-                    -fx-font-size: 13px;
-                    """);
+            if (sel)
+                tb.setStyle("""
+                        -fx-background-color: #e8eefc;
+                        -fx-border-color: #5b8def;
+                        -fx-border-radius: 8;
+                        -fx-background-radius: 8;
+                        -fx-padding: 10 12;
+                        -fx-font-size: 13px;
+                        """);
+            else
+                tb.setStyle("""
+                        -fx-background-color: white;
+                        -fx-border-color: #d9dfe8;
+                        -fx-border-radius: 8;
+                        -fx-background-radius: 8;
+                        -fx-padding: 10 12;
+                        -fx-font-size: 13px;
+                        """);
         });
         return tb;
     }
 
     // ===================== Pannelli =====================
 
-    /** Pannello 1: Backup manuale + cartella backup nelle impostazioni */
+    /**
+     * Costruisce il pannello "Backup".
+     *
+     * @return VBox con i controlli per il backup
+     */
     private VBox buildBackupPane() {
         VBox box = new VBox(16);
         box.setPadding(new Insets(8));
@@ -141,15 +183,17 @@ public final class SettingsWindow {
             dc.setTitle("Scegli cartella backup");
             if (txtFolder.getText() != null && !txtFolder.getText().isBlank()) {
                 File pre = new File(txtFolder.getText());
-                if (pre.exists() && pre.isDirectory()) dc.setInitialDirectory(pre);
+                if (pre.exists() && pre.isDirectory())
+                    dc.setInitialDirectory(pre);
             }
             File dir = dc.showDialog(stage);
             if (dir != null) {
                 txtFolder.setText(dir.getAbsolutePath());
                 Settings cur = settingsService.get();
-                if (cur == null) cur = Settings.defaults();
+                if (cur == null)
+                    cur = Settings.defaults();
                 cur.setCartellaBackup(dir.getAbsolutePath());
-                //settingsService.save(cur);
+                // settingsService.save(cur);
                 info("Impostazioni", "Cartella backup salvata.");
             }
         });
@@ -166,15 +210,28 @@ public final class SettingsWindow {
         Button btnBackup = new Button("Crea backup ora");
         btnBackup.setOnAction(e -> {
             boolean ok = maintenanceService.creaBackup();
-            if (ok) info("Backup", "Backup creato correttamente nella cartella dati/backup.");
-            else    errore("Backup", "Impossibile creare il backup.");
+            if (ok)
+                info("Backup", "Backup creato correttamente nella cartella dati/backup.");
+            else
+                errore("Backup", "Impossibile creare il backup.");
         });
 
         box.getChildren().addAll(title, rigaFolder, new Separator(), hint, btnBackup);
         return box;
     }
 
-    /** Pannello 2: Ripristino da zip + resetta dati (wipe dei json/txt) */
+    /**
+     * Costruisce il pannello "Ripristina / Reset".
+     * <p>
+     * Permette di:
+     * </p>
+     * <ul>
+     * <li>Ripristinare i dati da un file di backup</li>
+     * <li>Resettare i dati locali</li>
+     * </ul>
+     *
+     * @return VBox con i controlli per ripristino e reset
+     */
     private VBox buildRipristinoPane() {
         VBox box = new VBox(16);
         box.setPadding(new Insets(8));
@@ -190,7 +247,7 @@ public final class SettingsWindow {
             fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Backup ZIP", "*.zip"));
 
             // cartella di default: prima "data/backup", poi "data", altrimenti home
-            File dataDir   = new File(it.univaq.unigest.util.DatabaseHelper.PERCORSO_CARTELLA_DATI);
+            File dataDir = new File(it.univaq.unigest.util.DatabaseHelper.PERCORSO_CARTELLA_DATI);
             File backupDir = new File(dataDir, "backup");
             if (backupDir.exists() && backupDir.isDirectory()) {
                 fc.setInitialDirectory(backupDir);
@@ -211,7 +268,6 @@ public final class SettingsWindow {
                 }
             }
         });
-
 
         Label lblReset = new Label("Reset (cancella i dati .json/.txt in cartella dati):");
         lblReset.setStyle("-fx-text-fill: #a00;");
@@ -240,12 +296,20 @@ public final class SettingsWindow {
         box.getChildren().addAll(title,
                 lblRestore, btnScegliZip,
                 new Separator(),
-                lblReset, btnReset
-        );
+                lblReset, btnReset);
         return box;
     }
 
-    /** Pannello 3: Informazioni / utilità */
+    /**
+     * Costruisce il pannello "Informazioni".
+     * <p>Contiene:</p>
+     * <ul>
+     *     <li>Descrizione delle funzioni elencate precedentemente</li>
+     *     <li>Pulsante per aprire la cartella dati locale</li>
+     * </ul>
+     *
+     * @return VBox con informazioni e button
+     */    
     private VBox buildInfoPane() {
         VBox box = new VBox(16);
         box.setPadding(new Insets(8));
@@ -271,6 +335,13 @@ public final class SettingsWindow {
     }
 
     // ===================== Helpers =====================
+
+    /**
+     * Mostra un messaggio informativo al client.
+     *
+     * @param titolo titolo della finestra
+     * @param msg messaggio da visualizzare
+     */
     private void info(String titolo, String msg) {
         Alert a = new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK);
         a.setHeaderText(titolo);
@@ -278,6 +349,12 @@ public final class SettingsWindow {
         a.showAndWait();
     }
 
+    /**
+     * Mostra un messaggio di errore al client.
+     *
+     * @param titolo titolo della finestra
+     * @param msg messaggio da visualizzare
+     */
     private void errore(String titolo, String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR, msg, ButtonType.OK);
         a.setHeaderText(titolo);
@@ -285,6 +362,11 @@ public final class SettingsWindow {
         a.showAndWait();
     }
 
+    /**
+     * Apre una directory nel file explorer del sistema operativo.
+     *
+     * @param dir directory da aprire
+     */
     private void openInExplorer(File dir) {
         try {
             if (dir != null && dir.exists()) {

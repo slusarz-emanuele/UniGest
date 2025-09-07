@@ -1,8 +1,6 @@
 package it.univaq.unigest.model;
 
 import it.univaq.unigest.common.Identificabile;
-import it.univaq.unigest.manager.EsameManager;
-import it.univaq.unigest.manager.IscrizioneManager;
 
 
 import java.time.LocalDate;
@@ -56,7 +54,6 @@ public class Verbale implements Identificabile<String> {
 
     public List<Esame> getEsami() { return esami; }
 
-
     // Setters
     public void setId(Integer id) { this.id = id; }
 
@@ -71,31 +68,6 @@ public class Verbale implements Identificabile<String> {
     public void setNote(String note) { this.note = note; }
 
     public void setEsami(List<Esame> esami) { this.esami = esami; }
-
-
-    // Metodo per caricare tutti gli esami dinamicamente
-    public void caricaEsamiDinamicamente(IscrizioneManager iscrizioneManager,
-                                         EsameManager esameManager){
-        if (this.getId() == null) return;
-
-        // 1. Dagli appelli troviamo le iscrizioni
-        int appelloId = Integer.parseInt(this.getAppelloId());
-
-        List<Integer> iscrizioniIds = iscrizioneManager.getAll().stream()
-                .filter(i -> i.getRidAppello() == appelloId)
-                .map(i -> Integer.parseInt(i.getId()))  // <-- parse da String a int
-                .toList();
-
-
-        // 2. Dalle iscrizioni troviamo gli esami
-        List<Esame> esamiTrovvati = esameManager.getAll().stream()
-                .filter(e -> iscrizioniIds.contains(Integer.valueOf(e.getIscrizioneId())))
-                .toList();
-
-        // 3. Salviamo tutto
-        this.setEsami(esamiTrovvati);
-    }
-
 
     @Override
     public String toString() {

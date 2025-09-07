@@ -28,7 +28,7 @@ public class Reloader {
         ricaricaInterfacciaGraficaIscrizioniPannello2();
         ricaricaInterfacciaGraficaStudentiPannello2();
         ricaricaInterfacciaGraficaVerbaliPannelli2();
-        LOGGER.debug("it.univaq.unigest.gui.Reloader.ricaricaInterfacciaGrafica() invocato");
+        LOGGER.debug("invocato");
     }
 
     private static AppelliPannello1 appelliPanel;

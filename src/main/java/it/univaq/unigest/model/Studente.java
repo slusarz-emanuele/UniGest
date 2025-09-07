@@ -1,8 +1,6 @@
 package it.univaq.unigest.model;
 
 import it.univaq.unigest.common.Identificabile;
-import it.univaq.unigest.manager.EsameManager;
-import it.univaq.unigest.manager.IscrizioneManager;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -175,26 +173,6 @@ public class Studente extends Persona implements Identificabile<String> {
     // Metodo per aggiungere gli esami
     public void aggiungiEsame(Esame esame){
         this.esami.add(esame);
-    }
-
-    //Metodo per caricare tutti gli esami dinamicamente
-    public void caricaEsamiDinamicamente(IscrizioneManager iscrizioneManager,
-                                         EsameManager esameManager) {
-        if (this.getCf() == null) return;
-
-        // 1. Trova tutte le iscrizioni fatte da questo studente
-        List<Integer> iscrizioniIds = iscrizioneManager.getAll().stream()
-                .filter(i -> i.getRidStudenteCf().equalsIgnoreCase(this.getCf()))
-                .map(i -> Integer.parseInt(i.getId()))
-                .toList();
-
-        // 2. Trova tutti gli esami legati a quelle iscrizioni
-        List<Esame> esamiTrovati = esameManager.getAll().stream()
-                .filter(e -> iscrizioniIds.contains(Integer.valueOf(e.getIscrizioneId())))
-                .toList();
-
-        // 3. Salva nella proprietà locale
-        this.setEsami(esamiTrovati);
     }
 
 }

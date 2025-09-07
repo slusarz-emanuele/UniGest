@@ -18,6 +18,35 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+/**
+ * Pannello di gestione “Esami”.
+ * <p>
+ * Responsabilità:
+ * <ul>
+ *   <li>Visualizzazione tabellare degli esami (via {@link VistaConDettagliBuilder});</li>
+ *   <li>Dialog di aggiunta/modifica con validazioni (iscrizione selezionata, iscrizione non ritirata, vincolo 1:1 tra Esame e Iscrizione);</li>
+ *   <li>Gestione campi voto, lode, rifiutato e verbalizzato con logica di abilitazione/disabilitazione;</li>
+ *   <li>Eliminazione assistita con refresh della tabella e notifica agli observer tramite {@link DomainRefresher}.</li>
+ * </ul>
+ *
+ * <h3>Dipendenze iniettate</h3>
+ * <ul>
+ *   <li>{@link EsameService}: CRUD e accesso ai dati degli esami;</li>
+ *   <li>{@link Supplier} di {@link Iscrizione}: popola la tabella di scelta delle iscrizioni nei dialog;</li>
+ *   <li>{@link DomainQueryService}: controlli relazioni e vincoli (es. verifica duplicati di esami per iscrizione);</li>
+ *   <li>{@link VistaConDettagliBuilder}: gestione della tabella e dei dettagli degli esami.</li>
+ * </ul>
+ *
+ * <h3>Note di implementazione</h3>
+ * <ul>
+ *   <li>I dialog di aggiunta/modifica sono realizzati con {@link DialogBuilder};</li>
+ *   <li>La combo dei voti è generata da {@link #generaComboVoti(Double)}, valori da 0.0 a 30.0 con step 0.25;</li>
+ *   <li>La checkbox “Lode” viene abilitata solo se il voto selezionato è 30;</li>
+ *   <li>L’eliminazione aggiorna automaticamente il builder e notifica {@link DomainRefresher} affinché eventuali altri componenti vengano aggiornati;</li>
+ *   <li>La validazione dell’iscrizione viene gestita da {@link #validateIscrizionePerEsame(String, String)}.</li>
+ * </ul>
+ */
+
 public class EsamiPannello1 implements CrudPanel {
 
     // Etichette

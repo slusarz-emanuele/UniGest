@@ -16,6 +16,34 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * Pannello di gestione “Edifici”.
+ * <p>
+ * Responsabilità:
+ * <ul>
+ *   <li>Visualizzazione tabellare degli edifici (via {@link VistaConDettagliBuilder});</li>
+ *   <li>Dialog di aggiunta/modifica con validazioni (nome obbligatorio, ID gestito automaticamente dal repository);</li>
+ *   <li>Eliminazione semplice, senza controlli sulle relazioni;</li>
+ *   <li>Dettagli dell’edificio mostrati nella parte destra del builder (stesso contenuto della tabella).</li>
+ * </ul>
+ *
+ * <h3>Dipendenze iniettate</h3>
+ * <ul>
+ *   <li>{@link EdificioService}: CRUD e accesso ai dati degli edifici;</li>
+ *   <li>{@link DomainQueryService}: per eventuali verifiche sulle entità esistenti (ad esempio, prevenzione duplicati);</li>
+ *   <li>{@link VistaConDettagliBuilder}: gestione della tabella e dei dettagli degli edifici.</li>
+ * </ul>
+ *
+ * <h3>Note di implementazione</h3>
+ * <ul>
+ *   <li>Le colonne e i dettagli della tabella sono definiti nei metodi {@code colonne()} e {@code dettagli()};</li>
+ *   <li>I dialog di aggiunta/modifica sono realizzati con {@link DialogBuilder} e validano il campo nome obbligatorio;</li>
+ *   <li>L’eliminazione rimuove direttamente l’edificio selezionato e aggiorna la tabella;</li>
+ *   <li>Il campo ID non è modificabile; viene gestito internamente dal repository tramite auto-incremento;</li>
+ *   <li>Il refresh della tabella avviene automaticamente dopo ogni operazione CRUD.</li>
+ * </ul>
+ */
+
 public class EdificiPannello1 implements CrudPanel {
 
     // Etichette

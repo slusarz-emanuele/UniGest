@@ -20,6 +20,37 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+/**
+ * Pannello di gestione dei {@link Verbale}.
+ * <p>
+ * Responsabilità principali:
+ * <ul>
+ *   <li>Visualizzare i verbali in una tabella con {@link VistaConDettagliBuilder};</li>
+ *   <li>Gestire dialog di aggiunta e modifica dei verbali con {@link DialogBuilder};</li>
+ *   <li>Consentire la selezione degli {@link Appello} tramite {@link TableView} nei dialog;</li>
+ *   <li>Garantire l'unicità del verbale per ciascun appello;</li>
+ *   <li>Gestire la cancellazione dei verbali;</li>
+ *   <li>Mostrare informazioni aggiuntive come numero di esami, note, stato di chiusura e firma.</li>
+ * </ul>
+ *
+ * <h3>Dipendenze iniettate</h3>
+ * <ul>
+ *   <li>{@link VerbaleService}: CRUD sui verbali;</li>
+ *   <li>{@link DomainQueryService}: interrogazioni per verificare eventuali verbali già esistenti per un appello;</li>
+ *   <li>{@link Supplier}&lt;List&lt;Appello&gt;&gt;: carica gli appelli disponibili per la selezione;</li>
+ *   <li>{@link VistaConDettagliBuilder}: gestione della tabella e dei dettagli dei verbali.</li>
+ * </ul>
+ *
+ * <h3>Note di implementazione</h3>
+ * <ul>
+ *   <li>I dialog di aggiunta/modifica utilizzano {@link TableView} per la selezione dell'appello, {@link DatePicker} per le date, {@link CheckBox} per gli stati booleani e {@link TextField} per note;</li>
+ *   <li>Viene garantita l'unicità dei verbali per ciascun appello tramite il metodo {@link #validateAppelloUnico(String, String)};</li>
+ *   <li>Le colonne della tabella mostrano ID, appello, data chiusura, chiuso, firmato, note e numero di esami associati;</li>
+ *   <li>Il refresh della tabella viene effettuato dopo ogni operazione CRUD per aggiornare la vista;</li>
+ *   <li>L'eliminazione del verbale non richiede ulteriori verifiche di relazioni collegate (ma può essere estesa se necessario).</li>
+ * </ul>
+ */
+
 public class VerbaliPannello1 implements CrudPanel {
 
     // Etichette

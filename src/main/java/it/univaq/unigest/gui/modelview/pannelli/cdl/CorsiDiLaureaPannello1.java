@@ -17,6 +17,41 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * Pannello di gestione “Corsi di Laurea”.
+ * <p>
+ * Responsabilità:
+ * <ul>
+ *   <li>Visualizzazione tabellare dei corsi di laurea (via {@link VistaConDettagliBuilder});</li>
+ *   <li>Dialog di aggiunta/modifica con validazioni:
+ *       <ul>
+ *           <li>Nome obbligatorio e univoco</li>
+ *           <li>CFU totali numerici</li>
+ *           <li>Dipartimento obbligatorio</li>
+ *           <li>ID coordinatore obbligatorio</li>
+ *       </ul>
+ *   </li>
+ *   <li>Eliminazione assistita con controllo relazioni (blocca se presenti insegnamenti o studenti associati);</li>
+ *   <li>Azioni contestuali nei dettagli (“Insegnamenti” e “Studenti” per il corso selezionato).</li>
+ * </ul>
+ *
+ * <h3>Dipendenze iniettate</h3>
+ * <ul>
+ *   <li>{@link CorsoDiLaureaService}: CRUD e accesso ai dati dei corsi di laurea;</li>
+ *   <li>{@link DomainQueryService}: per verifiche/relazioni (es. insegnamenti e studenti associati a un corso);</li>
+ *   <li>{@link VistaConDettagliBuilder}: gestione visualizzazione tabellare e dettagli selezionati.</li>
+ * </ul>
+ *
+ * <h3>Note di implementazione</h3>
+ * <ul>
+ *   <li>Le colonne e i dettagli della tabella sono definite nei metodi {@code colonne()} e {@code dettagli()};</li>
+ *   <li>I link-azione nei dettagli (Insegnamenti/Studenti) sono registrati tramite {@code builder.setLinkAction};</li>
+ *   <li>I dialog di aggiunta/modifica sono realizzati con {@link DialogBuilder} e validano i dati obbligatori e univoci;</li>
+ *   <li>L’eliminazione è protetta da conferma e dalla presenza di relazioni: se ci sono insegnamenti o studenti collegati, l’operazione è bloccata;</li>
+ *   <li>Il refresh della tabella è automatico dopo operazioni CRUD.</li>
+ * </ul>
+ */
+
 public class CorsiDiLaureaPannello1 implements CrudPanel {
 
     // Etichette

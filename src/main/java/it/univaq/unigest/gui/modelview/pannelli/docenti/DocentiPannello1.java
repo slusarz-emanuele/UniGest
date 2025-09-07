@@ -23,6 +23,42 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * Pannello di gestione “Docenti”.
+ * <p>
+ * Responsabilità:
+ * <ul>
+ *   <li>Visualizzazione tabellare dei docenti (via {@link VistaConDettagliBuilder});</li>
+ *   <li>Dialog di aggiunta/modifica con validazioni:
+ *       <ul>
+ *           <li>CF, Nome, Cognome, Dipartimento e Codice Docente obbligatori</li>
+ *           <li>Data di nascita e ingresso docente gestite con {@link DatePicker}</li>
+ *           <li>Ruolo gestito con {@link CheckBox}</li>
+ *           <li>Qualifica gestita con {@link ComboBox}</li>
+ *       </ul>
+ *   </li>
+ *   <li>Eliminazione assistita con controllo relazioni (blocca se presenti insegnamenti, appelli o verbali associati);</li>
+ *   <li>Azioni contestuali nei dettagli (“Insegnamenti”, “Appelli” e “Verbali” per il docente selezionato).</li>
+ * </ul>
+ *
+ * <h3>Dipendenze iniettate</h3>
+ * <ul>
+ *   <li>{@link DocenteService}: CRUD e accesso ai dati dei docenti;</li>
+ *   <li>{@link DomainQueryService}: per verifiche/relazioni (es. insegnamenti, appelli, verbali associati a un docente);</li>
+ *   <li>{@link VistaConDettagliBuilder}: gestione visualizzazione tabellare e dettagli selezionati.</li>
+ * </ul>
+ *
+ * <h3>Note di implementazione</h3>
+ * <ul>
+ *   <li>Le colonne e i dettagli della tabella sono definite nei metodi {@code colonne()} e {@code dettagli()};</li>
+ *   <li>I link-azione nei dettagli (Insegnamenti/Appelli/Verbali) sono registrati tramite {@code builder.setLinkAction};</li>
+ *   <li>I dialog di aggiunta/modifica sono realizzati con {@link DialogBuilder} e validano i dati obbligatori;</li>
+ *   <li>L’eliminazione è protetta da conferma e dalla presenza di relazioni: se ci sono insegnamenti, appelli o verbali collegati, l’operazione è bloccata;</li>
+ *   <li>Il refresh della tabella è automatico dopo operazioni CRUD e viene notificato tramite {@link DomainRefresher#onDocenteChanged()};</li>
+ *   <li>I campi nei dialog utilizzano controlli specifici per il tipo di dato: {@link TextField}, {@link DatePicker}, {@link CheckBox}, {@link ComboBox}.</li>
+ * </ul>
+ */
+
 public class DocentiPannello1 implements CrudPanel {
 
     // Etichette

@@ -23,6 +23,36 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+/**
+ * Pannello di gestione degli {@link Studente}.
+ * <p>
+ * Responsabilità principali:
+ * <ul>
+ *   <li>Visualizzare gli studenti in una tabella con {@link VistaConDettagliBuilder};</li>
+ *   <li>Gestire dialog di aggiunta e modifica degli studenti con {@link DialogBuilder};</li>
+ *   <li>Gestire la selezione dei {@link CorsoDiLaurea} tramite {@link ComboBox} nei dialog;</li>
+ *   <li>Consentire la visualizzazione di Esami e Iscrizioni associate tramite link nella tabella;</li>
+ *   <li>Verificare relazioni prima della cancellazione (es. iscrizioni o esami collegati) e chiedere conferma all'utente.</li>
+ * </ul>
+ *
+ * <h3>Dipendenze iniettate</h3>
+ * <ul>
+ *   <li>{@link StudenteService}: CRUD sugli studenti;</li>
+ *   <li>{@link DomainQueryService}: interrogazioni per verificare corsi di laurea, esami, iscrizioni;</li>
+ *   <li>{@link Supplier}&lt;List&lt;CorsoDiLaurea&gt;&gt;: popola il {@link ComboBox} dei corsi di laurea;</li>
+ *   <li>{@link VistaConDettagliBuilder}: gestione della tabella e dei dettagli degli studenti.</li>
+ * </ul>
+ *
+ * <h3>Note di implementazione</h3>
+ * <ul>
+ *   <li>I dialog di aggiunta/modifica utilizzano {@link TextField} per campi testuali e {@link DatePicker} per date;</li>
+ *   <li>Il {@link ComboBox} dei corsi di laurea mostra il nome del corso e gestisce la selezione dell'ID;</li>
+ *   <li>Le medie aritmetiche e ponderate sono visualizzate con due decimali;</li>
+ *   <li>L'eliminazione controlla le relazioni con iscrizioni ed esami prima di procedere;</li>
+ *   <li>I dettagli consentono link diretti per visualizzare gli esami o le iscrizioni dello studente tramite {@link QueryActions}.</li>
+ * </ul>
+ */
+
 public class StudentiPannello1 implements CrudPanel {
 
     // Etichette

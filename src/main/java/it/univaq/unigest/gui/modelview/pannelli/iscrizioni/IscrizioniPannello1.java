@@ -20,6 +20,37 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+/**
+ * Pannello di gestione delle {@link Iscrizione}.
+ * <p>
+ * Responsabilità principali:
+ * <ul>
+ *   <li>Visualizzare le iscrizioni in una tabella con {@link VistaConDettagliBuilder};</li>
+ *   <li>Gestire dialog di aggiunta e modifica delle iscrizioni con {@link DialogBuilder};</li>
+ *   <li>Gestire le relazioni con {@link Studente} e {@link Appello} tramite tabelle single-select;</li>
+ *   <li>Verificare duplicati e vincoli prima del salvataggio (uno studente non può essere iscritto allo stesso appello più volte);</li>
+ *   <li>Eliminazione assistita con controllo delle relazioni esistenti (es. esami collegati) e conferma all'utente.</li>
+ * </ul>
+ *
+ * <h3>Dipendenze iniettate</h3>
+ * <ul>
+ *   <li>{@link IscrizioneService}: CRUD sulle iscrizioni;</li>
+ *   <li>{@link DomainQueryService}: verifica relazioni e vincoli (es. esami collegati);</li>
+ *   <li>{@link Supplier}&lt;List&lt;Studente&gt;&gt;: popola la tabella degli studenti nei dialog;</li>
+ *   <li>{@link Supplier}&lt;List&lt;Appello&gt;&gt;: popola la tabella degli appelli nei dialog;</li>
+ *   <li>{@link VistaConDettagliBuilder}: gestione della tabella e dei dettagli delle iscrizioni.</li>
+ * </ul>
+ *
+ * <h3>Note di implementazione</h3>
+ * <ul>
+ *   <li>Nei dialog di aggiunta/modifica, lo studente e l'appello vengono selezionati tramite {@link TableView} single-select;</li>
+ *   <li>La data dell'iscrizione è gestita tramite {@link DatePicker};</li>
+ *   <li>Il flag "ritirato" è gestito tramite {@link CheckBox};</li>
+ *   <li>Prima di creare o modificare un'iscrizione, viene controllato che non esistano duplicati per studente e appello;</li>
+ *   <li>La cancellazione controlla se esistono esami collegati e richiede conferma all'utente prima della rimozione.</li>
+ * </ul>
+ */
+
 public class IscrizioniPannello1 implements CrudPanel {
 
     // Etichette

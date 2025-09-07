@@ -18,6 +18,40 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+/**
+ * Pannello di gestione “Aule”.
+ * <p>
+ * Responsabilità:
+ * <ul>
+ *   <li>Visualizzazione tabellare delle aule (via {@link VistaConDettagliBuilder});</li>
+ *   <li>Dialog di aggiunta/modifica con validazioni:
+ *       <ul>
+ *           <li>Capienza obbligatoria e numerica</li>
+ *           <li>Selezione obbligatoria dell’edificio</li>
+ *       </ul>
+ *   </li>
+ *   <li>Eliminazione assistita con conferma dell’utente;</li>
+ *   <li>Supporto a filtri in tempo reale nella tabella;</li>
+ *   <li>Gestione dettagli aula sincronizzati con la selezione nella tabella.</li>
+ * </ul>
+ *
+ * <h3>Dipendenze iniettate</h3>
+ * <ul>
+ *   <li>{@link AulaService}: CRUD e accesso ai dati delle aule;</li>
+ *   <li>{@link Supplier} di {@link Edificio}: popolamento tabella di scelta edifici nei dialog;</li>
+ *   <li>{@link DomainQueryService}: eventuali controlli e verifiche di relazioni tra entità.</li>
+ * </ul>
+ *
+ * <h3>Note di implementazione</h3>
+ * <ul>
+ *   <li>Le tabelle di selezione nei dialog sono costruite con {@link TableMiniFactory};</li>
+ *   <li>I dialog di aggiunta/modifica sono realizzati tramite {@link DialogBuilder} e gestiscono validazioni su capienza ed edificio;</li>
+ *   <li>Il builder {@link VistaConDettagliBuilder} gestisce colonne, pannello dettagli e filtri in tempo reale;</li>
+ *   <li>Le azioni di CRUD (aggiungi, modifica, elimina) aggiornano automaticamente la vista tramite {@code refresh()};</li>
+ *   <li>Il nome dell’edificio associato a un’aula viene ricavato dal loader esterno {@code loadEdifici}.</li>
+ * </ul>
+ */
+
 public class AulePannello1 implements CrudPanel {
 
     // Etichette

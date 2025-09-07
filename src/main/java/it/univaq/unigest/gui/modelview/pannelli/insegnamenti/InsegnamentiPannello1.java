@@ -21,6 +21,36 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+/**
+ * Pannello di gestione degli {@link Insegnamento}.
+ * <p>
+ * Responsabilità:
+ * <ul>
+ *   <li>Visualizzazione tabellare degli insegnamenti con {@link VistaConDettagliBuilder};</li>
+ *   <li>Dialog di aggiunta e modifica con validazioni su nomi duplicati e campi obbligatori;</li>
+ *   <li>Gestione di relazioni multi-select con docenti e single-select con corsi di laurea;</li>
+ *   <li>Eliminazione assistita con controllo relazioni esistenti (es. appelli) e conferma all'utente.</li>
+ * </ul>
+ *
+ * <h3>Dipendenze iniettate</h3>
+ * <ul>
+ *   <li>{@link InsegnamentoService}: CRUD sugli insegnamenti;</li>
+ *   <li>{@link DomainQueryService}: verifica relazioni e vincoli (es. appelli collegati);</li>
+ *   <li>{@link Supplier}&lt;List&lt;CorsoDiLaurea&gt;&gt;: popola la tabella dei corsi di laurea nei dialog;</li>
+ *   <li>{@link Supplier}&lt;List&lt;Docente&gt;&gt;: popola la tabella dei docenti nei dialog;</li>
+ *   <li>{@link VistaConDettagliBuilder}: gestione della tabella e dei dettagli degli insegnamenti.</li>
+ * </ul>
+ *
+ * <h3>Note di implementazione</h3>
+ * <ul>
+ *   <li>I dialog di aggiunta/modifica sono realizzati tramite {@link DialogBuilder} e mappano tutti i campi principali;</li>
+ *   <li>I docenti vengono salvati come lista di stringhe nel formato "Nome Cognome (CF)";</li>
+ *   <li>Il semestre è una combo-box con valori 1 o 2;</li>
+ *   <li>Il controllo duplicati per nome viene effettuato sia in creazione che in modifica;</li>
+ *   <li>L’eliminazione controlla eventuali relazioni con appelli e richiede conferma all’utente prima della cancellazione.</li>
+ * </ul>
+ */
+
 public class InsegnamentiPannello1 implements CrudPanel {
 
     // Etichette

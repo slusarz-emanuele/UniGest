@@ -247,11 +247,7 @@ public final class SettingsWindow {
             fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Backup ZIP", "*.zip"));
 
             // cartella di default: prima "data/backup", poi "data", altrimenti home
-<<<<<<< HEAD
-            File dataDir = new File(it.univaq.unigest.util.DatabaseHelper.PERCORSO_CARTELLA_DATI);
-=======
             File dataDir   = new File(DatabaseHelper.PERCORSO_CARTELLA_DATI);
->>>>>>> afba51214ad3fefc6e2b690ca9c8839452ed932d
             File backupDir = new File(dataDir, "backup");
             if (backupDir.exists() && backupDir.isDirectory()) {
                 fc.setInitialDirectory(backupDir);

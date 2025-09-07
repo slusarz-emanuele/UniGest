@@ -24,7 +24,7 @@ public abstract class Persona{
         this.cf = cf;
         this.nome = nome;
         this.cognome = cognome;
-        this.email = generaEmail();
+        //this.email = generaEmail();
         this.dataNascita = LocalDateUtil.toString(dataNascita);
         this.dataIngressoUniversita = dataIngressoUniversita;
     }
@@ -46,7 +46,7 @@ public abstract class Persona{
     }
 
     public String getEmail(){
-        return this.email;
+        return this.generaEmail();
     }
 
     public String getDataNascita(){
@@ -66,6 +66,10 @@ public abstract class Persona{
     }
 
     //metodi setter
+    public void setEmail(String email){
+        this.email = email;
+    }
+
     public void setCf(String cf){
         this.cf = cf;
     }
@@ -76,10 +80,6 @@ public abstract class Persona{
 
     public void setCognome(String cognome){
         this.cognome = cognome;
-    }
-
-    public void setEmail(String email){
-        this.email = email;
     }
 
     public void setDataNascita(String DataNascita){

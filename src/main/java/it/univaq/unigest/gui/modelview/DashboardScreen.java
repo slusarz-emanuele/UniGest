@@ -209,7 +209,6 @@ public class DashboardScreen {
                         () -> new StudentiModelView(
                                 studenteService,
                                 () -> corsoDiLaureaService.findAll(),
-                                id -> corsoDiLaureaService.findById(id).map(CorsoDiLaurea::getNome).orElse(""),
                                 domainQueryService
                         ),
                         null

@@ -77,6 +77,23 @@ public class DomainQueryServiceImpl implements DomainQueryService {
                 .toList();
     }
 
+    public String corsoByStudente(String studenteCf) {
+
+        String idCDLStudente = studenteService.findAll().stream()
+                .filter(s -> s.getCf() != null && s.getCf().equalsIgnoreCase(studenteCf))
+                .map(Studente::getCorsoDiLaurea).
+                filter(Objects::nonNull).
+                findFirst()
+                .orElse(null);
+
+        return corsoService.findAll().stream()
+                .filter(c -> c.getId() != null && c.getId().equalsIgnoreCase(idCDLStudente))
+                .map(CorsoDiLaurea::getNome)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+    }
+
     // ===== Docente =====
 
     /** {@inheritDoc} */

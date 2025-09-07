@@ -44,17 +44,14 @@ public class StudentiPannello1 implements CrudPanel {
 
     // Loader Esterni
     private final Supplier<List<CorsoDiLaurea>> loadCorsi;
-    private final Function<String, String> nomeCdlById;
 
     private final VistaConDettagliBuilder<Studente> builder;
 
     public StudentiPannello1(StudenteService studenteService,
                              Supplier<List<CorsoDiLaurea>> loadCorsi,
-                             Function<String, String> nomeCdlById,
                              DomainQueryService domainQueryService) {
         this.studenteService = studenteService;
         this.loadCorsi = loadCorsi;
-        this.nomeCdlById = nomeCdlById;
         this.domainQueryService = domainQueryService;
         this.builder = new VistaConDettagliBuilder<>(studenteService.findAll());
     }
@@ -105,8 +102,7 @@ public class StudentiPannello1 implements CrudPanel {
         columns.put(L_EMAIL, Studente::getEmail);
         columns.put(L_MATRICOLA, Studente::getMatricola);
         columns.put(L_CORSO_DI_LAUREA, s -> {
-            String id = s.getCorsoDiLaurea();
-            return id == null ? "" : nomeCdlById.apply(id);
+            return domainQueryService.corsoByStudente(s.getCf());
         });
         columns.put(L_CFU, s -> s.getCfu() != null ? String.valueOf(s.getCfu()) : "");
         // fix: non invertiamo le medie

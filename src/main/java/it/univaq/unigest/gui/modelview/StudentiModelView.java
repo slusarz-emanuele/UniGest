@@ -14,9 +14,8 @@ public class StudentiModelView extends AbstractModelView<StudentiPannello1> {
 
     public StudentiModelView(StudenteService studenteService,
                              Supplier<List<CorsoDiLaurea>> loadCorsi,
-                             Function<String, String> nomeCdlById,
                              DomainQueryService domainQueryService) {
-        this.panel = new StudentiPannello1(studenteService, loadCorsi, nomeCdlById, domainQueryService);
+        this.panel = new StudentiPannello1(studenteService, loadCorsi, domainQueryService);
     }
 
     @Override

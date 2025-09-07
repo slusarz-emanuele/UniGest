@@ -42,6 +42,8 @@ public interface DomainQueryService {
      */
     List<Iscrizione>  iscrizioniByStudente(String studenteCf);
 
+    String corsoByStudente(String studenteCf);
+
     // --------------------------------------
     // docenti -> insegnamenti, appelli, verbali
     // --------------------------------------

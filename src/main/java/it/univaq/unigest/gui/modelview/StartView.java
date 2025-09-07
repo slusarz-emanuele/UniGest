@@ -152,7 +152,7 @@ public class StartView {
             this.vistaCorrente = null; // niente scorciatoie CRUD sulla dashboard
         });
 
-// Mostra la dashboard all'avvio
+        // Mostra la dashboard all'avvio
         handleButtonClick(dashboardBtn);
         ViewDispatcher.get().showNode(
                 "Dashboard",
@@ -187,7 +187,6 @@ public class StartView {
                 () -> new StudentiModelView(
                         Main.getStudenteService(),
                         () -> Main.getCorsoDiLaureaService().findAll(),
-                        id -> null,
                         Main.getDomainQueryService()
                 ),
                 "Studenti",

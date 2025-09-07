@@ -107,7 +107,7 @@ public class FileJsonRepository<T extends Identificabile<String>> implements Rep
             if (java.nio.file.Files.notExists(p)) {
                 // file assente: inizializza vuoto e crea il file
                 list = new ArrayList<>();
-                saveOnFile(); // scrive "[]"
+                saveOnFile();
                 LOGGER.debug("Data file non trovato: creato vuoto -> " + path);
                 return;
             }

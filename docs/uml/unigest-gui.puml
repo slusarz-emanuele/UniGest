@@ -77,6 +77,66 @@ class it.univaq.unigest.gui.actions.QueryActions {
 }
 
 
+class it.univaq.unigest.gui.componenti.ColonneMiniFactory {
+	{method}  {static} +appelloMini () : LinkedHashMap
+	{method}  {static} +esameMini () : LinkedHashMap
+	{method}  {static} +insegnamentoMini () : LinkedHashMap
+	{method}  {static} +iscrizioneMini () : LinkedHashMap
+	{method}  {static} +studenteMini () : LinkedHashMap
+	{method}  {static} +verbaleMini () : LinkedHashMap
+}
+
+
+class it.univaq.unigest.gui.componenti.DialogBuilder {
+	{field} -campi : LinkedHashMap
+	{field} -generatore : Function
+	{field} -header : String
+	{field} -onSuccess : Consumer
+	{field} -titolo : String
+	{method} +aggiungiCampo ( paramString1 : String , paramControl2 : Control ) : void
+	{method} +mostra () : void
+}
+
+
+class it.univaq.unigest.gui.componenti.LocalTimeAdapter {
+	{method} +read ( paramJsonReader1 : JsonReader ) : LocalTime
+	{method} +write ( paramJsonWriter1 : JsonWriter , paramLocalTime2 : LocalTime ) : void
+}
+
+
+class it.univaq.unigest.gui.componenti.RelatedListStage {
+	{field} -columns : LinkedHashMap
+	{field} -exportFileName : String
+	{field} -loader : Supplier
+	{field} -title : String
+	{method}  {static} +open ( paramString1 : String , paramSupplier2 : Supplier , paramLinkedHashMap3 : LinkedHashMap , paramString4 : String ) : void
+	{method} +show () : void
+}
+
+
+class it.univaq.unigest.gui.componenti.TableMiniFactory {
+	{method}  {static} +creaTabella ( paramSupplier1 : Supplier , paramSelectionMode2 : SelectionMode , paramint3 : int , paramLinkedHashMap4 : LinkedHashMap ) : TableView
+	{method}  {static} +creaTabella ( paramSupplier1 : Supplier , paramSelectionMode2 : SelectionMode , paramint3 : int , paramLinkedHashMap4 : LinkedHashMap , paramPredicate5 : Predicate ) : TableView
+	{method}  {static} +creaTabella ( paramSupplier1 : Supplier , paramSelectionMode2 : SelectionMode , paramint3 : int , paramLinkedHashMap4 : LinkedHashMap , paramFunction5 : Function , paramString6 : String ) : TableView
+}
+
+
+class it.univaq.unigest.gui.componenti.VistaConDettagliBuilder {
+	{field} -azioneAggiungi : Runnable
+	{field} -azioneElimina : Consumer
+	{field} -azioneModifica : Consumer
+	{field} -items : ObservableList
+	{field} -linkActions : Map
+	{field} -tabella : TableView
+	{method} +build ( paramString1 : String , paramLinkedHashMap2 : LinkedHashMap , paramLinkedHashMap3 : LinkedHashMap , paramRunnable4 : Runnable , paramConsumer5 : Consumer , paramConsumer6 : Consumer ) : VBox
+	{method} +getAggiungiAction () : Runnable
+	{method} +getEliminaAction () : Consumer
+	{method} +getModificaAction () : Consumer
+	{method} +refresh ( paramList1 : List ) : void
+	{method} +setLinkAction ( paramString1 : String , paramConsumer2 : Consumer ) : void
+}
+
+
 class it.univaq.unigest.gui.exceptions.CampoRichiestoVuoto {
 	{field} {static} -LOGGER : Logger
 }
@@ -200,7 +260,6 @@ class it.univaq.unigest.gui.modelview.pannelli.appelli.AppelliPannello1 {
 	{field} {static} -L_ORA : String
 	{field} {static} -L_VERBALE : String
 	{field} -appelloService : AppelloService
-	{field} -builder : VistaConDettagliBuilder
 	{field} -domainQueryService : DomainQueryService
 	{field} -loadAule : Supplier
 	{field} -loadDocenti : Supplier
@@ -226,7 +285,6 @@ class it.univaq.unigest.gui.modelview.pannelli.aule.AulePannello1 {
 	{field} {static} -L_EDIFICIO : String
 	{field} {static} -L_ID : String
 	{field} -aulaService : AulaService
-	{field} -builder : VistaConDettagliBuilder
 	{field} -domainQueryService : DomainQueryService
 	{field} -loadEdifici : Supplier
 	{method} +apriDialogAggiungi () : void
@@ -252,7 +310,6 @@ class it.univaq.unigest.gui.modelview.pannelli.cdl.CorsiDiLaureaPannello1 {
 	{field} {static} -L_DIPARTIMENTO : String
 	{field} {static} -L_ID : String
 	{field} {static} -L_NOME : String
-	{field} -builder : VistaConDettagliBuilder
 	{field} -corsoDiLaureaService : CorsoDiLaureaService
 	{field} -domainQueryService : DomainQueryService
 	{method} -apriDialogAggiungi () : void
@@ -282,7 +339,6 @@ class it.univaq.unigest.gui.modelview.pannelli.docenti.DocentiPannello1 {
 	{field} {static} -L_NOME : String
 	{field} {static} -L_QUALIFICA : String
 	{field} {static} -L_RUOLO : String
-	{field} -builder : VistaConDettagliBuilder
 	{field} -docenteService : DocenteService
 	{field} -domainQueryService : DomainQueryService
 	{method} -apriDialogAggiungi () : void
@@ -305,7 +361,6 @@ class it.univaq.unigest.gui.modelview.pannelli.docenti.DocentiPannello1 {
 class it.univaq.unigest.gui.modelview.pannelli.edifici.EdificiPannello1 {
 	{field} {static} -L_ID : String
 	{field} {static} -L_NOME : String
-	{field} -builder : VistaConDettagliBuilder
 	{field} -domainQueryService : DomainQueryService
 	{field} -edificioService : EdificioService
 	{method} -apriDialogAggiungi () : void
@@ -332,7 +387,6 @@ class it.univaq.unigest.gui.modelview.pannelli.esami.EsamiPannello1 {
 	{field} {static} -L_STUDENTE : String
 	{field} {static} -L_VERBALIZZATO : String
 	{field} {static} -L_VOTO : String
-	{field} -builder : VistaConDettagliBuilder
 	{field} -domainQueryService : DomainQueryService
 	{field} -esameService : EsameService
 	{field} -loadIscrizioni : Supplier
@@ -362,7 +416,6 @@ class it.univaq.unigest.gui.modelview.pannelli.insegnamenti.InsegnamentiPannello
 	{field} {static} -L_ID : String
 	{field} {static} -L_NOME : String
 	{field} {static} -L_SEMESTRE : String
-	{field} -builder : VistaConDettagliBuilder
 	{field} -domainQueryService : DomainQueryService
 	{field} -insegnamentoService : InsegnamentoService
 	{field} -loadCorsi : Supplier
@@ -391,7 +444,6 @@ class it.univaq.unigest.gui.modelview.pannelli.iscrizioni.IscrizioniPannello1 {
 	{field} {static} -L_ID : String
 	{field} {static} -L_RITIRATO : String
 	{field} {static} -L_STUDENTE : String
-	{field} -builder : VistaConDettagliBuilder
 	{field} -domainQueryService : DomainQueryService
 	{field} -iscrizioneService : IscrizioneService
 	{field} -loadAppelli : Supplier
@@ -425,7 +477,6 @@ class it.univaq.unigest.gui.modelview.pannelli.studenti.StudentiPannello1 {
 	{field} {static} -L_MEDIA_ARITMETICA : String
 	{field} {static} -L_MEDIA_PONDERATA : String
 	{field} {static} -L_NOME : String
-	{field} -builder : VistaConDettagliBuilder
 	{field} -domainQueryService : DomainQueryService
 	{field} -loadCorsi : Supplier
 	{field} -studenteService : StudenteService
@@ -454,7 +505,6 @@ class it.univaq.unigest.gui.modelview.pannelli.verbali.VerbaliPannello1 {
 	{field} {static} -L_ID : String
 	{field} {static} -L_NOTE : String
 	{field} {static} -L_NUM_ESAMI : String
-	{field} -builder : VistaConDettagliBuilder
 	{field} -domainQueryService : DomainQueryService
 	{field} -loadAppelli : Supplier
 	{field} -verbaleService : VerbaleService
@@ -531,15 +581,25 @@ it.univaq.unigest.gui.modelview.IscrizioniView --|>  it.univaq.unigest.gui.model
 it.univaq.unigest.gui.modelview.StartView -->  it.univaq.unigest.gui.modelview.AbstractModelView : vistaCorrente
 it.univaq.unigest.gui.modelview.StudentiModelView --|>  it.univaq.unigest.gui.modelview.AbstractModelView
 it.univaq.unigest.gui.modelview.VerbaliView --|>  it.univaq.unigest.gui.modelview.AbstractModelView
+it.univaq.unigest.gui.modelview.pannelli.appelli.AppelliPannello1 *--  it.univaq.unigest.gui.componenti.VistaConDettagliBuilder : builder
 it.univaq.unigest.gui.modelview.pannelli.appelli.AppelliPannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
+it.univaq.unigest.gui.modelview.pannelli.aule.AulePannello1 *--  it.univaq.unigest.gui.componenti.VistaConDettagliBuilder : builder
 it.univaq.unigest.gui.modelview.pannelli.aule.AulePannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
+it.univaq.unigest.gui.modelview.pannelli.cdl.CorsiDiLaureaPannello1 *--  it.univaq.unigest.gui.componenti.VistaConDettagliBuilder : builder
 it.univaq.unigest.gui.modelview.pannelli.cdl.CorsiDiLaureaPannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
+it.univaq.unigest.gui.modelview.pannelli.docenti.DocentiPannello1 *--  it.univaq.unigest.gui.componenti.VistaConDettagliBuilder : builder
 it.univaq.unigest.gui.modelview.pannelli.docenti.DocentiPannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
+it.univaq.unigest.gui.modelview.pannelli.edifici.EdificiPannello1 *--  it.univaq.unigest.gui.componenti.VistaConDettagliBuilder : builder
 it.univaq.unigest.gui.modelview.pannelli.edifici.EdificiPannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
+it.univaq.unigest.gui.modelview.pannelli.esami.EsamiPannello1 *--  it.univaq.unigest.gui.componenti.VistaConDettagliBuilder : builder
 it.univaq.unigest.gui.modelview.pannelli.esami.EsamiPannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
+it.univaq.unigest.gui.modelview.pannelli.insegnamenti.InsegnamentiPannello1 *--  it.univaq.unigest.gui.componenti.VistaConDettagliBuilder : builder
 it.univaq.unigest.gui.modelview.pannelli.insegnamenti.InsegnamentiPannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
+it.univaq.unigest.gui.modelview.pannelli.iscrizioni.IscrizioniPannello1 *--  it.univaq.unigest.gui.componenti.VistaConDettagliBuilder : builder
 it.univaq.unigest.gui.modelview.pannelli.iscrizioni.IscrizioniPannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
+it.univaq.unigest.gui.modelview.pannelli.studenti.StudentiPannello1 *--  it.univaq.unigest.gui.componenti.VistaConDettagliBuilder : builder
 it.univaq.unigest.gui.modelview.pannelli.studenti.StudentiPannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
+it.univaq.unigest.gui.modelview.pannelli.verbali.VerbaliPannello1 *--  it.univaq.unigest.gui.componenti.VistaConDettagliBuilder : builder
 it.univaq.unigest.gui.modelview.pannelli.verbali.VerbaliPannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
 it.univaq.unigest.gui.navigation.ViewDispatcher -->  it.univaq.unigest.gui.modelview.AbstractModelView : currentView
 it.univaq.unigest.gui.navigation.ViewDispatcher -->  it.univaq.unigest.gui.navigation.ViewDispatcher : INSTANCE

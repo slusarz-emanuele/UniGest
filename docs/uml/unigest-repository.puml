@@ -1,0 +1,97 @@
+@startuml
+
+interface it.univaq.unigest.repository.Repository {
+	{method}  {abstract} +deleteById ( paramObject1 : Object ) : void
+	{method}  {abstract} +findAll () : List
+	{method}  {abstract} +findById ( paramObject1 : Object ) : Optional
+	{method}  {abstract} +nextId () : Object
+	{method}  {abstract} +save ( paramObject1 : Object ) : Object
+}
+
+
+class it.univaq.unigest.repository.impl.AppelloRepository {
+}
+
+
+class it.univaq.unigest.repository.impl.AulaRepository {
+}
+
+
+class it.univaq.unigest.repository.impl.CorsoDiLaureaRepository {
+}
+
+
+class it.univaq.unigest.repository.impl.DocenteRepository {
+}
+
+
+class it.univaq.unigest.repository.impl.EdificioRepository {
+}
+
+
+class it.univaq.unigest.repository.impl.EsameRepository {
+}
+
+
+class it.univaq.unigest.repository.impl.FileJsonRepository {
+	{field} {static} -LOGGER : Logger
+	{field} -currentIndex : int
+	{field} -list : List
+	{field} -path : String
+	{field} -typeList : Type
+	{method} +deleteById ( paramString1 : String ) : void
+	{method} +findAll () : List
+	{method} +findById ( paramString1 : String ) : Optional
+	{method} -getPathCurrentIndex () : String
+	{method} -loadByFile () : void
+	{method} -loadCurrentIndex () : void
+	{method} +nextId () : String
+	{method} -nextIndexFromData () : int
+	{method} +save ( paramIdentificabile1 : Identificabile ) : Identificabile
+	{method} -saveCurrentIndex () : void
+	{method} -saveOnFile () : void
+}
+
+
+class it.univaq.unigest.repository.impl.InsegnamentoRepository {
+}
+
+
+class it.univaq.unigest.repository.impl.IscrizioneRepository {
+}
+
+
+class it.univaq.unigest.repository.impl.SettingsRepository {
+}
+
+
+class it.univaq.unigest.repository.impl.StudenteRepository {
+}
+
+
+class it.univaq.unigest.repository.impl.VerbaleRepository {
+}
+
+
+class it.univaq.unigest.repository.support.DatabaseHelper {
+	{field} {static} +PERCORSO_CARTELLA_DATI : String
+}
+
+
+
+
+it.univaq.unigest.repository.impl.AppelloRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
+it.univaq.unigest.repository.impl.AulaRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
+it.univaq.unigest.repository.impl.CorsoDiLaureaRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
+it.univaq.unigest.repository.impl.DocenteRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
+it.univaq.unigest.repository.impl.EdificioRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
+it.univaq.unigest.repository.impl.EsameRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
+it.univaq.unigest.repository.impl.FileJsonRepository ..|>  it.univaq.unigest.repository.Repository
+it.univaq.unigest.repository.impl.InsegnamentoRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
+it.univaq.unigest.repository.impl.IscrizioneRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
+it.univaq.unigest.repository.impl.SettingsRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
+it.univaq.unigest.repository.impl.StudenteRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
+it.univaq.unigest.repository.impl.VerbaleRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
+
+
+@enduml

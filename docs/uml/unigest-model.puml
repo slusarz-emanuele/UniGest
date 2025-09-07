@@ -1,0 +1,169 @@
+@startuml
+
+class it.univaq.unigest.model.Appello {
+	{field} +data : LocalDate
+	{field} +id : int
+	{field} +ora : LocalTime
+	{field} +ridAula : String
+	{field} +ridDocente : String
+	{field} +ridInsegnamento : String
+	{field} +ridVerbale : String
+	{method} +getGeneralita () : String
+	{method} +toString () : String
+}
+
+
+class it.univaq.unigest.model.Aula {
+	{field} +capienza : int
+	{field} +edificio : String
+	{field} +id : String
+	{method} +getEdificioNome () : String
+	{method} +toString () : String
+}
+
+
+class it.univaq.unigest.model.CorsoDiLaurea {
+	{field} +cfuTotali : int
+	{field} +coordinatoreId : String
+	{field} +dipartimento : String
+	{field} +id : String
+	{field} +nome : String
+	{method} +toString () : String
+}
+
+
+class it.univaq.unigest.model.Docente {
+	{field} +codiceDocente : String
+	{field} +dataIngressoUniversitaDocente : LocalDate
+	{field} +dipartimento : String
+	{field} -isRuolo : boolean
+	{field} +qualifica : String
+	{method} #generaEmail () : String
+	{method} +getId () : String
+	{method} +isRuolo () : boolean
+	{method} +setId ( paramString1 : String ) : void
+	{method} +setRuolo ( paramboolean1 : boolean ) : void
+	{method} +toString () : String
+}
+
+
+class it.univaq.unigest.model.Edificio {
+	{field} +id : String
+	{field} +nome : String
+}
+
+
+class it.univaq.unigest.model.Esame {
+	{field} +id : String
+	{field} +iscrizioneId : String
+	{field} +lode : boolean
+	{field} +rifiutato : boolean
+	{field} +verbalizzato : boolean
+	{field} +voto : Double
+	{method} +getCfu () : Integer
+	{method} +toString () : String
+}
+
+
+class it.univaq.unigest.model.Insegnamento {
+	{field} +anno : Integer
+	{field} +cfu : Integer
+	{field} +corsodiLaureaId : String
+	{field} +docenti : List
+	{field} +id : String
+	{field} +nome : String
+	{field} +semestre : Integer
+	{method} +aggiungiDocente ( paramString1 : String ) : void
+	{method} +caricaDocentiDinamicamente () : void
+	{method} +rimuoviDocente ( paramString1 : String ) : void
+	{method} +stampaDocenti () : void
+	{method} +toString () : String
+}
+
+
+class it.univaq.unigest.model.Iscrizione {
+	{field} +dataIscrizione : LocalDate
+	{field} +id : Integer
+	{field} +ridAppello : Integer
+	{field} +ridStudenteCf : String
+	{field} +ritirato : boolean
+	{method} +getGeneralita () : String
+	{method} +toString () : String
+}
+
+
+abstract class it.univaq.unigest.model.Persona {
+	{field} +cf : String
+	{field} +cognome : String
+	{field} +dataIngressoUniversita : String
+	{field} +dataNascita : String
+	{field} +email : String
+	{field} +nome : String
+	{method}  {abstract} #generaEmail () : String
+	{method} +getEta () : String
+	{method} +toString () : String
+}
+
+
+class it.univaq.unigest.model.Settings {
+	{field} +cartellaBackup : String
+	{field} +id : String
+	{method}  {static} +defaults () : Settings
+}
+
+
+class it.univaq.unigest.model.Studente {
+	{field} +cfu : Integer
+	{field} +corsoDiLaurea : String
+	{field} +dataImmatricolazione : LocalDate
+	{field} +matricola : String
+	{field} -mediaAritmetica : Double
+	{field} -mediaPonderata : Double
+	{method} +aggiungiEsame ( paramEsame1 : Esame ) : void
+	{method} +calcolaCfu () : int
+	{method} +calcolaMediaAritmetica () : Double
+	{method} +calcolaMediaPonderata () : Double
+	{method} #generaEmail () : String
+	{method} +getId () : String
+	{method} +setId ( paramString1 : String ) : void
+	{method} +toString () : String
+}
+
+
+class it.univaq.unigest.model.Verbale {
+	{field} +appelloId : String
+	{field} +chiuso : boolean
+	{field} +dataChiusura : LocalDate
+	{field} +firmato : boolean
+	{field} +id : Integer
+	{field} +note : String
+	{method} +toString () : String
+}
+
+
+interface it.univaq.unigest.model.common.Identificabile {
+	{method}  {abstract} +getId () : Object
+	{method}  {abstract} +setId ( paramObject1 : Object ) : void
+}
+
+
+
+
+it.univaq.unigest.model.Appello ..|>  it.univaq.unigest.model.common.Identificabile
+it.univaq.unigest.model.Aula ..|>  it.univaq.unigest.model.common.Identificabile
+it.univaq.unigest.model.CorsoDiLaurea ..|>  it.univaq.unigest.model.common.Identificabile
+it.univaq.unigest.model.Docente --|>  it.univaq.unigest.model.Persona
+it.univaq.unigest.model.Docente ..|>  it.univaq.unigest.model.common.Identificabile
+it.univaq.unigest.model.Edificio ..|>  it.univaq.unigest.model.common.Identificabile
+it.univaq.unigest.model.Esame ..|>  it.univaq.unigest.model.common.Identificabile
+it.univaq.unigest.model.Insegnamento ..|>  it.univaq.unigest.model.common.Identificabile
+it.univaq.unigest.model.Iscrizione ..|>  it.univaq.unigest.model.common.Identificabile
+it.univaq.unigest.model.Settings ..|>  it.univaq.unigest.model.common.Identificabile
+it.univaq.unigest.model.Studente "1" o-- "0..*"  it.univaq.unigest.model.Esame : esami
+it.univaq.unigest.model.Studente --|>  it.univaq.unigest.model.Persona
+it.univaq.unigest.model.Studente ..|>  it.univaq.unigest.model.common.Identificabile
+it.univaq.unigest.model.Verbale "1" o-- "0..*"  it.univaq.unigest.model.Esame : esami
+it.univaq.unigest.model.Verbale ..|>  it.univaq.unigest.model.common.Identificabile
+
+
+@enduml

@@ -1,230 +1,5 @@
 @startuml
 
-class it.univaq.unigest.model.Appello {
-	{field} +data : LocalDate
-	{field} +id : int
-	{field} +ora : LocalTime
-	{field} +ridAula : String
-	{field} +ridDocente : String
-	{field} +ridInsegnamento : String
-	{field} +ridVerbale : String
-	{method} +getGeneralita () : String
-	{method} +toString () : String
-}
-
-
-class it.univaq.unigest.model.Aula {
-	{field} +capienza : int
-	{field} +edificio : String
-	{field} +id : String
-	{method} +getEdificioNome () : String
-	{method} +toString () : String
-}
-
-
-class it.univaq.unigest.model.CorsoDiLaurea {
-	{field} +cfuTotali : int
-	{field} +coordinatoreId : String
-	{field} +dipartimento : String
-	{field} +id : String
-	{field} +nome : String
-	{method} +toString () : String
-}
-
-
-class it.univaq.unigest.model.Docente {
-	{field} +codiceDocente : String
-	{field} +dataIngressoUniversitaDocente : LocalDate
-	{field} +dipartimento : String
-	{field} -isRuolo : boolean
-	{field} +qualifica : String
-	{method} #generaEmail () : String
-	{method} +getId () : String
-	{method} +isRuolo () : boolean
-	{method} +setId ( paramString1 : String ) : void
-	{method} +setRuolo ( paramboolean1 : boolean ) : void
-	{method} +toString () : String
-}
-
-
-class it.univaq.unigest.model.Edificio {
-	{field} +id : String
-	{field} +nome : String
-}
-
-
-class it.univaq.unigest.model.Esame {
-	{field} +id : String
-	{field} +iscrizioneId : String
-	{field} +lode : boolean
-	{field} +rifiutato : boolean
-	{field} +verbalizzato : boolean
-	{field} +voto : Double
-	{method} +getCfu () : Integer
-	{method} +toString () : String
-}
-
-
-class it.univaq.unigest.model.Insegnamento {
-	{field} +anno : Integer
-	{field} +cfu : Integer
-	{field} +corsodiLaureaId : String
-	{field} +docenti : List
-	{field} +id : String
-	{field} +nome : String
-	{field} +semestre : Integer
-	{method} +aggiungiDocente ( paramString1 : String ) : void
-	{method} +caricaDocentiDinamicamente () : void
-	{method} +rimuoviDocente ( paramString1 : String ) : void
-	{method} +stampaDocenti () : void
-	{method} +toString () : String
-}
-
-
-class it.univaq.unigest.model.Iscrizione {
-	{field} +dataIscrizione : LocalDate
-	{field} +id : Integer
-	{field} +ridAppello : Integer
-	{field} +ridStudenteCf : String
-	{field} +ritirato : boolean
-	{method} +getGeneralita () : String
-	{method} +toString () : String
-}
-
-
-abstract class it.univaq.unigest.model.Persona {
-	{field} +cf : String
-	{field} +cognome : String
-	{field} +dataIngressoUniversita : String
-	{field} +dataNascita : String
-	{field} +email : String
-	{field} +nome : String
-	{method}  {abstract} #generaEmail () : String
-	{method} +getEta () : String
-	{method} +toString () : String
-}
-
-
-class it.univaq.unigest.model.Settings {
-	{field} +cartellaBackup : String
-	{field} +id : String
-	{method}  {static} +defaults () : Settings
-}
-
-
-class it.univaq.unigest.model.Studente {
-	{field} +cfu : Integer
-	{field} +corsoDiLaurea : String
-	{field} +dataImmatricolazione : LocalDate
-	{field} +matricola : String
-	{field} -mediaAritmetica : Double
-	{field} -mediaPonderata : Double
-	{method} +aggiungiEsame ( paramEsame1 : Esame ) : void
-	{method} +calcolaCfu () : int
-	{method} +calcolaMediaAritmetica () : Double
-	{method} +calcolaMediaPonderata () : Double
-	{method} #generaEmail () : String
-	{method} +getId () : String
-	{method} +setId ( paramString1 : String ) : void
-	{method} +toString () : String
-}
-
-
-class it.univaq.unigest.model.Verbale {
-	{field} +appelloId : String
-	{field} +chiuso : boolean
-	{field} +dataChiusura : LocalDate
-	{field} +firmato : boolean
-	{field} +id : Integer
-	{field} +note : String
-	{method} +toString () : String
-}
-
-
-interface it.univaq.unigest.model.common.Identificabile {
-	{method}  {abstract} +getId () : Object
-	{method}  {abstract} +setId ( paramObject1 : Object ) : void
-}
-
-
-interface it.univaq.unigest.repository.Repository {
-	{method}  {abstract} +deleteById ( paramObject1 : Object ) : void
-	{method}  {abstract} +findAll () : List
-	{method}  {abstract} +findById ( paramObject1 : Object ) : Optional
-	{method}  {abstract} +nextId () : Object
-	{method}  {abstract} +save ( paramObject1 : Object ) : Object
-}
-
-
-class it.univaq.unigest.repository.impl.AppelloRepository {
-}
-
-
-class it.univaq.unigest.repository.impl.AulaRepository {
-}
-
-
-class it.univaq.unigest.repository.impl.CorsoDiLaureaRepository {
-}
-
-
-class it.univaq.unigest.repository.impl.DocenteRepository {
-}
-
-
-class it.univaq.unigest.repository.impl.EdificioRepository {
-}
-
-
-class it.univaq.unigest.repository.impl.EsameRepository {
-}
-
-
-class it.univaq.unigest.repository.impl.FileJsonRepository {
-	{field} {static} -LOGGER : Logger
-	{field} -currentIndex : int
-	{field} -list : List
-	{field} -path : String
-	{field} -typeList : Type
-	{method} +deleteById ( paramString1 : String ) : void
-	{method} +findAll () : List
-	{method} +findById ( paramString1 : String ) : Optional
-	{method} -getPathCurrentIndex () : String
-	{method} -loadByFile () : void
-	{method} -loadCurrentIndex () : void
-	{method} +nextId () : String
-	{method} -nextIndexFromData () : int
-	{method} +save ( paramIdentificabile1 : Identificabile ) : Identificabile
-	{method} -saveCurrentIndex () : void
-	{method} -saveOnFile () : void
-}
-
-
-class it.univaq.unigest.repository.impl.InsegnamentoRepository {
-}
-
-
-class it.univaq.unigest.repository.impl.IscrizioneRepository {
-}
-
-
-class it.univaq.unigest.repository.impl.SettingsRepository {
-}
-
-
-class it.univaq.unigest.repository.impl.StudenteRepository {
-}
-
-
-class it.univaq.unigest.repository.impl.VerbaleRepository {
-}
-
-
-class it.univaq.unigest.repository.support.DatabaseHelper {
-	{field} {static} +PERCORSO_CARTELLA_DATI : String
-}
-
-
 interface it.univaq.unigest.service.AppelloService {
 	{method}  {abstract} +filtra ( paramAppello1 : Appello ) : List
 }
@@ -334,6 +109,7 @@ class it.univaq.unigest.service.bootstrap.VerbaleLoader {
 
 
 class it.univaq.unigest.service.impl.AppelloServiceImpl {
+	{field} -repo : Repository
 	{method} +create ( paramAppello1 : Appello ) : Appello
 	{method} +deleteById ( paramString1 : String ) : void
 	{method} +filtra ( paramAppello1 : Appello ) : List
@@ -344,6 +120,7 @@ class it.univaq.unigest.service.impl.AppelloServiceImpl {
 
 
 class it.univaq.unigest.service.impl.AulaServiceImpl {
+	{field} -repo : Repository
 	{method} +create ( paramAula1 : Aula ) : Aula
 	{method} +deleteById ( paramString1 : String ) : void
 	{method} +filtra ( paramAula1 : Aula ) : List
@@ -354,6 +131,7 @@ class it.univaq.unigest.service.impl.AulaServiceImpl {
 
 
 class it.univaq.unigest.service.impl.CorsoDiLaureaServiceImpl {
+	{field} -repo : Repository
 	{method} +create ( paramCorsoDiLaurea1 : CorsoDiLaurea ) : CorsoDiLaurea
 	{method} +deleteById ( paramString1 : String ) : void
 	{method} +filtra ( paramCorsoDiLaurea1 : CorsoDiLaurea ) : List
@@ -364,6 +142,7 @@ class it.univaq.unigest.service.impl.CorsoDiLaureaServiceImpl {
 
 
 class it.univaq.unigest.service.impl.DocenteServiceImpl {
+	{field} -repo : Repository
 	{method} +create ( paramDocente1 : Docente ) : Docente
 	{method} +deleteById ( paramString1 : String ) : void
 	{method} +filtra ( paramDocente1 : Docente ) : List
@@ -375,6 +154,7 @@ class it.univaq.unigest.service.impl.DocenteServiceImpl {
 
 
 class it.univaq.unigest.service.impl.EdificioServiceImpl {
+	{field} -repo : Repository
 	{method} +create ( paramEdificio1 : Edificio ) : Edificio
 	{method} +deleteById ( paramString1 : String ) : void
 	{method} +filtra ( paramEdificio1 : Edificio ) : List
@@ -385,6 +165,7 @@ class it.univaq.unigest.service.impl.EdificioServiceImpl {
 
 
 class it.univaq.unigest.service.impl.EsameServiceImpl {
+	{field} -repo : Repository
 	{method} +create ( paramEsame1 : Esame ) : Esame
 	{method} +deleteById ( paramString1 : String ) : void
 	{method} +filtra ( paramEsame1 : Esame ) : List
@@ -395,6 +176,7 @@ class it.univaq.unigest.service.impl.EsameServiceImpl {
 
 
 class it.univaq.unigest.service.impl.InsegnamentoServiceImpl {
+	{field} -repo : Repository
 	{method} +create ( paramInsegnamento1 : Insegnamento ) : Insegnamento
 	{method} +deleteById ( paramString1 : String ) : void
 	{method} +filtra ( paramInsegnamento1 : Insegnamento ) : List
@@ -405,6 +187,7 @@ class it.univaq.unigest.service.impl.InsegnamentoServiceImpl {
 
 
 class it.univaq.unigest.service.impl.IscrizioneServiceImpl {
+	{field} -repo : Repository
 	{method} +create ( paramIscrizione1 : Iscrizione ) : Iscrizione
 	{method} +deleteById ( paramString1 : String ) : void
 	{method} +filtra ( paramIscrizione1 : Iscrizione ) : List
@@ -425,12 +208,14 @@ class it.univaq.unigest.service.impl.MaintenanceServiceImpl {
 
 class it.univaq.unigest.service.impl.SettingsServiceImpl {
 	{field} {static} -GLOBAL_ID : String
+	{field} -repo : Repository
 	{method} +get () : Settings
 	{method} +updateCartellaBackup ( paramString1 : String ) : Settings
 }
 
 
 class it.univaq.unigest.service.impl.StudenteServiceImpl {
+	{field} -repo : Repository
 	{method} +create ( paramStudente1 : Studente ) : Studente
 	{method} +deleteById ( paramString1 : String ) : void
 	{method} +filtra ( paramStudente1 : Studente ) : List
@@ -441,6 +226,7 @@ class it.univaq.unigest.service.impl.StudenteServiceImpl {
 
 
 class it.univaq.unigest.service.impl.VerbaleServiceImpl {
+	{field} -repo : Repository
 	{method} +create ( paramVerbale1 : Verbale ) : Verbale
 	{method} +deleteById ( paramString1 : String ) : void
 	{method} +filtra ( paramVerbale1 : Verbale ) : List
@@ -518,33 +304,6 @@ class it.univaq.unigest.service.query.impl.DomainQueryServiceImpl {
 
 
 
-it.univaq.unigest.model.Appello ..|>  it.univaq.unigest.model.common.Identificabile
-it.univaq.unigest.model.Aula ..|>  it.univaq.unigest.model.common.Identificabile
-it.univaq.unigest.model.CorsoDiLaurea ..|>  it.univaq.unigest.model.common.Identificabile
-it.univaq.unigest.model.Docente --|>  it.univaq.unigest.model.Persona
-it.univaq.unigest.model.Docente ..|>  it.univaq.unigest.model.common.Identificabile
-it.univaq.unigest.model.Edificio ..|>  it.univaq.unigest.model.common.Identificabile
-it.univaq.unigest.model.Esame ..|>  it.univaq.unigest.model.common.Identificabile
-it.univaq.unigest.model.Insegnamento ..|>  it.univaq.unigest.model.common.Identificabile
-it.univaq.unigest.model.Iscrizione ..|>  it.univaq.unigest.model.common.Identificabile
-it.univaq.unigest.model.Settings ..|>  it.univaq.unigest.model.common.Identificabile
-it.univaq.unigest.model.Studente "1" o-- "0..*"  it.univaq.unigest.model.Esame : esami
-it.univaq.unigest.model.Studente --|>  it.univaq.unigest.model.Persona
-it.univaq.unigest.model.Studente ..|>  it.univaq.unigest.model.common.Identificabile
-it.univaq.unigest.model.Verbale "1" o-- "0..*"  it.univaq.unigest.model.Esame : esami
-it.univaq.unigest.model.Verbale ..|>  it.univaq.unigest.model.common.Identificabile
-it.univaq.unigest.repository.impl.AppelloRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
-it.univaq.unigest.repository.impl.AulaRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
-it.univaq.unigest.repository.impl.CorsoDiLaureaRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
-it.univaq.unigest.repository.impl.DocenteRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
-it.univaq.unigest.repository.impl.EdificioRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
-it.univaq.unigest.repository.impl.EsameRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
-it.univaq.unigest.repository.impl.FileJsonRepository ..|>  it.univaq.unigest.repository.Repository
-it.univaq.unigest.repository.impl.InsegnamentoRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
-it.univaq.unigest.repository.impl.IscrizioneRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
-it.univaq.unigest.repository.impl.SettingsRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
-it.univaq.unigest.repository.impl.StudenteRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
-it.univaq.unigest.repository.impl.VerbaleRepository --|>  it.univaq.unigest.repository.impl.FileJsonRepository
 it.univaq.unigest.service.AppelloService ..|>  it.univaq.unigest.service.CrudService
 it.univaq.unigest.service.AulaService ..|>  it.univaq.unigest.service.CrudService
 it.univaq.unigest.service.CorsoDiLaureaService ..|>  it.univaq.unigest.service.CrudService
@@ -561,29 +320,18 @@ it.univaq.unigest.service.bootstrap.DomainRefresher -->  it.univaq.unigest.servi
 it.univaq.unigest.service.bootstrap.DomainRefresher -->  it.univaq.unigest.service.IscrizioneService : iscrizioneService
 it.univaq.unigest.service.bootstrap.DomainRefresher -->  it.univaq.unigest.service.StudenteService : studenteService
 it.univaq.unigest.service.bootstrap.DomainRefresher -->  it.univaq.unigest.service.VerbaleService : verbaleService
-it.univaq.unigest.service.impl.AppelloServiceImpl *--  it.univaq.unigest.repository.Repository : repo
 it.univaq.unigest.service.impl.AppelloServiceImpl ..|>  it.univaq.unigest.service.AppelloService
-it.univaq.unigest.service.impl.AulaServiceImpl *--  it.univaq.unigest.repository.Repository : repo
 it.univaq.unigest.service.impl.AulaServiceImpl ..|>  it.univaq.unigest.service.AulaService
-it.univaq.unigest.service.impl.CorsoDiLaureaServiceImpl *--  it.univaq.unigest.repository.Repository : repo
 it.univaq.unigest.service.impl.CorsoDiLaureaServiceImpl ..|>  it.univaq.unigest.service.CorsoDiLaureaService
-it.univaq.unigest.service.impl.DocenteServiceImpl *--  it.univaq.unigest.repository.Repository : repo
 it.univaq.unigest.service.impl.DocenteServiceImpl ..|>  it.univaq.unigest.service.DocenteService
-it.univaq.unigest.service.impl.EdificioServiceImpl *--  it.univaq.unigest.repository.Repository : repo
 it.univaq.unigest.service.impl.EdificioServiceImpl ..|>  it.univaq.unigest.service.EdificioService
-it.univaq.unigest.service.impl.EsameServiceImpl *--  it.univaq.unigest.repository.Repository : repo
 it.univaq.unigest.service.impl.EsameServiceImpl ..|>  it.univaq.unigest.service.EsameService
-it.univaq.unigest.service.impl.InsegnamentoServiceImpl *--  it.univaq.unigest.repository.Repository : repo
 it.univaq.unigest.service.impl.InsegnamentoServiceImpl ..|>  it.univaq.unigest.service.InsegnamentoService
-it.univaq.unigest.service.impl.IscrizioneServiceImpl *--  it.univaq.unigest.repository.Repository : repo
 it.univaq.unigest.service.impl.IscrizioneServiceImpl ..|>  it.univaq.unigest.service.IscrizioneService
 it.univaq.unigest.service.impl.MaintenanceServiceImpl *--  it.univaq.unigest.service.SettingsService : settingsService
 it.univaq.unigest.service.impl.MaintenanceServiceImpl ..|>  it.univaq.unigest.service.MaintenanceService
-it.univaq.unigest.service.impl.SettingsServiceImpl *--  it.univaq.unigest.repository.Repository : repo
 it.univaq.unigest.service.impl.SettingsServiceImpl ..|>  it.univaq.unigest.service.SettingsService
-it.univaq.unigest.service.impl.StudenteServiceImpl *--  it.univaq.unigest.repository.Repository : repo
 it.univaq.unigest.service.impl.StudenteServiceImpl ..|>  it.univaq.unigest.service.StudenteService
-it.univaq.unigest.service.impl.VerbaleServiceImpl *--  it.univaq.unigest.repository.Repository : repo
 it.univaq.unigest.service.impl.VerbaleServiceImpl ..|>  it.univaq.unigest.service.VerbaleService
 it.univaq.unigest.service.query.impl.DomainQueryServiceImpl *--  it.univaq.unigest.service.AppelloService : appelloService
 it.univaq.unigest.service.query.impl.DomainQueryServiceImpl *--  it.univaq.unigest.service.AulaService : aulaService

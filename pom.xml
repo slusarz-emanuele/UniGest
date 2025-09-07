@@ -95,6 +95,18 @@
                     <mainClass>it.univaq.unigest.gui.Main</mainClass>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <!-- Non fermarti sugli errori -->
+                    <failOnError>false</failOnError>
+                    <!-- Ignora anche i warning -->
+                    <additionalJOption>-Xdoclint:none</additionalJOption>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

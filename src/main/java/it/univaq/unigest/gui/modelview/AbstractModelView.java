@@ -17,9 +17,9 @@ import javafx.scene.layout.VBox;
  *   <li>il wiring delle azioni CRUD (add/edit/delete) verso un {@link CrudPanel} associato;</li>
  *   <li>un punto di estensione {@link #creaGestioneContenuto()} per costruire l’UI della tab.</li>
  * </ul>
- * <note>
+ * <p>
  *     è possibile inserire qui altri pannelli per le entità.
- * </note>
+ * </p>
  * @param <T> tipo del pannello CRUD associato alla vista
  */
 public abstract class AbstractModelView<T extends CrudPanel> implements CrudView {

@@ -21,7 +21,7 @@ import java.io.FileOutputStream;
  *       in un PDF testuale.</li>
  * </ul>
  *
- * <h3>Dipendenze</h3>
+ * <h1>Dipendenze</h1>
  * <p>Usa le classi {@code com.lowagie.text.*} (iText 2/OpenPDF). Assicurati di avere una dipendenza compatibile, ad es. OpenPDF:
  * <pre>{@code
  * <dependency>
@@ -31,27 +31,10 @@ import java.io.FileOutputStream;
  * </dependency>
  * }</pre>
  *
- * <h3>Threading e UI</h3>
+ * <h1>Threading e UI</h1>
  * <ul>
  *   <li>I metodi mostrano un {@link FileChooser} e {@link Alert}: devono essere invocati sul JavaFX Application Thread.</li>
- *   <li>Per tabelle molto grandi, valuta di generare il PDF in un {@code Task} in background e mostrare gli Alert con {@code Platform.runLater}.</li>
  * </ul>
- *
- * <h3>Limitazioni</h3>
- * <ul>
- *   <li>L’estrazione delle celle usa {@code TableColumn#getCellObservableValue(item)}; se una colonna usa solo renderer custom
- *       senza value factory, il valore potrebbe risultare vuoto. In tal caso, fornisci una cellValueFactory o usa {@code getCellData}.</li>
- *   <li>Il layout PDF è essenziale: una tabella con tante colonne può “stringersi”. Per layout avanzati, valuta larghezze colonne, font embedded, pagine orizzontali, ecc.</li>
- * </ul>
- *
- * <h3>Esempi</h3>
- * <pre>{@code
- * // 1) Esporta una TableView
- * PdfHelper.esportaTabellaInPdf(tabStudenti, "Elenco Studenti", "studenti");
- *
- * // 2) Esporta una singola entità
- * PdfHelper.esportaEntita(studente, "Dettaglio Studente", "studente_"+studente.getCf());
- * }</pre>
  */
 public class PdfHelper {
 

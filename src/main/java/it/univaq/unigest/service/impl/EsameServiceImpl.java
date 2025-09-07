@@ -14,35 +14,46 @@ public class EsameServiceImpl implements EsameService {
 
     private final Repository<Esame, String> repo;
 
+    /**
+     * Crea il servizio degli Esami iniettando il repository sottostante.
+     *
+     * @param repo repository per persistere/recuperare gli Esami
+     */
     public EsameServiceImpl (Repository<Esame, String> repo){
         this.repo = repo;
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Esame> findAll(){
         return repo.findAll();
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Esame> findById (String id){
         return repo.findById(id);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Esame create (Esame d){
         return repo.save(d);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Esame update (Esame d){
         return repo.save(d);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void deleteById (String id){
         repo.deleteById(id);
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Esame> filtra(Esame filtro) {
         return repo.findAll().stream()

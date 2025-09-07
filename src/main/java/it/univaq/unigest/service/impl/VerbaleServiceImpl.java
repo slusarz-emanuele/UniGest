@@ -13,35 +13,46 @@ public class VerbaleServiceImpl implements VerbaleService {
 
     private final Repository<Verbale, String> repo;
 
+    /**
+     * Crea il servizio dei Verbali iniettando il repository sottostante.
+     *
+     * @param repo repository per persistere/recuperare i verbali
+     */
     public VerbaleServiceImpl (Repository<Verbale, String> repo){
         this.repo = repo;
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Verbale> findAll(){
         return repo.findAll();
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Verbale> findById (String id){
         return repo.findById(id);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Verbale create (Verbale d){
         return repo.save(d);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Verbale update (Verbale d){
         return repo.save(d);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void deleteById (String id){
         repo.deleteById(id);
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Verbale> filtra(Verbale filtro) {
         return repo.findAll().stream()

@@ -11,35 +11,46 @@ public class DocenteServiceImpl implements DocenteService {
 
     private final Repository<Docente, String> repo;
 
+    /**
+     * Crea il servizio dei Docenti iniettando il repository sottostante.
+     *
+     * @param repo repository per persistere/recuperare i docenti
+     */
     public DocenteServiceImpl(Repository<Docente, String> repo){
         this.repo = repo;
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Docente> findAll (){
         return repo.findAll();
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Docente> findById (String id){
         return repo.findById(id);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Docente create (Docente d){
         return repo.save(d);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Docente update (Docente d){
         return repo.save(d);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void deleteById (String id){
         repo.deleteById(id);
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Docente> filtra(Docente filtro) {
         return repo.findAll().stream()
@@ -54,6 +65,7 @@ public class DocenteServiceImpl implements DocenteService {
                 .toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getGeneralitaDaCf(String cf) {
         return repo.findAll().stream()

@@ -16,11 +16,15 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     private final BackupManager backupManager;
     private final SettingsService settingsService;
 
+    /**
+     * Crea il servizio della gestione dei backup iniettando il repository sottostante.
+     */
     public MaintenanceServiceImpl(BackupManager backupManager, SettingsService settingsService) {
         this.backupManager = backupManager;
         this.settingsService = settingsService;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean creaBackup() {
         // Se vuoi usare la cartella dalle Settings in futuro, la leggi qui:
@@ -34,11 +38,13 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean ripristinaBackup(File zip) {
         return backupManager.ripristinaBackup(zip);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean resettaDati() {
         Path dataPath = Paths.get(DatabaseHelper.PERCORSO_CARTELLA_DATI);

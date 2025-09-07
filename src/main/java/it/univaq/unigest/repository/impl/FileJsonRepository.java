@@ -50,16 +50,19 @@ public class FileJsonRepository<T extends Identificabile<String>> implements Rep
         loadCurrentIndex();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<T> findAll (){
         return new ArrayList<>(list);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<T> findById (String id){
         return list.stream().filter(e -> Objects.equals(e.getId(), id)).findFirst();
     }
 
+    /** {@inheritDoc} */
     @Override
     public T save (T e){
         if(e.getId() == null || e.getId().isBlank() || e.getId().equalsIgnoreCase("null") || e.getId().equals("0")){
@@ -73,12 +76,14 @@ public class FileJsonRepository<T extends Identificabile<String>> implements Rep
         return e;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void deleteById (String id){
         list.removeIf(it -> Objects.equals(it.getId(), id));
         saveOnFile();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String nextId (){
         int old = currentIndex;

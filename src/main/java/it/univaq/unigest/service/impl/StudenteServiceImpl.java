@@ -11,35 +11,46 @@ public class StudenteServiceImpl implements StudenteService {
 
     private final Repository<Studente, String> repo;
 
+    /**
+     * Crea il servizio dei Studenti iniettando il repository sottostante.
+     *
+     * @param repo repository per persistere/recuperare gli studenti
+     */
     public StudenteServiceImpl (Repository<Studente, String> repo){
         this.repo = repo;
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Studente> findAll(){
         return repo.findAll();
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Studente> findById (String id){
         return repo.findById(id);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Studente create (Studente d){
         return repo.save(d);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Studente update (Studente d){
         return repo.save(d);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void deleteById (String id){
         repo.deleteById(id);
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Studente> filtra(Studente filtro) {
         return repo.findAll().stream()

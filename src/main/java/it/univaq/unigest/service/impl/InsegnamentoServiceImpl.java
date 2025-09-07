@@ -14,35 +14,46 @@ public class InsegnamentoServiceImpl implements InsegnamentoService {
 
     private final Repository<Insegnamento, String> repo;
 
+    /**
+     * Crea il servizio degli Insegnamenti iniettando il repository sottostante.
+     *
+     * @param repo repository per persistere/recuperare gli insegnamenti
+     */
     public InsegnamentoServiceImpl (Repository<Insegnamento, String> repo){
         this.repo = repo;
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Insegnamento> findAll(){
         return repo.findAll();
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Insegnamento> findById (String id){
         return repo.findById(id);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Insegnamento create (Insegnamento d){
         return repo.save(d);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Insegnamento update (Insegnamento d){
         return repo.save(d);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void deleteById (String id){
         repo.deleteById(id);
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Insegnamento> filtra(Insegnamento filtro) {
         return repo.findAll().stream()

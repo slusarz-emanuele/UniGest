@@ -13,35 +13,46 @@ public class AppelloServiceImpl implements AppelloService {
 
     private final Repository<Appello, String> repo;
 
+    /**
+     * Crea il servizio degli Appelli iniettando il repository sottostante.
+     *
+     * @param repo repository per persistere/recuperare gli Appelli
+     */
     public AppelloServiceImpl (Repository<Appello, String> repo){
         this.repo = repo;
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Appello> findAll(){
         return repo.findAll();
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Appello> findById (String id){
         return repo.findById(id);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Appello create (Appello d){
         return repo.save(d);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Appello update (Appello d){
         return repo.save(d);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void deleteById (String id){
         repo.deleteById(id);
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Appello> filtra(Appello filtro) {
         return repo.findAll().stream()

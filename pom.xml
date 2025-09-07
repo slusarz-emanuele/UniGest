@@ -82,6 +82,11 @@
             <version>${log4j.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>net.sourceforge.plantuml</groupId>
+            <artifactId>plantuml</artifactId>
+            <version>1.2025.4</version>
+        </dependency>
 
     </dependencies>
 
@@ -101,13 +106,103 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <!-- Non fermarti sugli errori -->
                     <failOnError>false</failOnError>
-                    <!-- Ignora anche i warning -->
                     <additionalJOption>-Xdoclint:none</additionalJOption>
                 </configuration>
             </plugin>
+
+            <!--Generatore PlantUML-->
+            <plugin>
+                <groupId>de.elnarion.maven</groupId>
+                <artifactId>plantuml-generator-maven-plugin</artifactId>
+                <version>3.0.1</version>
+
+                <executions>
+                    <!--Dominio: model + repository + service -->
+                    <execution>
+                        <id>generate-uml-domain</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/docs/uml</outputDirectory>
+                            <outputFilename>unigest-domain.puml</outputFilename>
+
+                            <scanPackages>
+                                <scanPackage>it.univaq.unigest.model</scanPackage>
+                                <scanPackage>it.univaq.unigest.repository</scanPackage>
+                                <scanPackage>it.univaq.unigest.service</scanPackage>
+                            </scanPackages>
+                            <useShortClassNamesInFieldsAndMethods>true</useShortClassNamesInFieldsAndMethods>
+                        </configuration>
+                    </execution>
+
+                    <!--Utility: util + util.backup -->
+                    <execution>
+                        <id>generate-uml-util</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/docs/uml</outputDirectory>
+                            <outputFilename>unigest-util.puml</outputFilename>
+
+                            <scanPackages>
+                                <scanPackage>it.univaq.unigest.util</scanPackage>
+                                <scanPackage>it.univaq.unigest.util.backup</scanPackage>
+                            </scanPackages>
+
+                            <useShortClassNamesInFieldsAndMethods>true</useShortClassNamesInFieldsAndMethods>
+                        </configuration>
+                    </execution>
+
+                    <!--GUI -->
+                    <execution>
+                      <id>generate-uml-gui</id>
+                      <phase>process-classes</phase>
+                      <goals><goal>generate</goal></goals>
+                      <configuration>
+                        <outputDirectory>${project.basedir}/docs/uml</outputDirectory>
+                        <outputFilename>unigest-gui.puml</outputFilename>
+                        <scanPackages>
+                          <scanPackage>it.univaq.unigest.gui</scanPackage>
+                        </scanPackages>
+                        <useShortClassNamesInFieldsAndMethods>true</useShortClassNamesInFieldsAndMethods>
+                        <blacklistRegexp>.*(icons|css|componenti).*</blacklistRegexp>
+                      </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.4.1</version>
+                <executions>
+                    <execution>
+                        <id>render-puml-to-svg</id>
+                        <phase>prepare-package</phase>
+                        <goals><goal>java</goal></goals>
+                        <configuration>
+                            <mainClass>net.sourceforge.plantuml.Run</mainClass>
+                            <arguments>
+                                <argument>-tsvg</argument>
+                                <argument>-nometadata</argument>
+                                <!-- directory dove stanno i .puml -->
+                                <argument>${project.basedir}/docs/uml</argument>
+                            </arguments>
+                            <includeProjectDependencies>true</includeProjectDependencies>
+                            <classpathScope>runtime</classpathScope>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
         </plugins>
     </build>
+
 
 </project>

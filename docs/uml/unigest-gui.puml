@@ -1,0 +1,548 @@
+@startuml
+
+class it.univaq.unigest.gui.Dialogs {
+	{field} {static} -LOGGER : Logger
+	{method}  {static} +confirm ( paramString1 : String , paramString2 : String ) : boolean
+	{method}  {static} -getCss () : String
+	{method}  {static} -showAlert ( paramString1 : String , paramString2 : String , paramAlert$AlertType3 : AlertType ) : void
+	{method}  {static} +showError ( paramString1 : String , paramString2 : String ) : void
+	{method}  {static} +showInfo ( paramString1 : String , paramString2 : String ) : void
+	{method}  {static} +showWarning ( paramString1 : String , paramString2 : String ) : void
+}
+
+
+class it.univaq.unigest.gui.Main {
+	{field} {static} -LOGGER : Logger
+	{field} {static} -appelloService : AppelloService
+	{field} {static} -aulaService : AulaService
+	{field} {static} -backupManager : BackupManager
+	{field} {static} -corsoDiLaureaService : CorsoDiLaureaService
+	{field} {static} -docenteService : DocenteService
+	{field} {static} -domainQueryService : DomainQueryService
+	{field} {static} -edificioService : EdificioService
+	{field} {static} -esameService : EsameService
+	{field} {static} -insegnamentoService : InsegnamentoService
+	{field} {static} -iscrizioneService : IscrizioneService
+	{field} {static} -maintenanceService : MaintenanceService
+	{field} {static} -settingsService : SettingsService
+	{field} {static} -stagePrimario : Stage
+	{field} {static} -studenteService : StudenteService
+	{field} {static} -verbaleService : VerbaleService
+	{method}  {static} +getPrimaryStage () : Stage
+	{method} +init () : void
+	{method}  {static} +main ( paramString;1 : String[] ) : void
+	{method}  {static} +restartApp () : void
+	{method} +start ( paramStage1 : Stage ) : void
+}
+
+
+class it.univaq.unigest.gui.Reloader {
+	{field} {static} -LOGGER : Logger
+	{method}  {static} +registerAppelliPannello ( paramAppelliPannello11 : AppelliPannello1 ) : void
+	{method}  {static} +registerAulePannello ( paramAulePannello11 : AulePannello1 ) : void
+	{method}  {static} +registerCorsiDiLaureaPannello ( paramCorsiDiLaureaPannello11 : CorsiDiLaureaPannello1 ) : void
+	{method}  {static} +registerDocentiPannello ( paramDocentiPannello11 : DocentiPannello1 ) : void
+	{method}  {static} +registerEdificiPannello ( paramEdificiPannello11 : EdificiPannello1 ) : void
+	{method}  {static} +registerEsamiPannello ( paramEsamiPannello11 : EsamiPannello1 ) : void
+	{method}  {static} +registerInsegnamentiPannello ( paramInsegnamentiPannello11 : InsegnamentiPannello1 ) : void
+	{method}  {static} +registerIscrizioniPannello ( paramIscrizioniPannello11 : IscrizioniPannello1 ) : void
+	{method}  {static} +registerStudentiPannello ( paramStudentiPannello11 : StudentiPannello1 ) : void
+	{method}  {static} +registerVerbaliPannello ( paramVerbaliPannello11 : VerbaliPannello1 ) : void
+	{method}  {static} +ricaricaInterfacciaGrafica () : void
+	{method}  {static} +ricaricaInterfacciaGraficaAppelliPannello2 () : void
+	{method}  {static} +ricaricaInterfacciaGraficaAulePannello2 () : void
+	{method}  {static} +ricaricaInterfacciaGraficaCorsiDiLaureaPannello2 () : void
+	{method}  {static} +ricaricaInterfacciaGraficaDocentiPannello2 () : void
+	{method}  {static} +ricaricaInterfacciaGraficaEdificiPannello2 () : void
+	{method}  {static} +ricaricaInterfacciaGraficaEsamiPannello2 () : void
+	{method}  {static} +ricaricaInterfacciaGraficaInsegnamentiPannello2 () : void
+	{method}  {static} +ricaricaInterfacciaGraficaIscrizioniPannello2 () : void
+	{method}  {static} +ricaricaInterfacciaGraficaStudentiPannello2 () : void
+	{method}  {static} +ricaricaInterfacciaGraficaVerbaliPannelli2 () : void
+}
+
+
+class it.univaq.unigest.gui.actions.QueryActions {
+	{field} -query : DomainQueryService
+	{method} +openAppelliPerDocente ( paramDocente1 : Docente ) : void
+	{method} +openAppelliPerInsegnamento ( paramInsegnamento1 : Insegnamento ) : void
+	{method} +openEsamiPerStudente ( paramStudente1 : Studente ) : void
+	{method} +openInsegnamentiPerCorso ( paramCorsoDiLaurea1 : CorsoDiLaurea ) : void
+	{method} +openInsegnamentiPerDocente ( paramDocente1 : Docente ) : void
+	{method} +openIscrizioniPerAppello ( paramAppello1 : Appello ) : void
+	{method} +openIscrizioniPerStudente ( paramStudente1 : Studente ) : void
+	{method} +openStudentiPerCorso ( paramCorsoDiLaurea1 : CorsoDiLaurea ) : void
+	{method} +openVerbalePerAppello ( paramAppello1 : Appello ) : void
+	{method} +openVerbaliPerDocente ( paramDocente1 : Docente ) : void
+}
+
+
+class it.univaq.unigest.gui.exceptions.CampoRichiestoVuoto {
+	{field} {static} -LOGGER : Logger
+}
+
+
+class it.univaq.unigest.gui.impostazioni.SettingsWindow {
+	{field} -maintenanceService : MaintenanceService
+	{field} -root : BorderPane
+	{field} -settingsService : SettingsService
+	{field} -stage : Stage
+	{method} -buildBackupPane () : VBox
+	{method} -buildInfoPane () : VBox
+	{method} -buildRipristinoPane () : VBox
+	{method} -buildUI () : void
+	{method} -errore ( paramString1 : String , paramString2 : String ) : void
+	{method} -info ( paramString1 : String , paramString2 : String ) : void
+	{method} -makeNavButton ( paramString1 : String , paramToggleGroup2 : ToggleGroup ) : ToggleButton
+	{method}  {static} +open ( paramSettingsService1 : SettingsService , paramMaintenanceService2 : MaintenanceService ) : void
+	{method} -openInExplorer ( paramFile1 : File ) : void
+}
+
+
+abstract class it.univaq.unigest.gui.modelview.AbstractModelView {
+	{method}  {abstract} #creaGestioneContenuto () : VBox
+	{method} +getPannello () : CrudPanel
+	{method} +getView () : VBox
+	{method} +onAdd () : void
+	{method} +onDelete () : void
+	{method} +onEdit () : void
+}
+
+
+class it.univaq.unigest.gui.modelview.AppelliModelView {
+	{method} #creaGestioneContenuto () : VBox
+}
+
+
+class it.univaq.unigest.gui.modelview.AuleModelView {
+	{method} #creaGestioneContenuto () : VBox
+}
+
+
+class it.univaq.unigest.gui.modelview.CorsoDiLaureaView {
+	{method} #creaGestioneContenuto () : VBox
+}
+
+
+class it.univaq.unigest.gui.modelview.DashboardScreen {
+	{field} -appelloService : AppelloService
+	{field} -aulaService : AulaService
+	{field} -clockFmt : DateTimeFormatter
+	{field} -corsoDiLaureaService : CorsoDiLaureaService
+	{field} -docenteService : DocenteService
+	{field} -domainQueryService : DomainQueryService
+	{field} -insegnamentoService : InsegnamentoService
+	{field} -maintenanceService : MaintenanceService
+	{field} -settingsService : SettingsService
+	{field} -studenteService : StudenteService
+	{field} -verbaleService : VerbaleService
+	{method} +build () : Node
+	{method} -buildUpcomingAppelliTable () : Node
+	{method} -quickActions () : Node
+	{method} -resolveInsegnamentoNome ( paramString1 : String ) : String
+	{method} -smallStat ( paramString1 : String , paramString2 : String ) : Node
+}
+
+
+class it.univaq.unigest.gui.modelview.DocentiView {
+	{method} #creaGestioneContenuto () : VBox
+}
+
+
+class it.univaq.unigest.gui.modelview.EdificioView {
+	{method} #creaGestioneContenuto () : VBox
+}
+
+
+class it.univaq.unigest.gui.modelview.EsamiView {
+	{method} #creaGestioneContenuto () : VBox
+}
+
+
+class it.univaq.unigest.gui.modelview.InsegnamentiView {
+	{method} #creaGestioneContenuto () : VBox
+}
+
+
+class it.univaq.unigest.gui.modelview.IscrizioniView {
+	{method} #creaGestioneContenuto () : VBox
+}
+
+
+class it.univaq.unigest.gui.modelview.StartView {
+	{field} -bottoneAttivo : Button
+	{field} -menuVisibile : boolean
+	{field} -stagePrimario : Stage
+	{method} -bindNav ( paramButton1 : Button , paramSupplier2 : Supplier , paramString3 : String , paramBorderPane4 : BorderPane ) : void
+	{method} -bindNav ( paramButton1 : Button , paramSupplier2 : Supplier , paramString3 : String , paramConsumer4 : Consumer , paramBorderPane5 : BorderPane ) : void
+	{method} -creaSeparatoreMenu () : Separator
+	{method} -handleButtonClick ( paramButton1 : Button ) : void
+	{method} +start ( paramStage1 : Stage ) : void
+}
+
+
+class it.univaq.unigest.gui.modelview.StudentiModelView {
+	{method} #creaGestioneContenuto () : VBox
+}
+
+
+class it.univaq.unigest.gui.modelview.VerbaliView {
+	{method} #creaGestioneContenuto () : VBox
+}
+
+
+class it.univaq.unigest.gui.modelview.pannelli.appelli.AppelliPannello1 {
+	{field} {static} -L_AULA : String
+	{field} {static} -L_DATA : String
+	{field} {static} -L_DOCENTE : String
+	{field} {static} -L_ID : String
+	{field} {static} -L_INSEGNAMENTO : String
+	{field} {static} -L_ORA : String
+	{field} {static} -L_VERBALE : String
+	{field} -appelloService : AppelloService
+	{field} -builder : VistaConDettagliBuilder
+	{field} -domainQueryService : DomainQueryService
+	{field} -loadAule : Supplier
+	{field} -loadDocenti : Supplier
+	{field} -loadInsegnamenti : Supplier
+	{method} -apriDialogAggiungi () : void
+	{method} +apriDialogAggiungiPubblico () : void
+	{method} -colonne () : LinkedHashMap
+	{method} -configuraCampi ( paramDialogBuilder1 : DialogBuilder , paramAppello2 : Appello ) : void
+	{method} -dettagli () : LinkedHashMap
+	{method} -elimina ( paramAppello1 : Appello ) : void
+	{method} +eliminaSelezionato () : void
+	{method} -estraiAppelloDaCampi ( paramMap1 : Map , paramAppello2 : Appello ) : Appello
+	{method} +getView () : VBox
+	{method} +modificaSelezionato () : void
+	{method} -mostraDialogModifica ( paramAppello1 : Appello ) : void
+	{method} -mostraDialogoCrud ( paramString1 : String , paramString2 : String , paramAppello3 : Appello , paramFunction4 : Function , paramString5 : String , paramString6 : String ) : void
+	{method} +refresh () : void
+}
+
+
+class it.univaq.unigest.gui.modelview.pannelli.aule.AulePannello1 {
+	{field} {static} -L_CAPIENZA : String
+	{field} {static} -L_EDIFICIO : String
+	{field} {static} -L_ID : String
+	{field} -aulaService : AulaService
+	{field} -builder : VistaConDettagliBuilder
+	{field} -domainQueryService : DomainQueryService
+	{field} -loadEdifici : Supplier
+	{method} +apriDialogAggiungi () : void
+	{method} +apriDialogAggiungiPubblico () : void
+	{method} -colonne () : LinkedHashMap
+	{method} -configuraCampi ( paramDialogBuilder1 : DialogBuilder , paramAula2 : Aula ) : void
+	{method} -dettagli () : LinkedHashMap
+	{method} -elimina ( paramAula1 : Aula ) : void
+	{method} +eliminaSelezionato () : void
+	{method} -estraiAulaDaCampi ( paramMap1 : Map , paramAula2 : Aula ) : Aula
+	{method} +getView () : VBox
+	{method} +modificaSelezionato () : void
+	{method} +mostraDialogModificaAula ( paramAula1 : Aula ) : void
+	{method} -mostraDialogoCrud ( paramString1 : String , paramString2 : String , paramAula3 : Aula , paramFunction4 : Function , paramString5 : String , paramString6 : String ) : void
+	{method} -nomeEdificioById ( paramString1 : String ) : String
+	{method} +refresh () : void
+}
+
+
+class it.univaq.unigest.gui.modelview.pannelli.cdl.CorsiDiLaureaPannello1 {
+	{field} {static} -L_CFU_TOTALI : String
+	{field} {static} -L_COORDINATORE_ID : String
+	{field} {static} -L_DIPARTIMENTO : String
+	{field} {static} -L_ID : String
+	{field} {static} -L_NOME : String
+	{field} -builder : VistaConDettagliBuilder
+	{field} -corsoDiLaureaService : CorsoDiLaureaService
+	{field} -domainQueryService : DomainQueryService
+	{method} -apriDialogAggiungi () : void
+	{method} +apriDialogAggiungiPubblico () : void
+	{method} -colonne () : LinkedHashMap
+	{method} -configuraCampi ( paramDialogBuilder1 : DialogBuilder , paramCorsoDiLaurea2 : CorsoDiLaurea ) : void
+	{method} -dettagli () : LinkedHashMap
+	{method} -elimina ( paramCorsoDiLaurea1 : CorsoDiLaurea ) : void
+	{method} +eliminaSelezionato () : void
+	{method} -estraiCorsoDiLaureaDaCampi ( paramMap1 : Map , paramCorsoDiLaurea2 : CorsoDiLaurea ) : CorsoDiLaurea
+	{method} +getView () : VBox
+	{method} +modificaSelezionato () : void
+	{method} -mostraDialogModificaCorsoDiLaurea ( paramCorsoDiLaurea1 : CorsoDiLaurea ) : void
+	{method} -mostraDialogoCrud ( paramString1 : String , paramString2 : String , paramCorsoDiLaurea3 : CorsoDiLaurea , paramFunction4 : Function , paramString5 : String , paramString6 : String ) : void
+	{method} +refresh () : void
+}
+
+
+class it.univaq.unigest.gui.modelview.pannelli.docenti.DocentiPannello1 {
+	{field} {static} -L_CF : String
+	{field} {static} -L_CODICE_DOCENTE : String
+	{field} {static} -L_COGNOME : String
+	{field} {static} -L_DATA_NASCITA : String
+	{field} {static} -L_DIPARTIMENTO : String
+	{field} {static} -L_EMAIL : String
+	{field} {static} -L_INGRESSO_DOCENTE : String
+	{field} {static} -L_NOME : String
+	{field} {static} -L_QUALIFICA : String
+	{field} {static} -L_RUOLO : String
+	{field} -builder : VistaConDettagliBuilder
+	{field} -docenteService : DocenteService
+	{field} -domainQueryService : DomainQueryService
+	{method} -apriDialogAggiungi () : void
+	{method} +apriDialogAggiungiPubblico () : void
+	{method} -canDeleteDocente ( paramDocente1 : Docente ) : boolean
+	{method} -colonne () : LinkedHashMap
+	{method} -configuraCampi ( paramDialogBuilder1 : DialogBuilder , paramDocente2 : Docente ) : void
+	{method} -dettagli () : LinkedHashMap
+	{method} -elimina ( paramDocente1 : Docente ) : void
+	{method} +eliminaSelezionato () : void
+	{method} -estraiDocenteDaCampi ( paramMap1 : Map , paramDocente2 : Docente ) : Docente
+	{method} +getView () : VBox
+	{method} +modificaSelezionato () : void
+	{method} -mostraDialogModificaDocente ( paramDocente1 : Docente ) : void
+	{method} -mostraDialogoCrud ( paramString1 : String , paramString2 : String , paramDocente3 : Docente , paramFunction4 : Function , paramString5 : String , paramString6 : String ) : void
+	{method} +refresh () : void
+}
+
+
+class it.univaq.unigest.gui.modelview.pannelli.edifici.EdificiPannello1 {
+	{field} {static} -L_ID : String
+	{field} {static} -L_NOME : String
+	{field} -builder : VistaConDettagliBuilder
+	{field} -domainQueryService : DomainQueryService
+	{field} -edificioService : EdificioService
+	{method} -apriDialogAggiungi () : void
+	{method} +apriDialogAggiungiPubblico () : void
+	{method} -colonne () : LinkedHashMap
+	{method} -configuraCampi ( paramDialogBuilder1 : DialogBuilder , paramEdificio2 : Edificio ) : void
+	{method} -dettagli () : LinkedHashMap
+	{method} -elimina ( paramEdificio1 : Edificio ) : void
+	{method} +eliminaSelezionato () : void
+	{method} -estraiEdificioDaCampi ( paramMap1 : Map , paramEdificio2 : Edificio ) : Edificio
+	{method} +getView () : VBox
+	{method} +modificaSelezionato () : void
+	{method} -mostraDialogModifica ( paramEdificio1 : Edificio ) : void
+	{method} -mostraDialogoCrud ( paramString1 : String , paramString2 : String , paramEdificio3 : Edificio , paramFunction4 : Function , paramString5 : String , paramString6 : String ) : void
+	{method} +refresh () : void
+}
+
+
+class it.univaq.unigest.gui.modelview.pannelli.esami.EsamiPannello1 {
+	{field} {static} -L_ID : String
+	{field} {static} -L_ISCRIZIONE : String
+	{field} {static} -L_LODE : String
+	{field} {static} -L_RIFIUTATO : String
+	{field} {static} -L_STUDENTE : String
+	{field} {static} -L_VERBALIZZATO : String
+	{field} {static} -L_VOTO : String
+	{field} -builder : VistaConDettagliBuilder
+	{field} -domainQueryService : DomainQueryService
+	{field} -esameService : EsameService
+	{field} -loadIscrizioni : Supplier
+	{method} +apriDialogAggiungi () : void
+	{method} +apriDialogAggiungiPubblico () : void
+	{method} -colonne () : LinkedHashMap
+	{method} -configuraCampi ( paramDialogBuilder1 : DialogBuilder , paramEsame2 : Esame ) : void
+	{method} -dettagli () : LinkedHashMap
+	{method} -elimina ( paramEsame1 : Esame ) : void
+	{method} +eliminaSelezionato () : void
+	{method} -estraiEsameDaCampi ( paramMap1 : Map , paramEsame2 : Esame ) : Esame
+	{method} -generaComboVoti ( paramDouble1 : Double ) : ComboBox
+	{method} +getView () : VBox
+	{method} +modificaSelezionato () : void
+	{method} +mostraDialogModificaEsame ( paramEsame1 : Esame ) : void
+	{method} -mostraDialogoCrud ( paramString1 : String , paramString2 : String , paramEsame3 : Esame , paramFunction4 : Function , paramString5 : String , paramString6 : String ) : void
+	{method} +refresh () : void
+	{method} -validateIscrizionePerEsame ( paramString1 : String , paramString2 : String ) : boolean
+}
+
+
+class it.univaq.unigest.gui.modelview.pannelli.insegnamenti.InsegnamentiPannello1 {
+	{field} {static} -L_ANNO : String
+	{field} {static} -L_CDL : String
+	{field} {static} -L_CFU : String
+	{field} {static} -L_DOCENTI : String
+	{field} {static} -L_ID : String
+	{field} {static} -L_NOME : String
+	{field} {static} -L_SEMESTRE : String
+	{field} -builder : VistaConDettagliBuilder
+	{field} -domainQueryService : DomainQueryService
+	{field} -insegnamentoService : InsegnamentoService
+	{field} -loadCorsi : Supplier
+	{field} -loadDocenti : Supplier
+	{method} -apriDialogAggiungi () : void
+	{method} +apriDialogAggiungiPubblico () : void
+	{method}  {static} -coalesce ( paramString1 : String ) : String
+	{method} -colonne () : LinkedHashMap
+	{method} -configuraCampi ( paramDialogBuilder1 : DialogBuilder , paramInsegnamento2 : Insegnamento ) : void
+	{method} -dettagli () : LinkedHashMap
+	{method} -elimina ( paramInsegnamento1 : Insegnamento ) : void
+	{method} +eliminaSelezionato () : void
+	{method} -estraiInsegnamentoDaCampi ( paramMap1 : Map , paramInsegnamento2 : Insegnamento ) : Insegnamento
+	{method} +getView () : VBox
+	{method} +modificaSelezionato () : void
+	{method} -mostraDialogModifica ( paramInsegnamento1 : Insegnamento ) : void
+	{method} -mostraDialogoCrud ( paramString1 : String , paramString2 : String , paramInsegnamento3 : Insegnamento , paramFunction4 : Function , paramString5 : String , paramString6 : String ) : void
+	{method} -nomeCorsoById ( paramString1 : String ) : String
+	{method} +refresh () : void
+}
+
+
+class it.univaq.unigest.gui.modelview.pannelli.iscrizioni.IscrizioniPannello1 {
+	{field} {static} -L_APPELLO : String
+	{field} {static} -L_DATA_ISCRIZIONE : String
+	{field} {static} -L_ID : String
+	{field} {static} -L_RITIRATO : String
+	{field} {static} -L_STUDENTE : String
+	{field} -builder : VistaConDettagliBuilder
+	{field} -domainQueryService : DomainQueryService
+	{field} -iscrizioneService : IscrizioneService
+	{field} -loadAppelli : Supplier
+	{field} -loadStudenti : Supplier
+	{method} -apriDialogAggiungi () : void
+	{method} +apriDialogAggiungiPubblico () : void
+	{method} -colonne () : LinkedHashMap
+	{method} -configuraCampi ( paramDialogBuilder1 : DialogBuilder , paramIscrizione2 : Iscrizione ) : void
+	{method} -dettagli () : LinkedHashMap
+	{method} -elimina ( paramIscrizione1 : Iscrizione ) : void
+	{method} +eliminaSelezionato () : void
+	{method} -estraiIscrizioneDaCampi ( paramMap1 : Map , paramIscrizione2 : Iscrizione ) : Iscrizione
+	{method} +getView () : VBox
+	{method} +modificaSelezionato () : void
+	{method} -mostraDialogModifica ( paramIscrizione1 : Iscrizione ) : void
+	{method} -mostraDialogoCrud ( paramString1 : String , paramString2 : String , paramIscrizione3 : Iscrizione , paramFunction4 : Function , paramString5 : String , paramString6 : String ) : void
+	{method} +refresh () : void
+	{method} -studenteLabelByCf ( paramString1 : String ) : String
+}
+
+
+class it.univaq.unigest.gui.modelview.pannelli.studenti.StudentiPannello1 {
+	{field} {static} -L_CF : String
+	{field} {static} -L_CFU : String
+	{field} {static} -L_COGNOME : String
+	{field} {static} -L_CORSO_DI_LAUREA : String
+	{field} {static} -L_DATA_IMMATRICOLAZIONE : String
+	{field} {static} -L_DATA_NASCITA : String
+	{field} {static} -L_EMAIL : String
+	{field} {static} -L_MATRICOLA : String
+	{field} {static} -L_MEDIA_ARITMETICA : String
+	{field} {static} -L_MEDIA_PONDERATA : String
+	{field} {static} -L_NOME : String
+	{field} -builder : VistaConDettagliBuilder
+	{field} -domainQueryService : DomainQueryService
+	{field} -loadCorsi : Supplier
+	{field} -studenteService : StudenteService
+	{method} +apriDialogAggiungi () : void
+	{method} +apriDialogAggiungiPubblico () : void
+	{method} -canDeleteStudente ( paramStudente1 : Studente ) : boolean
+	{method} -colonne () : LinkedHashMap
+	{method} -configuraCampi ( paramDialogBuilder1 : DialogBuilder , paramStudente2 : Studente ) : void
+	{method} -dettagli () : LinkedHashMap
+	{method} -elimina ( paramStudente1 : Studente ) : void
+	{method} +eliminaSelezionato () : void
+	{method} -estraiStudenteDaCampi ( paramMap1 : Map , paramStudente2 : Studente ) : Studente
+	{method} +getView () : VBox
+	{method} +modificaSelezionato () : void
+	{method} +mostraDialogModifica ( paramStudente1 : Studente ) : void
+	{method} -mostraDialogoCrud ( paramString1 : String , paramString2 : String , paramStudente3 : Studente , paramFunction4 : Function , paramString5 : String , paramString6 : String ) : void
+	{method} +refresh () : void
+}
+
+
+class it.univaq.unigest.gui.modelview.pannelli.verbali.VerbaliPannello1 {
+	{field} {static} -L_APPELLO : String
+	{field} {static} -L_CHIUSO : String
+	{field} {static} -L_DATA_CHIUSURA : String
+	{field} {static} -L_FIRMATO : String
+	{field} {static} -L_ID : String
+	{field} {static} -L_NOTE : String
+	{field} {static} -L_NUM_ESAMI : String
+	{field} -builder : VistaConDettagliBuilder
+	{field} -domainQueryService : DomainQueryService
+	{field} -loadAppelli : Supplier
+	{field} -verbaleService : VerbaleService
+	{method} +apriDialogAggiungi () : void
+	{method} +apriDialogAggiungiPubblico () : void
+	{method} -colonne () : LinkedHashMap
+	{method} -configuraCampi ( paramDialogBuilder1 : DialogBuilder , paramVerbale2 : Verbale ) : void
+	{method} -dettagli () : LinkedHashMap
+	{method} -elimina ( paramVerbale1 : Verbale ) : void
+	{method} +eliminaSelezionato () : void
+	{method} -estraiVerbaleDaCampi ( paramMap1 : Map , paramVerbale2 : Verbale ) : Verbale
+	{method} +getView () : VBox
+	{method} +modificaSelezionato () : void
+	{method} +mostraDialogModificaVerbale ( paramVerbale1 : Verbale ) : void
+	{method} -mostraDialogoCrud ( paramString1 : String , paramString2 : String , paramVerbale3 : Verbale , paramFunction4 : Function , paramString5 : String , paramString6 : String ) : void
+	{method} +refresh () : void
+	{method} -validateAppelloUnico ( paramString1 : String , paramString2 : String ) : boolean
+}
+
+
+class it.univaq.unigest.gui.navigation.ViewDispatcher {
+	{field} -root : BorderPane
+	{field} -stage : Stage
+	{method}  {static} +get () : ViewDispatcher
+	{method}  {static} +init ( paramStage1 : Stage , paramBorderPane2 : BorderPane ) : void
+	{method} +show ( paramString1 : String , paramSupplier2 : Supplier , paramConsumer3 : Consumer ) : void
+	{method} +showNode ( paramString1 : String , paramNode2 : Node ) : void
+}
+
+
+interface it.univaq.unigest.gui.util.CrudPanel {
+	{method}  {abstract} +apriDialogAggiungiPubblico () : void
+	{method}  {abstract} +eliminaSelezionato () : void
+	{method}  {abstract} +getView () : VBox
+	{method}  {abstract} +modificaSelezionato () : void
+	{method}  {abstract} +refresh () : void
+}
+
+
+interface it.univaq.unigest.gui.util.CrudView {
+	{method}  {abstract} +onAdd () : void
+	{method}  {abstract} +onDelete () : void
+	{method}  {abstract} +onEdit () : void
+}
+
+
+class it.univaq.unigest.gui.util.DialogsParser {
+	{method}  {static} +validaCampo ( paramMap1 : Map , paramString2 : String ) : String
+}
+
+
+
+
+it.univaq.unigest.gui.Reloader -->  it.univaq.unigest.gui.modelview.pannelli.appelli.AppelliPannello1 : appelliPanel
+it.univaq.unigest.gui.Reloader -->  it.univaq.unigest.gui.modelview.pannelli.aule.AulePannello1 : aulePanel
+it.univaq.unigest.gui.Reloader -->  it.univaq.unigest.gui.modelview.pannelli.cdl.CorsiDiLaureaPannello1 : corsiDiLaureaPanel
+it.univaq.unigest.gui.Reloader -->  it.univaq.unigest.gui.modelview.pannelli.docenti.DocentiPannello1 : docentiPanel
+it.univaq.unigest.gui.Reloader -->  it.univaq.unigest.gui.modelview.pannelli.edifici.EdificiPannello1 : edificiPanel
+it.univaq.unigest.gui.Reloader -->  it.univaq.unigest.gui.modelview.pannelli.esami.EsamiPannello1 : esamiPanel
+it.univaq.unigest.gui.Reloader -->  it.univaq.unigest.gui.modelview.pannelli.insegnamenti.InsegnamentiPannello1 : insegnamentiPanel
+it.univaq.unigest.gui.Reloader -->  it.univaq.unigest.gui.modelview.pannelli.iscrizioni.IscrizioniPannello1 : iscrizioniPanel
+it.univaq.unigest.gui.Reloader -->  it.univaq.unigest.gui.modelview.pannelli.studenti.StudentiPannello1 : studentiPanel
+it.univaq.unigest.gui.Reloader -->  it.univaq.unigest.gui.modelview.pannelli.verbali.VerbaliPannello1 : verbaliPanel
+it.univaq.unigest.gui.modelview.AbstractModelView -->  it.univaq.unigest.gui.util.CrudPanel : panel
+it.univaq.unigest.gui.modelview.AbstractModelView ..|>  it.univaq.unigest.gui.util.CrudView
+it.univaq.unigest.gui.modelview.AppelliModelView --|>  it.univaq.unigest.gui.modelview.AbstractModelView
+it.univaq.unigest.gui.modelview.AuleModelView --|>  it.univaq.unigest.gui.modelview.AbstractModelView
+it.univaq.unigest.gui.modelview.CorsoDiLaureaView --|>  it.univaq.unigest.gui.modelview.AbstractModelView
+it.univaq.unigest.gui.modelview.DocentiView --|>  it.univaq.unigest.gui.modelview.AbstractModelView
+it.univaq.unigest.gui.modelview.EdificioView --|>  it.univaq.unigest.gui.modelview.AbstractModelView
+it.univaq.unigest.gui.modelview.EsamiView --|>  it.univaq.unigest.gui.modelview.AbstractModelView
+it.univaq.unigest.gui.modelview.InsegnamentiView --|>  it.univaq.unigest.gui.modelview.AbstractModelView
+it.univaq.unigest.gui.modelview.IscrizioniView --|>  it.univaq.unigest.gui.modelview.AbstractModelView
+it.univaq.unigest.gui.modelview.StartView -->  it.univaq.unigest.gui.modelview.AbstractModelView : vistaCorrente
+it.univaq.unigest.gui.modelview.StudentiModelView --|>  it.univaq.unigest.gui.modelview.AbstractModelView
+it.univaq.unigest.gui.modelview.VerbaliView --|>  it.univaq.unigest.gui.modelview.AbstractModelView
+it.univaq.unigest.gui.modelview.pannelli.appelli.AppelliPannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
+it.univaq.unigest.gui.modelview.pannelli.aule.AulePannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
+it.univaq.unigest.gui.modelview.pannelli.cdl.CorsiDiLaureaPannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
+it.univaq.unigest.gui.modelview.pannelli.docenti.DocentiPannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
+it.univaq.unigest.gui.modelview.pannelli.edifici.EdificiPannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
+it.univaq.unigest.gui.modelview.pannelli.esami.EsamiPannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
+it.univaq.unigest.gui.modelview.pannelli.insegnamenti.InsegnamentiPannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
+it.univaq.unigest.gui.modelview.pannelli.iscrizioni.IscrizioniPannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
+it.univaq.unigest.gui.modelview.pannelli.studenti.StudentiPannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
+it.univaq.unigest.gui.modelview.pannelli.verbali.VerbaliPannello1 ..|>  it.univaq.unigest.gui.util.CrudPanel
+it.univaq.unigest.gui.navigation.ViewDispatcher -->  it.univaq.unigest.gui.modelview.AbstractModelView : currentView
+it.univaq.unigest.gui.navigation.ViewDispatcher -->  it.univaq.unigest.gui.navigation.ViewDispatcher : INSTANCE
+
+
+@enduml

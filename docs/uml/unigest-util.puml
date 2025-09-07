@@ -1,0 +1,55 @@
+@startuml
+
+class it.univaq.unigest.util.LocalDateAdapter {
+	{method} +read ( paramJsonReader1 : JsonReader ) : LocalDate
+	{method} +write ( paramJsonWriter1 : JsonWriter , paramLocalDate2 : LocalDate ) : void
+}
+
+
+class it.univaq.unigest.util.LocalDateUtil {
+	{field} {static} -FORMATTER : DateTimeFormatter
+	{field} {static} -LOGGER : Logger
+	{method}  {static} +fromString ( paramString1 : String ) : LocalDate
+	{method}  {static} +toString ( paramLocalDate1 : LocalDate ) : String
+}
+
+
+class it.univaq.unigest.util.LocalTimeAdapter {
+	{method} +read ( paramJsonReader1 : JsonReader ) : LocalTime
+	{method} +write ( paramJsonWriter1 : JsonWriter , paramLocalTime2 : LocalTime ) : void
+}
+
+
+class it.univaq.unigest.util.Parser {
+	{method}  {static} -capitalize ( paramString1 : String ) : String
+	{method}  {static} +estraiIdDaStringaDocente ( paramString1 : String ) : String
+	{method}  {static} +getToStringParsed ( paramString1 : String ) : String
+}
+
+
+class it.univaq.unigest.util.PdfHelper {
+	{method}  {static} +esportaEntita ( paramObject1 : Object , paramString2 : String , paramString3 : String ) : void
+	{method}  {static} +esportaTabellaInPdf ( paramTableView1 : TableView , paramString2 : String , paramString3 : String ) : void
+}
+
+
+class it.univaq.unigest.util.backup.BackupManager {
+	{field} {static} +BACKUP_PATH : String
+	{field} {static} -DATA_PATH : String
+	{method} +creaBackup () : boolean
+	{method} +ripristinaBackup ( paramFile1 : File ) : boolean
+}
+
+
+interface it.univaq.unigest.util.backup.BackupService {
+	{method}  {abstract} +creaBackup () : boolean
+	{method}  {abstract} +ripristinaBackup ( paramFile1 : File ) : boolean
+}
+
+
+
+
+it.univaq.unigest.util.backup.BackupManager ..|>  it.univaq.unigest.util.backup.BackupService
+
+
+@enduml

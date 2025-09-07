@@ -1,6 +1,6 @@
 package it.univaq.unigest.model;
 
-import it.univaq.unigest.common.Identificabile;
+import it.univaq.unigest.model.common.Identificabile;
 
 public class Aula implements Identificabile<String> {
     private String id;

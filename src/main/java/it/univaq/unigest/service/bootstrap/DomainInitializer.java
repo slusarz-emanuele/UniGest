@@ -1,4 +1,4 @@
-package it.univaq.unigest.util.loader;
+package it.univaq.unigest.service.bootstrap;
 
 import it.univaq.unigest.service.*;
 

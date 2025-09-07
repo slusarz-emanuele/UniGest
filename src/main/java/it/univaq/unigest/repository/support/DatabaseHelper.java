@@ -1,4 +1,4 @@
-package it.univaq.unigest.util;
+package it.univaq.unigest.repository.support;
 
 public class DatabaseHelper {
 

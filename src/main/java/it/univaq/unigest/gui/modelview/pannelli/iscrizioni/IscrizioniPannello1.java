@@ -11,7 +11,7 @@ import it.univaq.unigest.model.Studente;
 import it.univaq.unigest.service.IscrizioneService;
 import it.univaq.unigest.service.query.DomainQueryService;
 import it.univaq.unigest.util.LocalDateUtil;
-import it.univaq.unigest.util.loader.DomainRefresher;
+import it.univaq.unigest.service.bootstrap.DomainRefresher;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 

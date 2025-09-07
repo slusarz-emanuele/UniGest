@@ -9,7 +9,7 @@ import it.univaq.unigest.model.*;
 import it.univaq.unigest.service.EsameService;
 import it.univaq.unigest.service.query.DomainQueryService;
 import it.univaq.unigest.util.LocalDateUtil;
-import it.univaq.unigest.util.loader.DomainRefresher;
+import it.univaq.unigest.service.bootstrap.DomainRefresher;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;

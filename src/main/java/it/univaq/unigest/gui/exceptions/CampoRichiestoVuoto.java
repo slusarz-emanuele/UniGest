@@ -1,4 +1,4 @@
-package it.univaq.unigest.gui.modelview.pannelli.exceptions;
+package it.univaq.unigest.gui.exceptions;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

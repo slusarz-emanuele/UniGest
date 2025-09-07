@@ -10,8 +10,21 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+/**
+ * Model-View per la gestione degli studenti.
+ * <p>
+ * Incapsula il pannello {@link StudentiPannello1} e fornisce
+ * la vista principale con tabella e dettagli degli studenti.
+ */
 public class StudentiModelView extends AbstractModelView<StudentiPannello1> {
 
+     /**
+     * Costruisce un StudentiModelView.
+     *
+     * @param studenteService servizio per la gestione degli studenti
+     * @param loadCorsi fornitore dei corsi di laurea disponibili
+     * @param domainQueryService servizio di query sul dominio
+     */
     public StudentiModelView(StudenteService studenteService,
                              Supplier<List<CorsoDiLaurea>> loadCorsi,
                              DomainQueryService domainQueryService) {

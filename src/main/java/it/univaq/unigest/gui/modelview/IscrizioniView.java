@@ -10,9 +10,22 @@ import javafx.scene.layout.VBox;
 import java.util.List;
 import java.util.function.Supplier;
 
-
+/**
+ * Model-View per la gestione delle iscrizioni.
+ * <p>
+ * Incapsula il pannello {@link IscrizioniPannello1} e fornisce
+ * la vista principale con tabella e dettagli delle iscrizioni.
+ */
 public class IscrizioniView extends AbstractModelView<IscrizioniPannello1> {
 
+    /**
+     * Costruisce un IscrizioniView.
+     *
+     * @param iscrizioneService servizio per la gestione delle iscrizioni
+     * @param loadStudenti fornitore degli studenti disponibili
+     * @param loadAppelli fornitore degli appelli disponibili
+     * @param domainQueryService servizio di query sul dominio
+     */
     public IscrizioniView(IscrizioneService iscrizioneService,
                           Supplier<List<Studente>> loadStudenti,
                           Supplier<List<Appello>> loadAppelli,

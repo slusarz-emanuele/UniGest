@@ -33,6 +33,16 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Schermata principale dell'applicazione UniGest.
+ * Mostra:
+ * <ul>
+ *     <li>Header con titolo, logo e orologio in tempo reale</li>
+ *     <li>Riepilogo del numero di studenti, docenti, insegnamenti e appelli odierni</li>
+ *     <li>Tabella dei prossimi appelli</li>
+ *     <li>Pannello per navigare tra sezioni principali</li>
+ * </ul>
+ */
 public class DashboardScreen {
 
     //Servizi
@@ -71,6 +81,12 @@ public class DashboardScreen {
 
     private final DateTimeFormatter clockFmt = DateTimeFormatter.ofPattern("EEE d MMM yyyy • HH:mm:ss");
 
+    /**
+     * Costruisce la vista della dashboard,
+     * comprendente di tutti i campi necessari.
+     *
+     * @return {@link Node} contenente l'intera dashboard
+     */
     public Node build() {
         VBox root = new VBox(12);
         root.setPadding(new Insets(12));
@@ -149,6 +165,13 @@ public class DashboardScreen {
 
     // --- Helpers UI semplici ---
 
+     /**
+     * Costruisce un campo(label + valore) per il riepilogo.
+     *
+     * @param label etichetta del campo
+     * @param value valore del compo
+     * @return {@link Node} contenente il campo
+     */
     private Node smallStat(String label, String value) {
         VBox box = new VBox(2);
         Label l = new Label(label + ":");
@@ -158,6 +181,11 @@ public class DashboardScreen {
         return box;
     }
 
+    /**
+     * Costruisce la tabella dei prossimi appelli.
+     *
+     * @return {@link Node} contenente la tabella dei prossimi appelli
+     */
     private Node buildUpcomingAppelliTable() {
         TableView<Appello> table = new TableView<>();
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
@@ -194,12 +222,24 @@ public class DashboardScreen {
         return table;
     }
 
+    /**
+     * Si occupa di risolvere la corrispondenza tra l'ID di un 
+     * insegnamento ed il suo nome
+     *
+     * @param id ID dell'insegnamento
+     * @return nome dell'insegnamento se presente, altrimenti l'ID
+     */
     private String resolveInsegnamentoNome(String id) {
         if (id == null) return "";
         Optional<Insegnamento> opt = insegnamentoService.findById(id);
         return opt.map(Insegnamento::getNome).orElse(id);
     }
 
+    /**
+     * Costruisce il pannello con i pulsanti per le azioni rapide.
+     *
+     * @return {@link Node} contenente le azioni rapide
+     */
     private Node quickActions() {
         VBox box = new VBox(6);
 

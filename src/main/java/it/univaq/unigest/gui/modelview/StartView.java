@@ -21,6 +21,17 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * Gestisce l'interfaccia principale dell'applicazione UniGest.
+ * 
+ * Mostra:
+ * <ul>
+ *     <li>Menu laterale per navigazione tra le entità</li>
+ *     <li>Top bar con titolo, logo, pulsanti di impostazioni e ricarica</li>
+ *     <li>Routing centralizzato verso le diverse view tramite {@link ViewDispatcher}</li>
+ *     <li>Supporto a scorciatoie da tastiera per operazioni CRUD</li>
+ * </ul>
+ */
 public class StartView {
 
     private boolean menuVisibile = true;
@@ -28,6 +39,11 @@ public class StartView {
     private AbstractModelView vistaCorrente;
     private Stage stagePrimario;
 
+    /**
+     * Avvia la UI principale.
+     *
+     * @param stagePrimario stage principale dell'applicazione
+     */
     public void start(Stage stagePrimario) {
 
         this.stagePrimario = stagePrimario;
@@ -317,6 +333,17 @@ public class StartView {
         this.stagePrimario.show();
     }
 
+      /**
+     * Collega un pulsante di menu a una view e registra eventuali pannelli CRUD.
+     *
+     * @param btn pulsante da collegare
+     * @param viewFactory factory per creare la view
+     * @param titolo titolo della view
+     * @param registrar funzione di registrazione pannello CRUD (opzionale)
+     * @param root root {@link BorderPane} della scena
+     * @param <P> tipo del pannello CRUD
+     * @param <V> tipo della view astratta
+     */
     private <P extends CrudPanel, V extends AbstractModelView<P>> void bindNav(
             Button btn,
             Supplier<V> viewFactory,
@@ -336,6 +363,17 @@ public class StartView {
     }
 
     // overload comodo se non devi registrare nulla
+     /**
+     * Overload di {@link #bindNav(Button, Supplier, String, Consumer, BorderPane)}
+     * senza registrare.
+     *
+     * @param btn pulsante da collegare
+     * @param viewFactory factory per creare la view
+     * @param titolo titolo della view
+     * @param root root {@link BorderPane} della scena
+     * @param <P> tipo del pannello CRUD
+     * @param <V> tipo della view astratta
+     */
     private <P extends CrudPanel, V extends AbstractModelView<P>> void bindNav(
             Button btn,
             Supplier<V> viewFactory,
@@ -358,6 +396,12 @@ public class StartView {
         return s;
     }
 
+    /**
+     * Gestisce la selezione del pulsante attivo nel menu laterale.
+     * Evidenzia il pulsante cliccato e rimuove lo stile dal precedente.
+     *
+     * @param clickedBtn pulsante cliccato
+     */
     private void handleButtonClick(Button clickedBtn) {
         if (bottoneAttivo != null) bottoneAttivo.getStyleClass().remove("menu-button-active");
         clickedBtn.getStyleClass().add("menu-button-active");

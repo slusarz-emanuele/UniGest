@@ -9,8 +9,21 @@ import javafx.scene.layout.VBox;
 import java.util.List;
 import java.util.function.Supplier;
 
+/**
+ * Model-View per la gestione dei verbali.
+ * <p>
+ * Incapsula il pannello {@link VerbaliPannello1} e fornisce
+ * la vista principale con tabella e dettagli dei verbali.
+ */
 public class VerbaliView extends AbstractModelView<VerbaliPannello1> {
 
+    /**
+     * Costruisce un VerbaliView.
+     *
+     * @param verbaleService servizio per la gestione dei verbali
+     * @param loadAppelli fornitore della lista degli appelli
+     * @param domainQueryService servizio di query sul dominio
+     */
     public VerbaliView(VerbaleService verbaleService,
                        Supplier<List<Appello>> loadAppelli,
                        DomainQueryService domainQueryService){

@@ -40,3 +40,15 @@ Per compilare il progetto senza eseguirlo:
 ```bash
 mvn clean package
 ```
+
+## UML
+
+Per generare uml in formato .puml:
+```bash
+mvn -U clean process-classes
+```
+
+Per generare uml in formato .puml + conversione in SVG:
+```bash
+mvn -U clean package -DskipTests
+```

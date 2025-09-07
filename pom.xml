@@ -111,68 +111,90 @@
                 </configuration>
             </plugin>
 
-            <!--Generatore PlantUML-->
+            <!-- Generatore PlantUML: 5 macro-pacchetti -->
             <plugin>
                 <groupId>de.elnarion.maven</groupId>
                 <artifactId>plantuml-generator-maven-plugin</artifactId>
                 <version>3.0.1</version>
-
                 <executions>
-                    <!--Dominio: model + repository + service -->
+
+                    <!-- MODEL -->
                     <execution>
-                        <id>generate-uml-domain</id>
+                        <id>generate-uml-model</id>
                         <phase>process-classes</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
+                        <goals><goal>generate</goal></goals>
                         <configuration>
                             <outputDirectory>${project.basedir}/docs/uml</outputDirectory>
-                            <outputFilename>unigest-domain.puml</outputFilename>
-
+                            <outputFilename>unigest-model.puml</outputFilename>
                             <scanPackages>
                                 <scanPackage>it.univaq.unigest.model</scanPackage>
+                            </scanPackages>
+                            <useShortClassNamesInFieldsAndMethods>true</useShortClassNamesInFieldsAndMethods>
+                        </configuration>
+                    </execution>
+
+                    <!-- REPOSITORY -->
+                    <execution>
+                        <id>generate-uml-repository</id>
+                        <phase>process-classes</phase>
+                        <goals><goal>generate</goal></goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/docs/uml</outputDirectory>
+                            <outputFilename>unigest-repository.puml</outputFilename>
+                            <scanPackages>
                                 <scanPackage>it.univaq.unigest.repository</scanPackage>
+                            </scanPackages>
+                            <useShortClassNamesInFieldsAndMethods>true</useShortClassNamesInFieldsAndMethods>
+                        </configuration>
+                    </execution>
+
+                    <!-- SERVICE -->
+                    <execution>
+                        <id>generate-uml-service</id>
+                        <phase>process-classes</phase>
+                        <goals><goal>generate</goal></goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/docs/uml</outputDirectory>
+                            <outputFilename>unigest-service.puml</outputFilename>
+                            <scanPackages>
                                 <scanPackage>it.univaq.unigest.service</scanPackage>
                             </scanPackages>
                             <useShortClassNamesInFieldsAndMethods>true</useShortClassNamesInFieldsAndMethods>
                         </configuration>
                     </execution>
 
-                    <!--Utility: util + util.backup -->
+                    <!-- UTIL -->
                     <execution>
                         <id>generate-uml-util</id>
                         <phase>process-classes</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
+                        <goals><goal>generate</goal></goals>
                         <configuration>
                             <outputDirectory>${project.basedir}/docs/uml</outputDirectory>
                             <outputFilename>unigest-util.puml</outputFilename>
-
                             <scanPackages>
                                 <scanPackage>it.univaq.unigest.util</scanPackage>
                                 <scanPackage>it.univaq.unigest.util.backup</scanPackage>
                             </scanPackages>
-
                             <useShortClassNamesInFieldsAndMethods>true</useShortClassNamesInFieldsAndMethods>
                         </configuration>
                     </execution>
 
-                    <!--GUI -->
+                    <!-- GUI -->
                     <execution>
-                      <id>generate-uml-gui</id>
-                      <phase>process-classes</phase>
-                      <goals><goal>generate</goal></goals>
-                      <configuration>
-                        <outputDirectory>${project.basedir}/docs/uml</outputDirectory>
-                        <outputFilename>unigest-gui.puml</outputFilename>
-                        <scanPackages>
-                          <scanPackage>it.univaq.unigest.gui</scanPackage>
-                        </scanPackages>
-                        <useShortClassNamesInFieldsAndMethods>true</useShortClassNamesInFieldsAndMethods>
-                        <blacklistRegexp>.*(icons|css|componenti).*</blacklistRegexp>
-                      </configuration>
+                        <id>generate-uml-gui</id>
+                        <phase>process-classes</phase>
+                        <goals><goal>generate</goal></goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/docs/uml</outputDirectory>
+                            <outputFilename>unigest-gui.puml</outputFilename>
+                            <scanPackages>
+                                <scanPackage>it.univaq.unigest.gui</scanPackage>
+                            </scanPackages>
+                            <useShortClassNamesInFieldsAndMethods>true</useShortClassNamesInFieldsAndMethods>
+                            <blacklistRegexp>.*(icons|css).*</blacklistRegexp>
+                        </configuration>
                     </execution>
+
                 </executions>
             </plugin>
 
@@ -181,6 +203,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.4.1</version>
                 <executions>
+                    <!-- Render SVG -->
                     <execution>
                         <id>render-puml-to-svg</id>
                         <phase>prepare-package</phase>
@@ -190,16 +213,44 @@
                             <arguments>
                                 <argument>-tsvg</argument>
                                 <argument>-nometadata</argument>
-                                <!-- directory dove stanno i .puml -->
+                                <!-- render ricorsivo nella cartella -->
                                 <argument>${project.basedir}/docs/uml</argument>
                             </arguments>
                             <includeProjectDependencies>true</includeProjectDependencies>
                             <classpathScope>runtime</classpathScope>
+                            <systemProperties>
+                                <systemProperty>
+                                    <key>PLANTUML_LIMIT_SIZE</key>
+                                    <value>16384</value>
+                                </systemProperty>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+
+                    <!-- Render PDF -->
+                    <execution>
+                        <id>render-puml-to-pdf</id>
+                        <phase>prepare-package</phase>
+                        <goals><goal>java</goal></goals>
+                        <configuration>
+                            <mainClass>net.sourceforge.plantuml.Run</mainClass>
+                            <arguments>
+                                <argument>-tpdf</argument>
+                                <argument>-nometadata</argument>
+                                <argument>${project.basedir}/docs/uml</argument>
+                            </arguments>
+                            <includeProjectDependencies>true</includeProjectDependencies>
+                            <classpathScope>runtime</classpathScope>
+                            <systemProperties>
+                                <systemProperty>
+                                    <key>PLANTUML_LIMIT_SIZE</key>
+                                    <value>16384</value>
+                                </systemProperty>
+                            </systemProperties>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
 
         </plugins>
     </build>

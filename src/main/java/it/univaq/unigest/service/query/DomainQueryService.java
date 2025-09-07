@@ -198,4 +198,6 @@ public interface DomainQueryService {
 
     /** Studente associato a un Esame (esame -> iscrizione -> studente). */
     Optional<Studente> studenteByEsame(String esameId);
+
+    boolean existsEsameByIscrizione(String iscrizioneId);
 }

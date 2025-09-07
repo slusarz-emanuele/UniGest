@@ -197,7 +197,7 @@ public class IscrizioniPannello1 implements CrudPanel {
         dialog.mostra();
     }
 
-    // ===== Configurazione campi (ordine: studente → appello → data → ritirato) =====
+    // Configurazione campi
     private void configuraCampi(DialogBuilder<Iscrizione> dialog, Iscrizione iniziale) {
         // Studente (single)
         TableView<Studente> tabStudenti = TableMiniFactory.creaTabella(
@@ -290,8 +290,30 @@ public class IscrizioniPannello1 implements CrudPanel {
     }
 
     private void elimina(Iscrizione i) {
-        iscrizioneService.deleteById(i.getId());
-        DomainRefresher.onIscrizioneChanged();
-        refresh();
+        try {
+            if (domainQueryService.existsEsameByIscrizione(i.getId())) {
+                Dialogs.showWarning(
+                        "Relazioni presenti",
+                        "Impossibile eliminare l'iscrizione #" + i.getId() + " dello studente "
+                                + studenteLabelByCf(i.getRidStudenteCf()) + " perché è già presente un Esame collegato.\n"
+                                + "Elimina prima l'Esame (o riassegna) e riprova."
+                );
+                return;
+            }
+
+            if (!Dialogs.confirm(
+                    "Conferma eliminazione",
+                    "Eliminare definitivamente l'iscrizione #" + i.getId() + "?"
+            )) {
+                return;
+            }
+
+            iscrizioneService.deleteById(i.getId());
+            DomainRefresher.onIscrizioneChanged();
+            refresh();
+            Dialogs.showInfo("Eliminato", "Iscrizione eliminata con successo.");
+        } catch (Exception e) {
+            Dialogs.showError("Errore eliminazione", e.getMessage());
+        }
     }
 }

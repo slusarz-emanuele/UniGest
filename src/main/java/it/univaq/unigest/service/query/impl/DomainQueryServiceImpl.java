@@ -354,4 +354,9 @@ public class DomainQueryServiceImpl implements DomainQueryService {
         return studenteByIscrizione(iscrizioneId);
     }
 
+    @Override
+    public boolean existsEsameByIscrizione(String iscrizioneId) {
+        return esameByIscrizione(iscrizioneId).isPresent();
+    }
+
 }

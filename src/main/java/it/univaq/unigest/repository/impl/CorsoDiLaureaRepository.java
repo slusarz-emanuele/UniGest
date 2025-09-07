@@ -4,7 +4,6 @@ import com.google.gson.reflect.TypeToken;
 import it.univaq.unigest.model.CorsoDiLaurea;
 import it.univaq.unigest.util.DatabaseHelper;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 /**

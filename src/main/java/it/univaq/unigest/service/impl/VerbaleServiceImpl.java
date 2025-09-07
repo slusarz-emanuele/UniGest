@@ -1,7 +1,5 @@
 package it.univaq.unigest.service.impl;
 
-import it.univaq.unigest.model.Appello;
-import it.univaq.unigest.model.Studente;
 import it.univaq.unigest.model.Verbale;
 import it.univaq.unigest.repository.Repository;
 import it.univaq.unigest.service.VerbaleService;

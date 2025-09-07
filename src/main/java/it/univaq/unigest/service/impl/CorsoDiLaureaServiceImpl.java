@@ -1,7 +1,6 @@
 package it.univaq.unigest.service.impl;
 
 import it.univaq.unigest.model.CorsoDiLaurea;
-import it.univaq.unigest.model.Docente;
 import it.univaq.unigest.repository.Repository;
 import it.univaq.unigest.service.CorsoDiLaureaService;
 

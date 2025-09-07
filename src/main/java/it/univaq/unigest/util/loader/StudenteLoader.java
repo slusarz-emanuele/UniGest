@@ -2,14 +2,12 @@ package it.univaq.unigest.util.loader;
 
 import it.univaq.unigest.model.Esame;
 import it.univaq.unigest.model.Iscrizione;
-import it.univaq.unigest.model.Studente;
 import it.univaq.unigest.service.EsameService;
 import it.univaq.unigest.service.IscrizioneService;
 import it.univaq.unigest.service.StudenteService;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public final class StudenteLoader {

@@ -1,14 +1,11 @@
 package it.univaq.unigest.service.impl;
 
-import it.univaq.unigest.model.Appello;
 import it.univaq.unigest.model.Insegnamento;
-import it.univaq.unigest.model.Studente;
 import it.univaq.unigest.repository.Repository;
 import it.univaq.unigest.service.InsegnamentoService;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class InsegnamentoServiceImpl implements InsegnamentoService {
 

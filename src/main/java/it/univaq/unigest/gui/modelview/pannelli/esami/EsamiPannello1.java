@@ -189,10 +189,23 @@ public class EsamiPannello1 implements CrudPanel {
                     .ifPresent(a -> tabIscrizione.getSelectionModel().select(a));
         }
 
+        ComboBox<Double> cbVoto = generaComboVoti(iniziale != null ? iniziale.getVoto() : null);
+        CheckBox cbLode = new CheckBox(L_LODE);
+
+        boolean enableLode = cbVoto.getValue() != null && Double.compare(cbVoto.getValue(), 30.0) == 0;
+        cbLode.setDisable(!enableLode);
+        if (!enableLode) cbLode.setSelected(false);
+
+        // al variare del voto abilita/disabilita e pulisce la lode
+        cbVoto.valueProperty().addListener((obs, oldV, newV) -> {
+            boolean abilitare = newV != null && Double.compare(newV, 30.0) == 0;
+            cbLode.setDisable(!abilitare);
+            if (!abilitare) cbLode.setSelected(false);
+        });
 
         dialog.aggiungiCampo(L_ISCRIZIONE, tabIscrizione);
-        dialog.aggiungiCampo(L_VOTO, generaComboVoti(iniziale != null ? iniziale.getVoto() : null));
-        dialog.aggiungiCampo(L_LODE, new CheckBox(L_LODE));
+        dialog.aggiungiCampo(L_VOTO, cbVoto);
+        dialog.aggiungiCampo(L_LODE, cbLode);
         dialog.aggiungiCampo(L_RIFIUTATO, new CheckBox(L_RIFIUTATO));
         dialog.aggiungiCampo(L_VERBALIZZATO, new CheckBox(L_VERBALIZZATO));
     }

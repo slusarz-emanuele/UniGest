@@ -12,11 +12,27 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+/**
+ * Factory per creare {@link TableView} con configurazioni predefinite.
+ * <p>
+ * La classe è {@code final} e non può essere istanziata: tutte le funzioni sono statiche.
+ * </p>
+ */
 public final class TableMiniFactory {
 
     private TableMiniFactory() {}
 
     // Base
+    /**
+     * Crea una tabella base con colonne e dati forniti.
+     *
+     * @param loader funzione che carica la lista di elementi da mostrare
+     * @param mode modalità di selezione (SINGLE o MULTIPLE)
+     * @param prefHeight altezza preferita della tabella
+     * @param colonne mappa colonne: titolo -> funzione estrattore di valore
+     * @param <T> tipo degli oggetti nella tabella
+     * @return TableView configurata con dati e colonne
+     */
     public static <T> TableView<T> creaTabella(
             Supplier<List<T>> loader,
             SelectionMode mode,
@@ -43,6 +59,18 @@ public final class TableMiniFactory {
     }
 
     // Con preselezione per id (String)
+    /**
+     * Crea una tabella con preselezione di una riga tramite ID.
+     *
+     * @param loader funzione che carica la lista di elementi da mostrare
+     * @param mode modalità di selezione (SINGLE o MULTIPLE)
+     * @param prefHeight altezza preferita della tabella
+     * @param colonne mappa colonne: titolo -> funzione estrattore di valore
+     * @param idExtractor funzione che trova l’ID da un elemento
+     * @param preselectId ID da trovare all’apertura della tabella
+     * @param <T> tipo degli oggetti nella tabella
+     * @return TableView configurata con dati, colonne e riga preselezionata
+     */
     public static <T> TableView<T> creaTabella(
             Supplier<List<T>> loader,
             SelectionMode mode,
@@ -62,6 +90,17 @@ public final class TableMiniFactory {
     }
 
     // Variante con predicate di preselezione
+    /**
+     * Crea una tabella con preselezione di una riga tramite predicato.
+     *
+     * @param loader funzione che carica la lista di elementi da mostrare
+     * @param mode modalità di selezione (SINGLE o MULTIPLE)
+     * @param prefHeight altezza preferita della tabella
+     * @param colonne mappa colonne: titolo -> funzione estrattore di valore
+     * @param preselectPredicate predicato per determinare quale riga selezionare
+     * @param <T> tipo degli oggetti nella tabella
+     * @return TableView configurata con dati, colonne e riga preselezionata
+     */
     public static <T> TableView<T> creaTabella(
             Supplier<List<T>> loader,
             SelectionMode mode,

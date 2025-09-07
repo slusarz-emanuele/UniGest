@@ -15,6 +15,21 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * Builder generico per creare una vista con tabella + pannello dettagli.
+ * <p>
+ * La classe costruisce un layout {@link VBox} contenente:
+ * <ul>
+ *     <li>Tabella degli elementi con colonne</li>
+ *     <li>Filtri testuali in tempo reale</li>
+ *     <li>Pannello dettagli aggiornato dinamicamente in base alla selezione</li>
+ *     <li>Bottoni CRUD</li>
+ *     <li>Supporto a campi "cliccabili" tramite {@link Hyperlink} con azioni associate</li>
+ * </ul>
+ * </p>
+ *
+ * @param <T> tipo degli oggetti mostrati nella tabella
+ */
 public class VistaConDettagliBuilder<T> {
 
     private final ObservableList<T> items;
@@ -27,6 +42,11 @@ public class VistaConDettagliBuilder<T> {
     // Mappa etichetta --> azione da eseguire al click
     private final Map<String, Consumer<T>> linkActions = new LinkedHashMap<>();
 
+    /**
+     * Costruisce un nuovo builder con la lista iniziale degli elementi.
+     *
+     * @param lista lista di elementi da mostrare nella tabella
+     */
     public VistaConDettagliBuilder(List<T> lista) {
         this.items = FXCollections.observableArrayList(lista);
         tabella.setItems(items);
@@ -41,7 +61,17 @@ public class VistaConDettagliBuilder<T> {
         linkActions.put(etichetta, action);
     }
 
-
+     /**
+     * Costruisce il layout completo con tabella, pannello dettagli e pulsanti CRUD.
+     *
+     * @param titolo titolo della vista
+     * @param colonneTabella mappa colonne della tabella: nome colonna -> estrattore di valore
+     * @param campiDettagli mappa campi del pannello dettagli: etichetta -> estrattore di valore
+     * @param onAggiungi azione da eseguire su click "Aggiungi"
+     * @param onModifica azione da eseguire su click "Modifica" per la riga selezionata
+     * @param onElimina azione da eseguire su click "Elimina" per la riga selezionata
+     * @return layout {@link VBox} pronto da aggiungere alla scena
+     */
     public VBox build(String titolo,
                       LinkedHashMap<String, Function<T, String>> colonneTabella,
                       LinkedHashMap<String, Function<T, String>> campiDettagli,
@@ -177,6 +207,11 @@ public class VistaConDettagliBuilder<T> {
         return layout;
     }
 
+    /**
+     * Aggiorna la tabella con una nuova lista di elementi.
+     *
+     * @param nuovaLista nuova lista di elementi
+     */
     public void refresh(List<T> nuovaLista) {
         items.setAll(nuovaLista);
     }

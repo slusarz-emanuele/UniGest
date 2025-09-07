@@ -6,10 +6,21 @@ import it.univaq.unigest.util.LocalDateUtil;
 import java.util.LinkedHashMap;
 import java.util.function.Function;
 
+/**
+ * Factory utilizzata per costruire colonne per le entità del dominio
+ * <p>
+ * Ogni metodo restituisce una {@link LinkedHashMap} che mappa il nome della colonna
+ * e la passa ad una funzione che estrae una rappresentazione testuale del valore dall’entità.
+ */
 public final class ColonneMiniFactory {
 
     private ColonneMiniFactory() {}
 
+    /**
+     * Restituisce una mappa colonne per l’entità {@link Insegnamento}.
+     *
+     * @return LinkedHashMap con colonne ID, Nome, CFU, Anno e Semestre
+     */
     public static LinkedHashMap<String, Function<Insegnamento, String>> insegnamentoMini() {
         LinkedHashMap<String, Function<Insegnamento, String>> m = new LinkedHashMap<>();
         m.put("ID", Insegnamento::getId);
@@ -20,6 +31,11 @@ public final class ColonneMiniFactory {
         return m;
     }
 
+    /**
+     * Restituisce una mappa colonne per l’entità {@link Studente}.
+     *
+     * @return LinkedHashMap con colonne CF, Nome, Cognome e Matricola
+     */
     public static LinkedHashMap<String, Function<Studente, String>> studenteMini() {
         LinkedHashMap<String, Function<Studente, String>> m = new LinkedHashMap<>();
         m.put("CF", Studente::getCf);
@@ -29,6 +45,11 @@ public final class ColonneMiniFactory {
         return m;
     }
 
+     /**
+     * Restituisce una mappa colonne per l’entità {@link Appello}.
+     *
+     * @return LinkedHashMap con colonne ID, Insegnamento, Data, Ora, Aula e Docente
+     */
     public static LinkedHashMap<String, Function<Appello, String>> appelloMini() {
         LinkedHashMap<String, Function<Appello, String>> m = new LinkedHashMap<>();
         m.put("ID", Appello::getId);
@@ -40,6 +61,11 @@ public final class ColonneMiniFactory {
         return m;
     }
 
+     /**
+     * Restituisce una mappa colonne per l’entità {@link Iscrizione}.
+     *
+     * @return LinkedHashMap con colonne ID, Studente, Appello, Data e Ritirato
+     */
     public static LinkedHashMap<String, Function<Iscrizione, String>> iscrizioneMini() {
         LinkedHashMap<String, Function<Iscrizione, String>> m = new LinkedHashMap<>();
         m.put("ID", Iscrizione::getId);
@@ -50,6 +76,11 @@ public final class ColonneMiniFactory {
         return m;
     }
 
+    /**
+     * Restituisce una mappa colonne per l’entità {@link Esame}.
+     *
+     * @return LinkedHashMap con colonne ID, Iscrizione, Voto, Lode, Rifiutato e Verbalizzato
+     */
     public static LinkedHashMap<String, Function<Esame, String>> esameMini() {
         LinkedHashMap<String, Function<Esame, String>> m = new LinkedHashMap<>();
         m.put("ID", Esame::getId);
@@ -61,6 +92,11 @@ public final class ColonneMiniFactory {
         return m;
     }
 
+     /**
+     * Restituisce una mappa colonne per l’entità {@link Verbale}.
+     *
+     * @return LinkedHashMap con colonne ID, Appello, Chiuso e Firmato
+     */
     public static LinkedHashMap<String, Function<Verbale, String>> verbaleMini() {
         LinkedHashMap<String, Function<Verbale, String>> m = new LinkedHashMap<>();
         m.put("ID", v -> v.getId() != null ? v.getId() : "");

@@ -25,6 +25,31 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+/**
+ * Pannello di gestione “Appelli”.
+ * <p>
+ * Responsabilità:
+ * <ul>
+ *   <li>Visualizzazione tabellare degli appelli (via {@link VistaConDettagliBuilder});</li>
+ *   <li>Dialog di aggiunta/modifica con validazioni (data obbligatoria, ora in formato HH:mm, selezioni obbligatorie);</li>
+ *   <li>Eliminazione assistita con controllo relazioni (blocca se presenti iscrizioni);</li>
+ *   <li>Azioni contestuali (“Iscrizioni” per l’appello selezionato).</li>
+ * </ul>
+ *
+ * <h3>Dipendenze iniettate</h3>
+ * <ul>
+ *   <li>{@link AppelloService}: CRUD e accesso ai dati degli appelli;</li>
+ *   <li>{@link Supplier} di {@link Insegnamento}, {@link Aula}, {@link Docente}: popolano le tabelle di scelta nei dialog;</li>
+ *   <li>{@link DomainQueryService}: per verifiche/relazioni (es. iscrizioni per appello).</li>
+ * </ul>
+ *
+ * <h3>Note di implementazione</h3>
+ * <ul>
+ *   <li>Le tabelle di selezione nei dialog sono costruite con {@link TableMiniFactory};</li>
+ *   <li>Il builder gestisce colonne e dettagli; i link-azione sono registrati su {@code builder.setLinkAction};</li>
+ *   <li>L’eliminazione è protetta da conferma e dalla presenza di relazioni (iscrizioni &rarr; blocco).</li>
+ * </ul>
+ */
 public class AppelliPannello1 implements CrudPanel {
 
     // Etichette

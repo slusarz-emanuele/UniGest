@@ -131,7 +131,20 @@ public class IscrizioniPannello1 implements CrudPanel {
                 "Nuova Iscrizione",
                 "Inserisci i dati dell'iscrizione",
                 null,
-                iCreato -> iscrizioneService.create(iCreato),
+                iCreato -> {
+                    String cf = iCreato.getRidStudenteCf();
+                    String appId = String.valueOf(iCreato.getRidAppello());
+
+                    if (domainQueryService.existsIscrizioneByStudenteAndAppello(cf, appId)) {
+                        Dialogs.showError(
+                                "Duplicato iscrizione",
+                                "Lo studente " + studenteLabelByCf(cf) + " risulta già iscritto all'appello " + appId + "."
+                        );
+                        return null; // blocca il salvataggio
+                    }
+
+                    return iscrizioneService.create(iCreato);
+                },
                 "Successo",
                 "Iscrizione aggiunta correttamente!"
         );
@@ -142,7 +155,20 @@ public class IscrizioniPannello1 implements CrudPanel {
                 "Modifica Iscrizione",
                 "Modifica i dati dell'iscrizione",
                 iniziale,
-                iAgg -> iscrizioneService.update(iAgg),
+                iAgg -> {
+                    String cf = iAgg.getRidStudenteCf();
+                    String appId = String.valueOf(iAgg.getRidAppello());
+
+                    if (domainQueryService.existsIscrizioneByStudenteAndAppelloExceptId(cf, appId, iAgg.getId())) {
+                        Dialogs.showError(
+                                "Duplicato iscrizione",
+                                "Lo studente " + studenteLabelByCf(cf) + " risulta già iscritto all'appello " + appId + "."
+                        );
+                        return null; // blocca il salvataggio
+                    }
+
+                    return iscrizioneService.update(iAgg);
+                },
                 "Successo",
                 "Iscrizione modificata correttamente!"
         );

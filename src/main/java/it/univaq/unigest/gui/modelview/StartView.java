@@ -123,11 +123,16 @@ public class StartView {
                 )
         );
 
+        Button btnReload = new Button("Ricarica");
+        btnReload.getStyleClass().add("top-bar-button");
+        btnReload.setOnAction(e -> {
+            Main.restartApp();
+        });
 
         Image logo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/logo.png")));
         ImageView logoView = new ImageView(logo); logoView.setFitHeight(32); logoView.setFitWidth(32); logoView.setPreserveRatio(true);
 
-        topBar.getChildren().addAll(toggleMenu, spacer, btnSettings, titolo, logoView);
+        topBar.getChildren().addAll(toggleMenu, spacer, btnReload,btnSettings, titolo, logoView);
         root.setTop(topBar);
 
         // --- NAVIGAZIONE

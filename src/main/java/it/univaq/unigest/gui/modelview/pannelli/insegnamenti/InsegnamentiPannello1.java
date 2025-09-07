@@ -137,7 +137,14 @@ public class InsegnamentiPannello1 implements CrudPanel {
                 "Nuovo Insegnamento",
                 "Inserisci i dati del nuovo insegnamento",
                 null,
-                iCreato -> insegnamentoService.create(iCreato),
+                iCreato -> {
+                    if (domainQueryService.existsInsegnamentoByName(iCreato.getNome())) {
+                        Dialogs.showError("Errore di creazione",
+                                "Esiste già un insegnamento chiamato \"" + iCreato.getNome() + "\".");
+                        return null;
+                    }
+                    return insegnamentoService.create(iCreato);
+                },
                 "Successo",
                 "Insegnamento aggiunto correttamente!"
         );
@@ -148,7 +155,14 @@ public class InsegnamentiPannello1 implements CrudPanel {
                 "Modifica Insegnamento",
                 "Modifica i dati dell'insegnamento",
                 ins,
-                iAgg -> insegnamentoService.update(iAgg),
+                iAgg -> {
+                    if (domainQueryService.existsInsegnamentoByNameExceptId(iAgg.getNome(), ins.getId())) {
+                        Dialogs.showError("Errore di modifica",
+                                "Esiste già un corso di laurea chiamato \"" + iAgg.getNome() + "\".");
+                        return null;
+                    }
+                    return insegnamentoService.update(iAgg);
+                },
                 "Successo",
                 "Insegnamento modificato correttamente!"
         );

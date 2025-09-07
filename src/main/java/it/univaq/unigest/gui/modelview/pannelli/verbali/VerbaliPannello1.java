@@ -123,7 +123,10 @@ public class VerbaliPannello1 implements CrudPanel {
                 "Nuovo Verbale",
                 "Inserisci i dati del verbale",
                 null,
-                vCreato -> verbaleService.create(vCreato),
+                vCreato -> {
+                    if (!validateAppelloUnico(vCreato.getAppelloId(), null)) return null;
+                    return verbaleService.create(vCreato);
+                },
                 "Successo",
                 "Verbale aggiunto correttamente!"
         );
@@ -134,7 +137,10 @@ public class VerbaliPannello1 implements CrudPanel {
                 "Modifica Verbale",
                 "Modifica i dati del verbale",
                 verbale,
-                vAgg -> verbaleService.create(vAgg),
+                vAgg -> {
+                    if (!validateAppelloUnico(vAgg.getAppelloId(), vAgg.getId())) return null;
+                    return verbaleService.update(vAgg);
+                },
                 "Successo",
                 "Verbale modificato correttamente!"
         );
@@ -161,11 +167,29 @@ public class VerbaliPannello1 implements CrudPanel {
     }
 
     // Configurazione dei campi
-    private void configuraCampi(DialogBuilder<Verbale> dialog,
-                                Verbale iniziale){
+    private void configuraCampi(DialogBuilder<Verbale> dialog, Verbale iniziale){
+        Supplier<List<Appello>> filteredAppelli = () -> {
+            List<Appello> all = loadAppelli.get();
+            if (iniziale == null) {
+                return all.stream()
+                        .filter(a -> domainQueryService
+                                .verbaleByAppello(String.valueOf(a.getId()))
+                                .isEmpty())
+                        .toList();
+            } else {
+                String current = iniziale.getAppelloId();
+                return all.stream()
+                        .filter(a -> {
+                            String id = String.valueOf(a.getId());
+                            return id.equals(current) ||
+                                    domainQueryService.verbaleByAppello(id).isEmpty();
+                        })
+                        .toList();
+            }
+        };
 
         TableView<Appello> tabAppelli = TableMiniFactory.creaTabella(
-                loadAppelli,
+                filteredAppelli,
                 SelectionMode.SINGLE,
                 0,
                 new LinkedHashMap<>() {{
@@ -174,7 +198,7 @@ public class VerbaliPannello1 implements CrudPanel {
                 }}
         );
 
-        // Preselezione in modifica
+
         if (iniziale != null && iniziale.getAppelloId() != null) {
             tabAppelli.getItems().stream()
                     .filter(a -> String.valueOf(a.getId()).equals(iniziale.getAppelloId()))
@@ -182,12 +206,23 @@ public class VerbaliPannello1 implements CrudPanel {
                     .ifPresent(a -> tabAppelli.getSelectionModel().select(a));
         }
 
+        DatePicker dpChiusura = new DatePicker(iniziale != null ? iniziale.getDataChiusura() : null);
+        CheckBox cbChiuso = new CheckBox(L_CHIUSO);
+        CheckBox cbFirmato = new CheckBox(L_FIRMATO);
+        TextField tfNote = new TextField(iniziale != null ? iniziale.getNote() : "");
+
+        if (iniziale != null) {
+            cbChiuso.setSelected(Boolean.TRUE.equals(iniziale.getChiuso()));
+            cbFirmato.setSelected(Boolean.TRUE.equals(iniziale.getFirmato()));
+        }
+
         dialog.aggiungiCampo(L_APPELLO, tabAppelli);
-        dialog.aggiungiCampo(L_DATA_CHIUSURA, new DatePicker());
-        dialog.aggiungiCampo(L_CHIUSO, new CheckBox(L_CHIUSO));
-        dialog.aggiungiCampo(L_FIRMATO, new CheckBox(L_FIRMATO));
-        dialog.aggiungiCampo(L_NOTE, new TextField());
+        dialog.aggiungiCampo(L_DATA_CHIUSURA, dpChiusura);
+        dialog.aggiungiCampo(L_CHIUSO, cbChiuso);
+        dialog.aggiungiCampo(L_FIRMATO, cbFirmato);
+        dialog.aggiungiCampo(L_NOTE, tfNote);
     }
+
 
     private Verbale estraiVerbaleDaCampi(Map<String, Control> campi, Verbale target) {
         // Appello id
@@ -219,6 +254,18 @@ public class VerbaliPannello1 implements CrudPanel {
             target.setNote(note);
             return target;
         }
+    }
+
+    private boolean validateAppelloUnico(String appelloId, String currentVerbaleId) {
+        var existing = domainQueryService.verbaleByAppello(appelloId);
+        if (existing.isPresent() && !java.util.Objects.equals(existing.get().getId(), currentVerbaleId)) {
+            Dialogs.showError(
+                    "Associazione non valida",
+                    "Per l'appello selezionato esiste già un verbale."
+            );
+            return false;
+        }
+        return true;
     }
 
     private void elimina(Verbale v) {

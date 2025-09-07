@@ -55,6 +55,11 @@ public class DomainQueryServiceImpl implements DomainQueryService {
         this.verbaleService = verbaleService;
     }
 
+    private static String norm(String s) {
+        if (s == null) return "";
+        return s.trim().replaceAll("\\s+", " ");
+    }
+
     // ===== Studente =====
 
     /** {@inheritDoc} */
@@ -141,6 +146,31 @@ public class DomainQueryServiceImpl implements DomainQueryService {
                 .toList();
     }
 
+    @Override
+    public boolean existsCorsoByName(String nome) {
+        String n = norm(nome);
+        if (n.isEmpty()) return false;
+
+        return corsoService.findAll().stream()
+                .map(CorsoDiLaurea::getNome)
+                .filter(Objects::nonNull)
+                .map(DomainQueryServiceImpl::norm)
+                .anyMatch(x -> x.equalsIgnoreCase(n));
+    }
+
+    @Override
+    public boolean existsCorsoByNameExceptId(String nome, String excludeId) {
+        String n = norm(nome);
+        if (n.isEmpty()) return false;
+
+        return corsoService.findAll().stream()
+                .filter(c -> !Objects.equals(c.getId(), excludeId))
+                .map(CorsoDiLaurea::getNome)
+                .filter(Objects::nonNull)
+                .map(DomainQueryServiceImpl::norm)
+                .anyMatch(x -> x.equalsIgnoreCase(n));
+    }
+
     // ===== Insegnamento =====
 
     /** {@inheritDoc} */
@@ -189,4 +219,139 @@ public class DomainQueryServiceImpl implements DomainQueryService {
                 .filter(a -> Objects.equals(a.getRidVerbale(), verbaleId))
                 .findFirst();
     }
+
+    // ===== Helpers “name exists” =====
+
+    @Override
+    public boolean existsEdificioByName(String nome) {
+        String n = norm(nome);
+        if (n.isEmpty()) return false;
+        return edificioService.findAll().stream()
+                .map(Edificio::getNome)
+                .filter(Objects::nonNull)
+                .map(DomainQueryServiceImpl::norm)
+                .anyMatch(n::equalsIgnoreCase);
+    }
+
+    @Override
+    public boolean existsEdificioByNameExceptId(String nome, String excludeId) {
+        String n = norm(nome);
+        if (n.isEmpty()) return false;
+        return edificioService.findAll().stream()
+                .filter(e -> !Objects.equals(e.getId(), excludeId))
+                .map(Edificio::getNome)
+                .filter(Objects::nonNull)
+                .map(DomainQueryServiceImpl::norm)
+                .anyMatch(n::equalsIgnoreCase);
+    }
+
+    @Override
+    public boolean existsInsegnamentoByName(String nome) {
+        String n = norm(nome);
+        if (n.isEmpty()) return false;
+        return insegnamentoService.findAll().stream()
+                .map(Insegnamento::getNome)
+                .filter(Objects::nonNull)
+                .map(DomainQueryServiceImpl::norm)
+                .anyMatch(n::equalsIgnoreCase);
+    }
+
+    @Override
+    public boolean existsInsegnamentoByNameExceptId(String nome, String excludeId) {
+        String n = norm(nome);
+        if (n.isEmpty()) return false;
+        return insegnamentoService.findAll().stream()
+                .filter(i -> !Objects.equals(i.getId(), excludeId))
+                .map(Insegnamento::getNome)
+                .filter(Objects::nonNull)
+                .map(DomainQueryServiceImpl::norm)
+                .anyMatch(n::equalsIgnoreCase);
+    }
+
+// ===== Helpers “name by id” =====
+
+    @Override
+    public Optional<String> edificioNameById(String edificioId) {
+        if (edificioId == null || edificioId.isBlank()) return Optional.empty();
+        return edificioService.findAll().stream()
+                .filter(e -> Objects.equals(e.getId(), edificioId))
+                .map(Edificio::getNome)
+                .findFirst();
+    }
+
+    @Override
+    public Optional<String> insegnamentoNameById(String insegnamentoId) {
+        if (insegnamentoId == null || insegnamentoId.isBlank()) return Optional.empty();
+        return insegnamentoService.findAll().stream()
+                .filter(i -> Objects.equals(i.getId(), insegnamentoId))
+                .map(Insegnamento::getNome)
+                .findFirst();
+    }
+
+    @Override
+    public boolean existsIscrizioneByStudenteAndAppello(String studenteCf, String appelloId) {
+        String cf = norm(studenteCf);
+        String appId = norm(appelloId);
+        if (cf.isEmpty() || appId.isEmpty()) return false;
+
+        return iscrizioneService.findAll().stream()
+                .filter(i -> i.getRidStudenteCf() != null)
+                .filter(i -> i.getRidStudenteCf().trim().equalsIgnoreCase(cf))
+                .anyMatch(i -> String.valueOf(i.getRidAppello()).equals(appId));
+    }
+
+    @Override
+    public boolean existsIscrizioneByStudenteAndAppelloExceptId(String studenteCf, String appelloId, String excludeId) {
+        String cf = norm(studenteCf);
+        String appId = norm(appelloId);
+        if (cf.isEmpty() || appId.isEmpty()) return false;
+
+        return iscrizioneService.findAll().stream()
+                .filter(i -> !Objects.equals(i.getId(), excludeId))
+                .filter(i -> i.getRidStudenteCf() != null)
+                .filter(i -> i.getRidStudenteCf().trim().equalsIgnoreCase(cf))
+                .anyMatch(i -> String.valueOf(i.getRidAppello()).equals(appId));
+    }
+
+    // it.univaq.unigest.service.query.impl.DomainQueryServiceImpl
+
+    @Override
+    public boolean isIscrizioneAttiva(String iscrizioneId) {
+        if (iscrizioneId == null || iscrizioneId.isBlank()) return false;
+        return iscrizioneService.findById(iscrizioneId)
+                .map(i -> !i.getRitirato())
+                .orElse(false);
+    }
+
+    @Override
+    public Optional<Studente> studenteByIscrizione(String iscrizioneId) {
+        if (iscrizioneId == null) return Optional.empty();
+
+        Optional<Iscrizione> iscrOpt = iscrizioneService.findAll().stream()
+                .filter(i -> Objects.equals(i.getId(), iscrizioneId))
+                .findFirst();
+
+        if (iscrOpt.isEmpty()) return Optional.empty();
+
+        String cf = iscrOpt.get().getRidStudenteCf();
+        if (cf == null || cf.isBlank()) return Optional.empty();
+
+        return studenteService.findAll().stream()
+                .filter(s -> s.getCf() != null && s.getCf().equalsIgnoreCase(cf))
+                .findFirst();
+    }
+
+    @Override
+    public Optional<Studente> studenteByEsame(String esameId) {
+        if (esameId == null) return Optional.empty();
+
+        Optional<Esame> esameOpt = esameService.findById(esameId);
+        if (esameOpt.isEmpty()) return Optional.empty();
+
+        String iscrizioneId = esameOpt.get().getIscrizioneId();
+        if (iscrizioneId == null) return Optional.empty();
+
+        return studenteByIscrizione(iscrizioneId);
+    }
+
 }

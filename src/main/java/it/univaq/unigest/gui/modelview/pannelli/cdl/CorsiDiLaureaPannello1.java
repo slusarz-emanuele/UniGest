@@ -113,7 +113,14 @@ public class CorsiDiLaureaPannello1 implements CrudPanel {
                 "Nuovo corso di laurea",
                 "Inserisci i dati del corso di laurea",
                 null, // create
-                cdlCreato -> corsoDiLaureaService.create(cdlCreato),
+                cdlCreato -> {
+                    if (domainQueryService.existsCorsoByName(cdlCreato.getNome())) {
+                        Dialogs.showError("Errore di creazione",
+                                "Esiste già un corso di laurea chiamato \"" + cdlCreato.getNome() + "\".");
+                        return null;
+                    }
+                    return corsoDiLaureaService.create(cdlCreato);
+                },
                 "Successo",
                 "Corso di laurea aggiunto correttamente!"
         );
@@ -124,7 +131,14 @@ public class CorsiDiLaureaPannello1 implements CrudPanel {
                 "Modifica corso di laurea",
                 "Modifica i dati del corso di laurea",
                 corsoDiLaurea, // edit
-                cdlAgg -> corsoDiLaureaService.update(cdlAgg),
+                cdlAgg -> {
+                    if (domainQueryService.existsCorsoByNameExceptId(cdlAgg.getNome(), corsoDiLaurea.getId())) {
+                        Dialogs.showError("Errore di modifica",
+                                "Esiste già un corso di laurea chiamato \"" + cdlAgg.getNome() + "\".");
+                        return null;
+                    }
+                    return corsoDiLaureaService.update(cdlAgg);
+                },
                 "Successo",
                 "Corso di laurea modificato con successo!"
         );
@@ -147,7 +161,7 @@ public class CorsiDiLaureaPannello1 implements CrudPanel {
                 cdl -> { refresh(); Dialogs.showInfo(successTitle, successMsg); }
         );
 
-        configuraCampi(dialog, iniziale);
+        if (!(persister == null)) configuraCampi(dialog, iniziale);
         dialog.mostra();
     }
 
@@ -155,7 +169,6 @@ public class CorsiDiLaureaPannello1 implements CrudPanel {
      * Aggiunge i campi al DialogBuilder. Se 'iniziale' è non nullo, pre-popola i controlli.
      */
     private void configuraCampi(DialogBuilder<CorsoDiLaurea> dialog, CorsoDiLaurea iniziale) {
-        dialog.aggiungiCampo(L_ID,           new TextField(iniziale != null ? iniziale.getId()           : ""));
         dialog.aggiungiCampo(L_NOME,         new TextField(iniziale != null ? iniziale.getNome()         : ""));
         dialog.aggiungiCampo(L_CFU_TOTALI,   new TextField(iniziale != null ? String.valueOf(iniziale.getCfuTotali()) : ""));
         dialog.aggiungiCampo(L_DIPARTIMENTO, new TextField(iniziale != null ? iniziale.getDipartimento() : ""));
@@ -167,7 +180,6 @@ public class CorsiDiLaureaPannello1 implements CrudPanel {
      * Se 'target' è null → create, altrimenti update sullo stesso oggetto.
      */
     private CorsoDiLaurea estraiCorsoDiLaureaDaCampi(Map<String, Control> campi, CorsoDiLaurea target) {
-        String id            = DialogsParser.validaCampo(campi, L_ID);
         String nome          = DialogsParser.validaCampo(campi, L_NOME);
         String cfuText       = DialogsParser.validaCampo(campi, L_CFU_TOTALI);
         int cfuTotali        = Integer.parseInt(cfuText);
@@ -175,9 +187,8 @@ public class CorsiDiLaureaPannello1 implements CrudPanel {
         String coordinatoreId= DialogsParser.validaCampo(campi, L_COORDINATORE_ID);
 
         if (target == null) {
-            return new CorsoDiLaurea(id, nome, cfuTotali, dipartimento, coordinatoreId);
+            return new CorsoDiLaurea(null, nome, cfuTotali, dipartimento, coordinatoreId);
         } else {
-            target.setId(id);
             target.setNome(nome);
             target.setCfuTotali(cfuTotali);
             target.setDipartimento(dipartimento);
@@ -223,6 +234,12 @@ public class CorsiDiLaureaPannello1 implements CrudPanel {
             Dialogs.showInfo("Eliminato", "Corso di Laurea eliminato con successo.");
         } catch (Exception e) {
             Dialogs.showError("Errore eliminazione", e.getMessage());
+        }
+    }
+
+    private class CorsoConLoStessoNomeEsistente extends Exception{
+        public CorsoConLoStessoNomeEsistente (String msg){
+            super(msg);
         }
     }
 

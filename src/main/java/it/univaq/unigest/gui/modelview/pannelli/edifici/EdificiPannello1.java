@@ -96,7 +96,14 @@ public class EdificiPannello1 implements CrudPanel {
                 "Nuovo Edificio",
                 "Inserisci i dati dell'edificio",
                 null,
-                eCreato -> edificioService.create(eCreato),   // id null -> auto-increment nel repo
+                eCreato -> {
+                    if(domainQueryService.existsEdificioByName(eCreato.getNome())){
+                        Dialogs.showError("Errore di creazione",
+                                "Esiste già un edificio chiamato \"" + eCreato.getNome() + "\".");
+                        return null;
+                    }
+                    return edificioService.create(eCreato);
+                },   // id null -> auto-increment nel repo
                 "Successo",
                 "Edificio aggiunto correttamente!"
         );
@@ -107,7 +114,14 @@ public class EdificiPannello1 implements CrudPanel {
                 "Modifica Edificio",
                 "Modifica i dati dell'edificio",
                 edificio,
-                eAgg -> edificioService.update(eAgg),
+                eAgg -> {
+                    if (domainQueryService.existsEdificioByNameExceptId(eAgg.getNome(), edificio.getId())) {
+                        Dialogs.showError("Errore di modifica",
+                                "Esiste già un edificio chiamato \"" + eAgg.getNome() + "\".");
+                        return null;
+                    }
+                    return edificioService.update(eAgg);
+                },
                 "Successo",
                 "Edificio modificato correttamente!"
         );

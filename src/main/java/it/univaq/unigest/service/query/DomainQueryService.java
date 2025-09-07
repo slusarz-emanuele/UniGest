@@ -92,6 +92,10 @@ public interface DomainQueryService {
      */
     List<Studente>     studentiByCorso(String corsoId);
 
+    boolean existsCorsoByName(String nome);
+
+    boolean existsCorsoByNameExceptId(String nome, String excludeId);
+
     // --------------------------
     // insegnamenti -> appelli
     // --------------------------
@@ -167,4 +171,31 @@ public interface DomainQueryService {
      * @return numero di esami.
      */
     default long countEsamiByStudente(String cf)      { return esamiByStudente(cf).size(); }
+
+    // Unicità nomi
+    boolean existsEdificioByName(String nome);
+    boolean existsEdificioByNameExceptId(String nome, String excludeId);
+    boolean existsInsegnamentoByName(String nome);
+    boolean existsInsegnamentoByNameExceptId(String nome, String excludeId);
+
+    // Lookup nome da id
+    Optional<String> edificioNameById(String edificioId);
+    Optional<String> insegnamentoNameById(String insegnamentoId);
+
+    // Unicità iscrizione per (studente, appello)
+    boolean existsIscrizioneByStudenteAndAppello(String studenteCf, String appelloId);
+    boolean existsIscrizioneByStudenteAndAppelloExceptId(String studenteCf, String appelloId, String excludeId);
+
+    /** Ritorna true se l'iscrizione esiste ed è NON ritirata. */
+    boolean isIscrizioneAttiva(String iscrizioneId);
+
+    default boolean existsEsameForIscrizione(String iscrizioneId) {
+        return esameByIscrizione(iscrizioneId).isPresent();
+    }
+
+    /** Studente associato a una Iscrizione (via id Iscrizione). */
+    Optional<Studente> studenteByIscrizione(String iscrizioneId);
+
+    /** Studente associato a un Esame (esame -> iscrizione -> studente). */
+    Optional<Studente> studenteByEsame(String esameId);
 }

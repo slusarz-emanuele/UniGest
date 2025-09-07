@@ -1,9 +1,12 @@
 package it.univaq.unigest.gui.actions;
 
+import it.univaq.unigest.gui.Dialogs;
 import it.univaq.unigest.gui.componenti.ColonneMiniFactory;
 import it.univaq.unigest.gui.componenti.RelatedListStage;
 import it.univaq.unigest.model.*;
 import it.univaq.unigest.service.query.DomainQueryService;
+
+import java.util.Collections;
 
 public class QueryActions {
 
@@ -98,6 +101,22 @@ public class QueryActions {
                 () -> query.iscrizioniByAppello(a.getId()),
                 ColonneMiniFactory.iscrizioneMini(),
                 "Iscrizioni_Appello_" + a.getId()
+        );
+    }
+
+    // appello -> verbale (al massimo uno)
+    public void openVerbalePerAppello(Appello a) {
+        var opt = query.verbaleByAppello(a.getId());
+        if (opt.isEmpty()) {
+            Dialogs.showInfo("Nessun verbale", "L'appello #" + a.getId() + " non ha ancora un verbale.");
+            return;
+        }
+        Verbale v = opt.get();
+        RelatedListStage.open(
+                "Verbale per Appello #" + a.getId(),
+                () -> Collections.singletonList(v),
+                ColonneMiniFactory.verbaleMini(),
+                "Verbale_Appello_" + a.getId()
         );
     }
 }

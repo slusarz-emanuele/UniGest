@@ -7,10 +7,7 @@ import it.univaq.unigest.gui.componenti.TableMiniFactory;
 import it.univaq.unigest.gui.componenti.VistaConDettagliBuilder;
 import it.univaq.unigest.gui.util.CrudPanel;
 import it.univaq.unigest.gui.util.DialogsParser;
-import it.univaq.unigest.model.Appello;
-import it.univaq.unigest.model.Aula;
-import it.univaq.unigest.model.Docente;
-import it.univaq.unigest.model.Insegnamento;
+import it.univaq.unigest.model.*;
 import it.univaq.unigest.service.AppelloService;
 import it.univaq.unigest.service.query.DomainQueryService;
 import javafx.scene.control.*;
@@ -22,8 +19,10 @@ import java.time.format.DateTimeParseException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Pannello di gestione “Appelli”.
@@ -131,22 +130,33 @@ public class AppelliPannello1 implements CrudPanel {
 
     public VistaConDettagliBuilder<Appello> getBuilder() { return builder; }
 
-    // ===== Colonne / Dettagli =====
     private LinkedHashMap<String, Function<Appello, String>> colonne() {
         LinkedHashMap<String, Function<Appello, String>> map = new LinkedHashMap<>();
-        map.put(L_ID,           Appello::getId);                    // mostra String id
-        map.put(L_INSEGNAMENTO, Appello::getRidInsegnamento);       // qui mostriamo l'id dell'insegnamento
+        map.put(L_ID,           Appello::getId);
+        map.put(L_INSEGNAMENTO, Appello::getRidInsegnamento);
         map.put(L_DATA,         a -> a.getData() != null ? a.getData().toString() : "");
         map.put(L_ORA,          a -> a.getOra()  != null ? a.getOra().toString()  : "");
         map.put(L_AULA,         a -> a.getRidAula()    != null ? a.getRidAula()    : "");
         map.put(L_DOCENTE,      a -> a.getRidDocente() != null ? a.getRidDocente() : "");
-        map.put(L_VERBALE,      a -> a.getRidVerbale() != null ? a.getRidVerbale() : "-");
+
+        map.put("Studenti", a -> domainQueryService.iscrizioniByAppello(a.getId()).stream()
+                .map(Iscrizione::getId)
+                .map(id -> domainQueryService.studenteByIscrizione(id)
+                        .map(s -> (s.getNome() + " " + s.getCognome() + " (" + s.getCf() + ")").trim())
+                        .orElse(null))
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.joining(", ")));
+
         return map;
     }
 
     private LinkedHashMap<String, Function<Appello, String>> dettagli() {
         LinkedHashMap<String, Function<Appello, String>> details = new LinkedHashMap<>(colonne());
         var actions = new QueryActions(domainQueryService);
+
+        details.put("Verbale", v -> "Visualizza Verbale");
+        builder.setLinkAction("Verbale", appello -> actions.openVerbalePerAppello(appello));
 
         details.put("Iscrizioni", a-> "Visualizza Iscrizioni");
         builder.setLinkAction("Iscrizioni", appello -> actions.openIscrizioniPerAppello(appello));

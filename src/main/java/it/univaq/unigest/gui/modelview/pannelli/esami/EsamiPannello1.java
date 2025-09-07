@@ -14,10 +14,7 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -30,6 +27,7 @@ public class EsamiPannello1 implements CrudPanel {
     private static final String L_LODE        = "Lode";
     private static final String L_RIFIUTATO   = "Rifiutato";
     private static final String L_VERBALIZZATO = "Verbalizzato";
+    private static final String L_STUDENTE    = "Studente";
 
     // Dipendenze
     private final EsameService esameService;
@@ -121,7 +119,10 @@ public class EsamiPannello1 implements CrudPanel {
                 "Nuovo Esame",
                 "Inserisci i dati dell'esame",
                 null,
-                eCreato -> esameService.create(eCreato),
+                eCreato -> {
+                    if (!validateIscrizionePerEsame(eCreato.getIscrizioneId(), null)) return null;
+                    return esameService.create(eCreato);
+                },
                 "Successo",
                 "Esame aggiunto correttamente!"
         );
@@ -132,7 +133,10 @@ public class EsamiPannello1 implements CrudPanel {
                 "Modifica Esame",
                 "Modifica i dati dell'esame",
                 esame,
-                eAgg -> esameService.create(eAgg),
+                eAgg -> {
+                    if (!validateIscrizionePerEsame(eAgg.getIscrizioneId(), eAgg.getId())) return null;
+                    return esameService.update(eAgg); // <-- update, non create
+                },
                 "Successo",
                 "Esame modificato correttamente!"
         );
@@ -241,6 +245,39 @@ public class EsamiPannello1 implements CrudPanel {
         DomainRefresher.onEsameChanged();
         refresh();
     }
+
+    // Controlli: (1) iscrizione non ritirata, (2) relazione 1:1 Esame↔Iscrizione
+    private boolean validateIscrizionePerEsame(String iscrizioneId, String currentEsameId) {
+        // Cerca l'iscrizione selezionata
+        Iscrizione iscr = loadIscrizioni.get().stream()
+                .filter(i -> Objects.equals(String.valueOf(i.getId()), iscrizioneId))
+                .findFirst()
+                .orElse(null);
+
+        if (iscr == null) {
+            Dialogs.showError("Iscrizione non valida", "L'iscrizione selezionata non esiste.");
+            return false;
+        }
+
+        if (Boolean.TRUE.equals(iscr.getRitirato())) {
+            Dialogs.showError(
+                    "Iscrizione non valida",
+                    "Lo studente risulta RITIRATO da questa iscrizione.\nNon è possibile registrare l'esame."
+            );
+            return false;
+        }
+
+        // Vincolo 1:1 → non deve esistere un altro esame con la stessa iscrizione
+        var existing = domainQueryService.esameByIscrizione(iscrizioneId);
+        if (existing.isPresent() && !Objects.equals(existing.get().getId(), currentEsameId)) {
+            Dialogs.showError("Duplicato", "Esiste già un esame registrato per questa iscrizione.");
+            return false;
+        }
+
+        return true;
+    }
+
+
 
     private ComboBox<Double> generaComboVoti(Double preselezione) {
         List<Double> voti = new ArrayList<>();

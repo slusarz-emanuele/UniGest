@@ -100,7 +100,7 @@ public final class SettingsWindow {
         VBox ripristinoPane = buildRipristinoPane();
         VBox infoPane = buildInfoPane();
 
-        content.getChildren().setAll(backupPane); // default
+        content.getChildren().setAll(backupPane);
         btnBackup.setSelected(true);
 
         btnBackup.setOnAction(e -> content.getChildren().setAll(backupPane));
@@ -173,7 +173,7 @@ public final class SettingsWindow {
         TextField txtFolder = new TextField();
         txtFolder.setPrefWidth(420);
 
-        // carica valore corrente dalle impostazioni
+        // valore delle impostrtazioni:
         Settings s = settingsService.get();
         txtFolder.setText(s != null && s.getCartellaBackup() != null ? s.getCartellaBackup() : "");
 
@@ -193,7 +193,6 @@ public final class SettingsWindow {
                 if (cur == null)
                     cur = Settings.defaults();
                 cur.setCartellaBackup(dir.getAbsolutePath());
-                // settingsService.save(cur);
                 info("Impostazioni", "Cartella backup salvata.");
             }
         });

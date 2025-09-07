@@ -1,4 +1,4 @@
-package it.univaq.unigest.common;
+package it.univaq.unigest.model.common;
 
 public interface Identificabile<ID> {
     ID getId();

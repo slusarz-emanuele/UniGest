@@ -2,7 +2,7 @@ package it.univaq.unigest.repository.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import it.univaq.unigest.common.Identificabile;
+import it.univaq.unigest.model.common.Identificabile;
 import it.univaq.unigest.repository.Repository;
 import it.univaq.unigest.util.LocalDateAdapter;
 import it.univaq.unigest.util.LocalTimeAdapter;

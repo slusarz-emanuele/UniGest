@@ -3,7 +3,7 @@ package it.univaq.unigest.service.impl;
 import it.univaq.unigest.model.Settings;
 import it.univaq.unigest.service.MaintenanceService;
 import it.univaq.unigest.service.SettingsService;
-import it.univaq.unigest.util.DatabaseHelper;
+import it.univaq.unigest.repository.support.DatabaseHelper;
 import it.univaq.unigest.util.backup.BackupManager;
 
 import java.io.File;

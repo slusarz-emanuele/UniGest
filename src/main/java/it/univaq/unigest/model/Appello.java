@@ -1,6 +1,6 @@
 package it.univaq.unigest.model;
 
-import it.univaq.unigest.common.Identificabile;
+import it.univaq.unigest.model.common.Identificabile;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

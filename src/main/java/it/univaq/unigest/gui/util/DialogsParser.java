@@ -1,6 +1,6 @@
 package it.univaq.unigest.gui.util;
 
-import it.univaq.unigest.gui.modelview.pannelli.exceptions.CampoRichiestoVuoto;
+import it.univaq.unigest.gui.exceptions.CampoRichiestoVuoto;
 import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
 

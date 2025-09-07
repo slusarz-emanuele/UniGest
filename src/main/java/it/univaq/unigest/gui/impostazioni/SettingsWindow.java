@@ -2,9 +2,9 @@ package it.univaq.unigest.gui.impostazioni;
 
 import it.univaq.unigest.gui.Main;
 import it.univaq.unigest.model.Settings;
+import it.univaq.unigest.repository.support.DatabaseHelper;
 import it.univaq.unigest.service.MaintenanceService;
 import it.univaq.unigest.service.SettingsService;
-import it.univaq.unigest.util.DatabaseHelper;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -190,7 +190,7 @@ public final class SettingsWindow {
             fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Backup ZIP", "*.zip"));
 
             // cartella di default: prima "data/backup", poi "data", altrimenti home
-            File dataDir   = new File(it.univaq.unigest.util.DatabaseHelper.PERCORSO_CARTELLA_DATI);
+            File dataDir   = new File(DatabaseHelper.PERCORSO_CARTELLA_DATI);
             File backupDir = new File(dataDir, "backup");
             if (backupDir.exists() && backupDir.isDirectory()) {
                 fc.setInitialDirectory(backupDir);

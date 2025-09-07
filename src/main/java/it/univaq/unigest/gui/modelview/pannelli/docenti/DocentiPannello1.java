@@ -9,7 +9,7 @@ import it.univaq.unigest.gui.util.DialogsParser;
 import it.univaq.unigest.model.Docente;
 import it.univaq.unigest.service.DocenteService;
 import it.univaq.unigest.service.query.DomainQueryService;
-import it.univaq.unigest.util.loader.DomainRefresher;
+import it.univaq.unigest.service.bootstrap.DomainRefresher;
 import javafx.collections.FXCollections;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;

@@ -1,6 +1,6 @@
 package it.univaq.unigest.util.backup;
 
-import it.univaq.unigest.util.DatabaseHelper;
+import it.univaq.unigest.repository.support.DatabaseHelper;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.compress.utils.IOUtils;
